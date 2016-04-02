@@ -1,0 +1,26 @@
+\documentclass[11pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\author{Frantzen Christian Marius Küpper}
+\title{INFO-H-303 : Base de données\\
+		Projet : Annuaire d'établissements horeca}
+\begin{document}
+\maketitle
+\section*{Modèle d'entité-association}
+
+\begin{itemize}
+\item Un \textit{User} peut commenter plusieurs fois le même \textit{Establishment} à des dates différentes. 
+\item Un \textit{User} ne peut pas apposer le même \textit{Tag} plusieurs fois sur le même \textit{Establishment}. 
+\item La \textit{Date} d'un \textit{Comment} doit être strictement supérieure à l'\textit{EntryDate} du User qui le fait. 
+\item Le nombre \textit{Rooms} d'un \textit{Hotel} doit être strictement positif. 
+\item Le \textit{StandardPrice} d'un \textit{Hotel} doit être strictement positif. 
+\item Le \textit{PriceRange} d'un \textit{Restaurant} doit être strictement positif. 
+\item Le \textit{BanquetCapacity} d'un \textit{Restaurant} doit être positif. 
+\item Un \textit{Administrator} ne peut effectuer qu'une opération sur un \textit{Establishment} à la fois. 
+\end{itemize}
+\end{document}
