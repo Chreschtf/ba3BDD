@@ -26,28 +26,28 @@
 \end{itemize}
 
 \section*{Modèle relationnel}
-s\newline
+\noindent
 Establishment(\underline{EID},EName,Street,Num,Zip,City,\underline{Longitude,Latitude},Tel,Site,\underline{UID},EntryDate)
 \begin{itemize}
-\item UID référence User.UID
+\item UID référence User.UID\\
 \end{itemize}
 Restaurant(\underline{EID},\underline{RID},PriceRange,BanquetCapacity,Takeaway,Delivery)
 \begin{itemize}
-\item EID référence Establishment.EID
+\item EID référence Establishment.EID\\
 \end{itemize} 
 RestaurantClosingDays(\underline{RID},ClosingDay,Hour)
 \begin{itemize}
-\item RID référence Restaurant.RID
+\item RID référence Restaurant.RID\\
 \end{itemize}
 Bar(\underline{EID},Smoking,Snack)
 \begin{itemize}
-\item EID référence Establishment.EID
+\item EID référence Establishment.EID\\
 \end{itemize}
 Hotel(\underline{EID},Stars,Rooms,StandardPrice)
 \begin{itemize}
-\item EID référence Establishment.EID
+\item EID référence Establishment.EID\\
 \end{itemize}
-User(\underline{UID},\underline{Nickname},Email,Password,EntryDate,Admin)\newline
+User(\underline{UID},\underline{Nickname},Email,Password,EntryDate,Admin)\\ \\
 %EstablishmentCreation.UNickname référence User.UNickname
 %
 %EstablishmentCreation.EName référence Establishment.EName
@@ -55,14 +55,14 @@ Comment(\underline{CID},\underline{UID},\underline{EID},Score,EntryDate,Text)
 \begin{itemize}
 \item UID référence User.UID
 \item EID référence Establishment.EID
-\item (UID,EID,EntryDate) est unique et donc également une clé de cette relation
+\item (UID,EID,EntryDate) est unique et donc également une clé de cette relation\\
 \end{itemize}
-Tag(\underline{TID},\underline{TName})\newline
+Tag(\underline{TID},\underline{TName})\\ \\
 EstablishmentTag(\underline{TID,EID,UID})
 \begin{itemize}
 \item TID référence Tag.TID
 \item EID référence Establishment.EID
-\item UID référence User.UID
+\item UID référence User.UID\\
 \end{itemize}
 
 \pagebreak
