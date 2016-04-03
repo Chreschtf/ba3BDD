@@ -42,50 +42,40 @@ Si un \textit{Restaurant} ne veut pas organiser de banquet, il spécifie sa \tex
 
 \section*{Modèle relationnel}
 \noindent
-
-Establishment(\underline{EID}, EName, Street, Num, Zip, City, Longitude, Latitude, Tel, Site, \underline{UID}, EntryDate)
+\textbf{Establishment}(\underline{EID},EName,Street,Num,Zip,City,Longitude,Latitude,Tel,Site,\underline{UID},EntryDate)
 \begin{itemize}
 \item UID référence User.UID (représente le createur de l'établissement)\\
 \end{itemize}
-
-Restaurant(\underline{EID}, PriceRange, BanquetCapacity, Takeaway, Delivery)
+\textbf{Restaurant}(\underline{EID}, PriceRange, BanquetCapacity, Takeaway, Delivery)
 \begin{itemize}
 \item EID référence Establishment.EID\\
 \end{itemize} 
-
-RestaurantClosingDays(\underline{EID}, ClosingDay, Hour)
+\textbf{RestaurantClosingDays}(\underline{EID}, ClosingDay, Hour)
 \begin{itemize}
 \item EID référence Establishment.EID\\
 \end{itemize}
-
-Bar(\underline{EID}, Smoking, Snack)
+\textbf{Bar}(\underline{EID}, Smoking, Snack)
 \begin{itemize}
 \item EID référence Establishment.EID\\
 \end{itemize}
-
-Hotel(\underline{EID}, Stars, Rooms, StandardPrice)
+\textbf{Hotel}(\underline{EID}, Stars, Rooms, StandardPrice)
 \begin{itemize}
 \item EID référence Establishment.EID\\
 \end{itemize}
-
-User(\underline{UID}, \underline{Nickname}, Email, Password, EntryDate, Admin)\\ 
-
-Comment(\underline{CID}, \underline{UID}, \underline{EID}, Score, EntryDate, Text)
+\textbf{User}(\underline{UID}, \underline{Nickname}, Email, Password, EntryDate, Admin)\\ \\
+\textbf{Comment}(\underline{CID}, \underline{UID}, \underline{EID}, Score, EntryDate, Text)
 \begin{itemize}
 \item UID référence User.UID
 \item EID référence Establishment.EID
 \item (UID,EID,EntryDate) est unique et donc également une clé de cette relation\\
 \end{itemize}
-
-Tag(\underline{TID}, \underline{TName})\\ \\
-
-EstablishmentTag(\underline{TID, EID, UID})
+\textbf{Tag}(\underline{TID}, \underline{TName})\\ \\
+\textbf{EstablishmentTag}(\underline{TID, EID, UID})
 \begin{itemize}
 \item TID référence Tag.TID
 \item EID référence Establishment.EID
 \item UID référence User.UID\\
 \end{itemize}
-
 \section*{Remarques}
 \noindent
 
