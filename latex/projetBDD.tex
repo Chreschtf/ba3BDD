@@ -6,38 +6,49 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{makeidx}
+\usepackage{svg}
 \author{Frantzen Christian Marius Küpper}
 \title{INFO-H-303 : Base de données\\
 		Projet : Annuaire d'établissements horeca}
 \begin{document}
 \maketitle
-\section*{Modèle d'entité-association}
+\section*{Modèle entité-association}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{modelEA.pdf}
+  \caption{Modèle entité-association}
+\end{figure}
+
+
 \subsection*{Contraintes d'intégrité}
 
 \begin{itemize}
 \item Un \textit{User} peut commenter plusieurs fois le même \textit{Establishment} à des dates différentes. 
 \item Un \textit{User} ne peut pas apposer le même \textit{Tag} plusieurs fois sur le même \textit{Establishment}. 
-\item La \textit{Date} d'un \textit{Comment} doit être strictement supérieure à l'\textit{EntryDate} du User qui le fait. 
+\item L'\textit{EntryDate} d'un \textit{Comment} doit être strictement supérieure à l'\textit{EntryDate} du User qui le fait ainsi que l'\textit{EntryDate} de l'\textit{Establishment} sur lequel il est fait. 
+\item Le \textit{Score} d'un \textit{Comment} est un entier compris entre 1 et 5.
 \item Le nombre \textit{Rooms} d'un \textit{Hotel} doit être strictement positif. 
 \item Le \textit{StandardPrice} d'un \textit{Hotel} doit être strictement positif. 
 \item Le \textit{PriceRange} d'un \textit{Restaurant} doit être strictement positif. 
 \item Le \textit{BanquetCapacity} d'un \textit{Restaurant} doit être positif. 
-\item Un \textit{Administrator} ne peut effectuer qu'une opération sur un \textit{Establishment} à la fois. 
 \end{itemize}
+\subsection*{Remarques}
+Si un \textit{Restaurant} ne veut pas organiser de banquet, il spécifie sa \textit{BanquetCapacity} comme étant 0.
 
 \section*{Modèle relationnel}
 \noindent
-Establishment(\underline{EID},EName,Street,Num,Zip,City,\underline{Longitude,Latitude},Tel,Site,\underline{UID},EntryDate)
+Establishment(\underline{EID},EName,Street,Num,Zip,City,Longitude,Latitude,Tel,Site,\underline{UID},EntryDate)
 \begin{itemize}
 \item UID référence User.UID\\
 \end{itemize}
-Restaurant(\underline{EID},\underline{RID},PriceRange,BanquetCapacity,Takeaway,Delivery)
+Restaurant(\underline{EID},PriceRange,BanquetCapacity,Takeaway,Delivery)
 \begin{itemize}
 \item EID référence Establishment.EID\\
 \end{itemize} 
-RestaurantClosingDays(\underline{RID},ClosingDay,Hour)
+RestaurantClosingDays(\underline{EID},ClosingDay,Hour)
 \begin{itemize}
-\item RID référence Restaurant.RID\\
+\item EID référence Establishment.EID\\
 \end{itemize}
 Bar(\underline{EID},Smoking,Snack)
 \begin{itemize}
