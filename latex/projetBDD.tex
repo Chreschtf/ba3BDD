@@ -26,23 +26,21 @@
 \begin{itemize}
 \item Un \textit{User} peut commenter plusieurs fois le même \textit{Establishment} à des dates différentes. 
 \item Un \textit{User} ne peut pas apposer le même \textit{Tag} plusieurs fois sur le même \textit{Establishment}.
-\item Deux \textit{User} ne peuvent pas avoir le même \textit{Nickname} (Les \textit{Adminisitrator} sont aussi des User).
 \item L'\textit{EntryDate} d'un \textit{Adminisitrator} doit être strictement supérieure à l'\textit{EntryDate} de l'\textit{Establishment} qu'il a créé.
 \item L'\textit{EntryDate} d'un \textit{Comment} doit être strictement supérieure à l'\textit{EntryDate} du User qui le fait ainsi que l'\textit{EntryDate} de l'\textit{Establishment} sur lequel il est fait. 
 \item Le \textit{Score} d'un \textit{Comment} est un entier compris entre 0 et 5.
-\item Les \textit{Stars} d'un \textit{Hotel} est un entier compris entre 0 et 5.
+\item Les \textit{Stars} d'un \textit{Hotel} doit être un entier positif.
 \item Le nombre \textit{Rooms} d'un \textit{Hotel} doit être strictement positif. 
 \item Le \textit{StandardPrice} d'un \textit{Hotel} doit être strictement positif. 
 \item Le \textit{PriceRange} d'un \textit{Restaurant} doit être strictement positif. 
 \item Le \textit{BanquetCapacity} d'un \textit{Restaurant} doit être positif. 
-\item Deux \textit{Tag} ne peuvent pas avoir le même \textit{TName}.
 \end{itemize}
 \subsection*{Remarques}
 Si un \textit{Restaurant} ne veut pas organiser de banquet, il spécifie sa \textit{BanquetCapacity} comme étant 0.
 
 \section*{Modèle relationnel}
 \noindent
-\textbf{Establishment}(\underline{EID},EName,Street,Num,Zip,City,Longitude,Latitude,Tel,Site,\underline{UID},EntryDate)
+\textbf{Establishment}(\underline{EID},EName,Street,Num,Zip,City,Longitude,Latitude,Tel,Site,UID,EntryDate)
 \begin{itemize}
 \item UID référence User.UID (représente le createur de l'établissement)\\
 \end{itemize}
@@ -62,14 +60,14 @@ Si un \textit{Restaurant} ne veut pas organiser de banquet, il spécifie sa \tex
 \begin{itemize}
 \item EID référence Establishment.EID\\
 \end{itemize}
-\textbf{User}(\underline{UID}, \underline{Nickname}, Email, Password, EntryDate, Admin)\\ \\
-\textbf{Comment}(\underline{CID}, \underline{UID}, \underline{EID}, Score, EntryDate, Text)
+\textbf{User}(\underline{UID, Nickname}, Email, Password, EntryDate, Admin)\\ \\
+\textbf{Comment}(\underline{CID, UID, EID}, EntryDate, Score,  Text)
 \begin{itemize}
 \item UID référence User.UID
 \item EID référence Establishment.EID
 \item (UID,EID,EntryDate) est unique et donc également une clé de cette relation\\
 \end{itemize}
-\textbf{Tag}(\underline{TID}, \underline{TName})\\ \\
+\textbf{Tag}(\underline{TID, TName})\\ \\
 \textbf{EstablishmentTag}(\underline{TID, EID, UID})
 \begin{itemize}
 \item TID référence Tag.TID
