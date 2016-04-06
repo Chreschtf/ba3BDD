@@ -60,14 +60,20 @@ Si un \textit{Restaurant} ne veut pas organiser de banquet, il spécifie sa \tex
 \begin{itemize}
 \item EID référence Establishment.EID\\
 \end{itemize}
-\textbf{User}(\underline{UID, Nickname}, Email, Password, EntryDate, Admin)\\ \\
-\textbf{Comment}(\underline{CID, UID, EID}, EntryDate, Score,  Text)
+\textbf{User}(\underline{UID}, Nickname, Email, Password, EntryDate, Admin)
+\begin{itemize}
+\item Nickname est unique\\
+\end{itemize}
+\textbf{Comment}(\underline{CID}, UID, EID, EntryDate, Score,  Text)
 \begin{itemize}
 \item UID référence User.UID
 \item EID référence Establishment.EID
 \item (UID,EID,EntryDate) est unique et donc également une clé de cette relation\\
 \end{itemize}
-\textbf{Tag}(\underline{TID, TName})\\ \\
+\textbf{Tag}(\underline{TID}, TName)
+\begin{itemize}
+\item TName est unique\\
+\end{itemize}
 \textbf{EstablishmentTag}(\underline{TID, EID, UID})
 \begin{itemize}
 \item TID référence Tag.TID
