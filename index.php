@@ -6,7 +6,10 @@
     $username = "root";
     $password = "";
     #$dbname = "";
-
+    function chargerClasse($classe) {
+    if(is_readable('Models/'.$classe.'.class.php'))require 'Models/' . $classe . '.class.php';
+    else   var_dump($classe);
+    }
 
     try {
         $conn = new PDO("mysql:host=$servername;", $username,$password);

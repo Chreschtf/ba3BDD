@@ -454,5 +454,17 @@ class Db
 
         return false;
     }
+    
+    
+    public function validNickname($nickname){
+        $query = "SELECT nickname FROM users WHERE users.nickname = ".$nickname;
+        $result =$this->_db->query($query);
+        
+        if ($result->rowcount()!=0){
+            return FALSE;
+        }
+        return TRUE;
+        
+    }
 
 }
