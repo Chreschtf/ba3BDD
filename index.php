@@ -5,11 +5,11 @@
     $servername = "localhost";
     $username = "root";
     $password = "";
-    $dbname = "ttt";
+    #$dbname = "";
 
 
     try {
-        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username,$password);
+        $conn = new PDO("mysql:host=$servername;", $username,$password);
         // set the PDO error mode to exception
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
@@ -27,5 +27,24 @@
         echo "Connection failed: " . $e->getMessage();
         }
         
-    $conn = null;   
+    $conn = null;  
+    
+    
+    /* $action = (isset($_GET['action'])) ? htmlentities($_GET['action']) : 'default';
+    # process what action ?
+    switch($action) {
+        /* case 'homeStudent':
+            require_once('controllers/HomeStudentController.php');
+            $controller = new HomeStudentController();
+            break; #/
+        
+        default: # Par défaut, le contrôleur de l'accueil est sélectionné
+            require_once('Controllers/LoginController.php');
+            $controller = new LoginController();
+            break;
+      
+    }
+    # Exécution du contrôleur correspondant à l'action demandée
+    $controller->run(); 
+    */
 ?>
