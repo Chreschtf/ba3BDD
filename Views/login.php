@@ -10,5 +10,5 @@
             <p><input type="submit" name="form_login" value="Connect"></p>
         </form>
     </div>
-    <p> No account yet? <a href="index.php?action=first">Click here to sign up.</a>
+    <p> No account yet? <a href="index.php?action=signUp">Click here to sign up.</a>
 </div><!-- #contenu -->

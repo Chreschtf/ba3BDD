@@ -1,5 +1,5 @@
 <?php
-
+    session_start();
     define ('VIEWSPATH', 'Views/' );
 
     $servername = "localhost";
@@ -20,7 +20,8 @@
             
         // use exec() because no results are returned
         $conn->exec($sql);
-        echo "Database created successfully<br>";
+        #echo "Database created successfully<br>";
+
     }
     catch(PDOException $e)
         {
@@ -30,21 +31,21 @@
     $conn = null;  
     
     
-    /* $action = (isset($_GET['action'])) ? htmlentities($_GET['action']) : 'default';
+     $action = (isset($_GET['action'])) ? htmlentities($_GET['action']) : 'signUp';
     # process what action ?
     switch($action) {
-        /* case 'homeStudent':
-            require_once('controllers/HomeStudentController.php');
-            $controller = new HomeStudentController();
+        case 'signUp':
+            require_once('Controllers/SignUpController.php');
+            $controller = new SignUpController();
             break; #/
         
-        default: # Par défaut, le contrôleur de l'accueil est sélectionné
+        /*default: # Par défaut, le contrôleur de l'accueil est sélectionné
             require_once('Controllers/LoginController.php');
             $controller = new LoginController();
             break;
-      
+      */
     }
     # Exécution du contrôleur correspondant à l'action demandée
     $controller->run(); 
-    */
+    
 ?>
