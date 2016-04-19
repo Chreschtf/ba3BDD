@@ -457,7 +457,7 @@ class Db
     
     
     public function validNickname($nickname){
-        $query = "SELECT nickname FROM users WHERE users.nickname = ".$nickname;
+        $query = "SELECT * FROM users WHERE users.nickname = ".$this->_db->quote($nickname);
         $result =$this->_db->query($query);
         
         if ($result->rowcount()!=0){

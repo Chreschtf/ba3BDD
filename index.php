@@ -10,6 +10,8 @@
     if(is_readable('Models/'.$classe.'.class.php'))require 'Models/' . $classe . '.class.php';
     else   var_dump($classe);
     }
+    
+    spl_autoload_register('chargerClasse');
 
     try {
         $conn = new PDO("mysql:host=$servername;", $username,$password);
@@ -34,7 +36,7 @@
     $conn = null;  
     
     
-     $action = (isset($_GET['action'])) ? htmlentities($_GET['action']) : 'signUp';
+     $action = (isset($_GET['action'])) ? htmlentities($_GET['action']) : 'default';
     # process what action ?
     switch($action) {
         case 'signUp':
@@ -42,11 +44,12 @@
             $controller = new SignUpController();
             break; #/
         
-        /*default: # Par défaut, le contrôleur de l'accueil est sélectionné
+        
+        default: # Par défaut, le contrôleur de l'accueil est sélectionné
             require_once('Controllers/LoginController.php');
             $controller = new LoginController();
             break;
-      */
+      
     }
     # Exécution du contrôleur correspondant à l'action demandée
     $controller->run(); 

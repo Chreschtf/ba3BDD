@@ -43,6 +43,9 @@ class SignUpController{
             $email = $_POST["email"];
         }
         
+         #header("Location: index.php?action=login");
+         #die();
+        
 
         require_once(VIEWSPATH . 'signUp.php');
 

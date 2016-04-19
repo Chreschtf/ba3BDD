@@ -8,8 +8,8 @@
         
         
         
-        require_once (PATH_VIEWS . 'login.php');
+        require_once (VIEWSPATH . 'login.php');
         
     }
-
+    }
 ?>
