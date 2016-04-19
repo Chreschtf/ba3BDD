@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.tags (
     tid INT(6) NOT NULL AUTO_INCREMENT,
     tname VARCHAR(35) NOT NULL,
     PRIMARY KEY (tid),
-    UNIQUE(tname)
+    UNIQUE (tname)
 );
 
 CREATE TABLE IF NOT EXISTS annuaire_horeca.establishment_tags (
