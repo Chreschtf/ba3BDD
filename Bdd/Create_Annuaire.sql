@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.users (
     entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     admin BIT NOT NULL,
     PRIMARY KEY (uid),
-    UNIQUE(nickname)
+    UNIQUE(nickname),
+    UNIQUE(email)
 );
 
 CREATE TABLE IF NOT EXISTS annuaire_horeca.establishments (
@@ -69,7 +70,7 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.comments (
     eid INT(6) NOT NULL,
     entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     score INT(1) NOT NULL,
-    Text TEXT NOT NULL,
+    text TEXT NOT NULL,
     PRIMARY KEY (cid),
     FOREIGN KEY (uid) REFERENCES users(uid),
     FOREIGN KEY (eid) REFERENCES establishments(eid)
