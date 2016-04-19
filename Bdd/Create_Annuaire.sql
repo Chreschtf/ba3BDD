@@ -1,14 +1,17 @@
-CREATE TABLE users (
+CREATE DATABASE IF NOT EXISTS annuaire_horeca DEFAULT COLLATE = utf8_general_ci;
+
+CREATE TABLE IF NOT EXISTS annuaire_horeca.users (
     uid INT(6) NOT NULL AUTO_INCREMENT,
     nickname VARCHAR(20) NOT NULL,
     email VARCHAR(20) NOT NULL,
     password VARCHAR(15) NOT NULL,
     entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     admin BIT NOT NULL,
-    PRIMARY KEY (uid)
+    PRIMARY KEY (uid),
+    UNIQUE(nickname)
 );
 
-CREATE TABLE establishments (
+CREATE TABLE IF NOT EXISTS annuaire_horeca.establishments (
     eid INT(6) NOT NULL AUTO_INCREMENT ,
     ename VARCHAR(20) NOT NULL,
     street VARCHAR(20) NOT NULL,
@@ -25,7 +28,7 @@ CREATE TABLE establishments (
     FOREIGN KEY (uid) REFERENCES users(uid)
 );
 
-CREATE TABLE restaurants (
+CREATE TABLE IF NOT EXISTS annuaire_horeca.restaurants (
     eid INT(6) NOT NULL,
     price_range INT(3) NOT NULL,
     banquet_capacity INT(3) NOT NULL,
@@ -35,7 +38,7 @@ CREATE TABLE restaurants (
     FOREIGN KEY (eid) REFERENCES establishments(eid)
 );
 
-CREATE TABLE restaurant_closing_days (
+CREATE TABLE IF NOT EXISTS annuaire_horeca.restaurant_closing_days (
     eid INT(6) NOT NULL,
     closing_day ENUM('MON', 'TUE', 'WEN', 'THU', 'FRI', 'SAT', 'SUN') NOT NULL,
     hour ENUM('AM', 'PM') NOT NULL,
@@ -43,7 +46,7 @@ CREATE TABLE restaurant_closing_days (
     FOREIGN KEY (eid) REFERENCES establishments(eid)
 );
 
-CREATE TABLE bars (
+CREATE TABLE IF NOT EXISTS annuaire_horeca.bars (
     eid INT(6) NOT NULL,
     smoking BIT NOT NULL,
     snack BIT NOT NULL,
@@ -51,7 +54,7 @@ CREATE TABLE bars (
     FOREIGN KEY (eid) REFERENCES establishments(eid)
 );
 
-CREATE TABLE hotels (
+CREATE TABLE IF NOT EXISTS annuaire_horeca.hotels (
     eid INT(6) NOT NULL,
     stars INT(1) NOT NULL,
     rooms INT(3) NOT NULL,
@@ -60,7 +63,7 @@ CREATE TABLE hotels (
     FOREIGN KEY (eid) REFERENCES establishments(eid)
 );
 
-CREATE TABLE comments (
+CREATE TABLE IF NOT EXISTS annuaire_horeca.comments (
     cid INT(6) NOT NULL AUTO_INCREMENT,
     uid INT(6) NOT NULL,
     eid INT(6) NOT NULL,
@@ -72,13 +75,14 @@ CREATE TABLE comments (
     FOREIGN KEY (eid) REFERENCES establishments(eid)
 );
 
-CREATE TABLE tags (
+CREATE TABLE IF NOT EXISTS annuaire_horeca.tags (
     tid INT(6) NOT NULL AUTO_INCREMENT,
     tname VARCHAR(35) NOT NULL,
-    PRIMARY KEY (tid)
+    PRIMARY KEY (tid),
+    UNIQUE(tname)
 );
 
-CREATE TABLE establishment_tags (
+CREATE TABLE IF NOT EXISTS annuaire_horeca.establishment_tags (
     tid INT(6) NOT NULL,
     eid INT(6) NOT NULL,
     uid INT(6) NOT NULL,
