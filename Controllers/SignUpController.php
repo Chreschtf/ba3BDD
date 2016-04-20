@@ -6,8 +6,9 @@ class SignUpController{
     
     public function run(){
         
-        $nicknameErr = $emailErr = $passwordErr = $websiteErr = "";
-        $nickname = $email = $password = $website = "";
+        $nicknameErr = $emailErr = $passwordErr = "";
+        $nickname = $email = $password = "";
+        $admin= FALSE;
         
        
         if (empty($_POST)) {
@@ -35,16 +36,34 @@ class SignUpController{
         }
         
         if (empty($_POST["email"])){
-            $emailErr = "Email required";
-        }
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $emailErr = "Invalid email format"; 
-        } else{
+            $emailErr = "Email is required";
+        }elseif (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
+            $emailErr = "Invalid email format"; 
+        }elseif (Db::getInstance()->emailAlreadyInUse($_POST["email"]) ){
+            $emailErr = "Email already in use";
+        }else{
             $email = $_POST["email"];
         }
+        if (isset($_POST["admin"])){
+            $admin = TRUE;
+        }
         
-         #header("Location: index.php?action=login");
-         #die();
+        
+        
+        if ($emailErr == "" and $nicknameErr == "" and $passwordErr == ""){
+            $user = [
+                    0 => $nickname,
+                    1 => $email,
+                    2 => $password,
+                    3 => $admin
+                    ];
+            Db::getInstance()->insertUser($user);
+            
+            
+            header("Location: index.php?action=login");
+            #die();
+        }
+         
         
 
         require_once(VIEWSPATH . 'signUp.php');
