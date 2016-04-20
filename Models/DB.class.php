@@ -7,7 +7,7 @@ class Db
     private function __construct(){
         
         $username = "root";
-        $password = "";
+        $password = "123soleil";
 
         try {
             $this->_db = new PDO('mysql:host=localhost;dbname=annuaire_horeca;charset=UTF8', $username, $password);
@@ -28,7 +28,7 @@ class Db
         return self::$instance;
     }
     
-    public function insertUser($array) {
+    public function insertUserComplete($array) {
         $query="INSERT INTO users 
                 (nickname, email, password, admin) 
                 VALUES 
@@ -41,6 +41,23 @@ class Db
         $statement->bindParam(':admin', $array[3]);
         
         $statement->execute();
+        return mysql_insert_id();
+    }
+    
+    public function insertUserNotComplete($array) {
+        $query="INSERT INTO users 
+                (nickname, email, password, admin) 
+                VALUES 
+                (:nickname, :email, :password, :admin)";
+        $statement = $this->_db->prepare($query);
+
+        $statement->bindParam(':nickname', $array[0]);
+        $statement->bindParam(':email', NULL);
+        $statement->bindParam(':password', NULL);
+        $statement->bindParam(':admin', $array[1]);
+        
+        $statement->execute();
+        return mysql_insert_id();
     }
 
     public function insertEstablishment($array) {
@@ -62,6 +79,7 @@ class Db
         $statement->bindParam(':uid', $array[9]);
         
         $statement->execute();
+        return mysql_insert_id();
     }
 
     public function insertRestaurant($array){

@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.users (
     email VARCHAR(20) NOT NULL,
     password VARCHAR(15) NOT NULL,
     entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    admin BIT NOT NULL,
+    admin BOOLEAN DEFAULT NULL,
     PRIMARY KEY (uid),
     UNIQUE(nickname),
     UNIQUE(email)
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.establishments (
     longitude INT(5) NOT NULL,
     latitude INT(5) NOT NULL,
     tel VARCHAR(20) NOT NULL,
-    site VARCHAR(20) NOT NULL,
+    site VARCHAR(20),
     uid INT(6) NOT NULL,
     entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (eid),
@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.restaurants (
     eid INT(6) NOT NULL,
     price_range INT(3) NOT NULL,
     banquet_capacity INT(3) NOT NULL,
-    takeaway BIT NOT NULL,
-    delivery BIT NOT NULL,
+    takeaway BOOLEAN DEFAULT NULL,
+    delivery BOOLEAN DEFAULT NULL,
     PRIMARY KEY (eid),
     FOREIGN KEY (eid) REFERENCES establishments(eid)
 );
@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.restaurant_closing_days (
 
 CREATE TABLE IF NOT EXISTS annuaire_horeca.bars (
     eid INT(6) NOT NULL,
-    smoking BIT NOT NULL,
-    snack BIT NOT NULL,
+    smoking BOOLEAN DEFAULT NULL,
+    snack BOOLEAN DEFAULT NULL,
     PRIMARY KEY (eid),
     FOREIGN KEY (eid) REFERENCES establishments(eid)
 );
