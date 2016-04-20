@@ -28,12 +28,6 @@
 \item Un \textit{User} ne peut pas apposer le même \textit{Tag} plusieurs fois sur le même \textit{Establishment}.
 \item L'\textit{EntryDate} d'un \textit{Adminisitrator} doit être strictement supérieure à l'\textit{EntryDate} de l'\textit{Establishment} qu'il a créé.
 \item L'\textit{EntryDate} d'un \textit{Comment} doit être strictement supérieure à l'\textit{EntryDate} du User qui le fait ainsi que l'\textit{EntryDate} de l'\textit{Establishment} sur lequel il est fait. 
-\item Le \textit{Score} d'un \textit{Comment} est un entier compris entre 0 et 5.
-\item Les \textit{Stars} d'un \textit{Hotel} est un entier compris entre 0 et 5.
-\item Le nombre \textit{Rooms} d'un \textit{Hotel} doit être un entier strictement positif. 
-\item Le \textit{StandardPrice} d'un \textit{Hotel} doit être strictement positif. 
-\item Le \textit{PriceRange} d'un \textit{Restaurant} doit être strictement positif. 
-\item Le \textit{BanquetCapacity} d'un \textit{Restaurant} doit être un entier positif. 
 \end{itemize}
 \subsection*{Remarques}
 Si un \textit{Restaurant} ne veut pas organiser de banquet, il spécifie sa \textit{BanquetCapacity} comme étant 0.
@@ -62,7 +56,8 @@ Si un \textit{Restaurant} ne veut pas organiser de banquet, il spécifie sa \tex
 \end{itemize}
 \textbf{User}(\underline{UID}, Nickname, Email, Password, EntryDate, Admin)
 \begin{itemize}
-\item Nickname est unique et donc également une clé de cette relation\\
+\item Nickname est unique et donc également une clé de cette relation
+\item Email est unique et donc également une clé de cette relation\\
 \end{itemize}
 \textbf{Comment}(\underline{CID}, UID, EID, EntryDate, Score,  Text)
 \begin{itemize}

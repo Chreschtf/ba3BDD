@@ -15,7 +15,7 @@ class Db
             $this->_db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_OBJ);
         }
         catch (PDOException $e) {
-            die('Erreur de connexion à la base de données : '.$e->getMessage());
+            die('Could not connet to database: '.$e->getMessage());
         }
 
     }
@@ -37,7 +37,7 @@ class Db
 
         $statement->bindParam(':nickname', $array[0]);
         $statement->bindParam(':email', $array[1]);
-        $statement->bindParam(':password', $array[2]);
+        $statement->bindParam(':password', hash("md5",$array[2]));
         $statement->bindParam(':admin', $array[3]);
         
         $statement->execute();
@@ -471,6 +471,29 @@ class Db
         }
 
         return false;
+    }
+    
+    
+    public function validNickname($nickname){
+        $query = "SELECT * FROM users WHERE users.nickname = ".$this->_db->quote($nickname);
+        $result =$this->_db->query($query);
+        
+        if ($result->rowcount()!=0){
+            return FALSE;
+        }
+        return TRUE;
+        
+    }
+    
+    public function emailAlreadyInUse($email){
+        $query = "SELECT * FROM users WHERE users.email = ".$this->_db->quote($email);
+        $result =$this->_db->query($query);
+        
+        
+         if ($result->rowcount()!=0){
+            return TRUE;
+        }
+        return FALSE; 
     }
 
 }
