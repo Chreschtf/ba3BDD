@@ -2,9 +2,9 @@ CREATE DATABASE IF NOT EXISTS annuaire_horeca DEFAULT COLLATE = utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS annuaire_horeca.users (
     uid INT(6) NOT NULL AUTO_INCREMENT,
-    nickname VARCHAR(32) NOT NULL,
-    email VARCHAR(32) NOT NULL,
-    password VARCHAR(32) NOT NULL,
+    nickname VARCHAR(20) NOT NULL,
+    email VARCHAR(20),
+    password VARCHAR(15),
     entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     admin BOOLEAN DEFAULT NULL,
     PRIMARY KEY (uid),
