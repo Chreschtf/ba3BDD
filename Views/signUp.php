@@ -11,7 +11,7 @@
             Email : <input type="text" name="email" required/>
             <span class="error">* <?php echo $emailErr;?></span><br>
             <input type="radio" name="admin" value="true" > I want to be an Admin<br> 
-            <input type="radio" value="true" checked > I don't want to be an Admin<br>                
+            <input type="radio" name="admin" checked > I don't want to be an Admin<br>                
             </p>
             <p><input type="submit" name="form_signup" value="Submit"></p>
         </form>

@@ -8,7 +8,7 @@ class SignUpController{
         
         $nicknameErr = $emailErr = $passwordErr = "";
         $nickname = $email = $password = "";
-        $admin= FALSE;
+        $admin= 0;
         
        
         if (empty($_POST)) {
@@ -19,7 +19,7 @@ class SignUpController{
             $nicknameErr="Nickname is required";
         } elseif (strlen($_POST["nickname"])<6 or strlen($_POST["nickname"])>32) {
             $nicknameErr="Invalid nickname length";
-        }elseif (!Db::getInstance()->validNickname($_POST["nickname"])) {
+        }elseif (Db::getInstance()->nicknameExists($_POST["nickname"])) {
             $nicknameErr="Nickname already taken";
         }else{
             $nickname = $_POST["nickname"];

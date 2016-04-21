@@ -23,11 +23,11 @@
     spl_autoload_register('chargerClasse');   */
     
     # Require des classes automatisé pour la partie modèle de l'architecture
-    function chargerClasse($classe) {
+    /*function chargerClasse($classe) {
         if(is_readable('Models/'.$classe.'.class.php'))require 'Models/' . $classe . '.class.php';
         else   var_dump($classe);
     }
-    spl_autoload_register('chargerClasse');
+    spl_autoload_register('chargerClasse');*/   
     
     require 'Models/Db.class.php';
     $action = (isset($_GET['action'])) ? htmlentities($_GET['action']) : 'default';
