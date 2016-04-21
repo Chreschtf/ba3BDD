@@ -28,6 +28,11 @@ class Db
         return self::$instance;
     }
     
+    /*
+            INSERTS
+            -------
+    */
+    
     public function insertUserComplete($array) {
         $query="INSERT INTO users 
                 (nickname, email, password, admin) 
@@ -37,34 +42,33 @@ class Db
 
         $statement->bindParam(':nickname', $array[0]);
         $statement->bindParam(':email', $array[1]);
-        $statement->bindParam(':password', hash("md5",$array[2]));
+        //$pwd = hash("md5",$array[2]);
+        $statement->bindParam(':password', $array[2]);
         $statement->bindParam(':admin', $array[3]);
         
         $statement->execute();
-        return mysql_insert_id();
+        return $this->_db->prepare("SELECT LAST_INSERT_ID()")->execute();
     }
     
     public function insertUserNotComplete($array) {
         $query="INSERT INTO users 
-                (nickname, email, password, admin) 
+                (nickname, admin) 
                 VALUES 
-                (:nickname, :email, :password, :admin)";
+                (:nickname, :admin)";
         $statement = $this->_db->prepare($query);
 
         $statement->bindParam(':nickname', $array[0]);
-        $statement->bindParam(':email', NULL);
-        $statement->bindParam(':password', NULL);
         $statement->bindParam(':admin', $array[1]);
         
         $statement->execute();
-        return mysql_insert_id();
+        return $this->_db->prepare("SELECT LAST_INSERT_ID()")->execute();
     }
 
     public function insertEstablishment($array) {
         $query="INSERT INTO establishments 
-                (ename, street, house_num, zip, city, longitude, latitude, tel, site, uid) 
+                (ename, street, house_num, zip, city, longitude, latitude, tel, site, uid, entry_date) 
                 VALUES 
-                (:ename, :street, :house_num, :zip, :city, :longitude, :latitude, :tel, :site, :uid)";
+                (:ename, :street, :house_num, :zip, :city, :longitude, :latitude, :tel, :site, :uid, :entry_date)";
         $statement = $this->_db->prepare($query);
 
         $statement->bindParam(':ename', $array[0]);
@@ -77,9 +81,12 @@ class Db
         $statement->bindParam(':tel', $array[7]);
         $statement->bindParam(':site', $array[8]);
         $statement->bindParam(':uid', $array[9]);
+        $dateParts = explode("/", $array[10]);
+        $date_ = date($dateParts[2].'-'.$dateParts[1].'-'.$dateParts[0].' 00:00:00');
+        $statement->bindParam(':entry_date', $date_);
         
         $statement->execute();
-        return mysql_insert_id();
+        return $this->_db->prepare("SELECT LAST_INSERT_ID()")->execute();
     }
 
     public function insertRestaurant($array){
@@ -184,9 +191,163 @@ class Db
         $statement->execute();
     }
 
+    /*
+            EXISTS
+            ------
+    */
+    
+    public function checkIfUserExists($name){
+        $query = "SELECT nickname 
+                  FROM users
+                  WHERE nickname='$name'";
+        $result = $this->_db->query($query);
+        return (sizeof($result) >= 1);
+    }
+    
+    public function checkIfBarExists($eid, $table){
+        $query = "SELECT eid
+                  FROM bars
+                  WHERE bars.eid = '$eid'";
+        $result = $this->_db->query($query);
+        return ($result->rowCount() >= 1);
+    }
+    
+    public function checkIfRestaurantExists($eid, $table){
+        $query = "SELECT eid
+                  FROM restaurants
+                  WHERE restaurant.eid = '$eid'";
+        $result = $this->_db->query($query);
+        return ($result->rowCount() >= 1);
+    }
+    
+    public function checkIfHotelExists($eid, $table){
+        $query = "SELECT eid
+                  FROM hotels
+                  WHERE hotel.eid = '$eid'";
+        $result = $this->_db->query($query);
+        return ($result->rowCount() >= 1);
+    }
+    
+    public function checkIftagExists($tid){
+        
+    }
+    
+    public function checkIfEstablishmenttagExists($tid, $eid, $uid){
+        
+    }
+    
+    
+    /*
+            SELECTS
+            -------
+    */
+    
+    public function getEstablishmentWithName($name){
+        $query = 'SELECT *
+                  FROM establishments
+                  WHERE ename='.$name;
 
+    }
+    
+    public function getUIDof($nickname){
+        $query = "SELECT uid 
+                  FROM users
+                  WHERE nickname ='$nickname'";
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['uid'];
+        
+    }
+    
+    public function getHorecaWithEID($table, $eid){
+        $query = 'SELECT *
+                  FROM'.$table.
+                 'WHERE eid='.$eid;
+        $result = $this->_db->query($query);
 
+    }
+    
+    /*
+            UPDATES / DELETES
+            -----------------
+    */
+    
+    public function deleteEstablishmentWithEID($eid){
+        $query = 'DELETE 
+                  FROM establishments 
+                  WHERE eid='.$eid;
+                 
+        $this->_db->prepare($query)->execute();
+    }
+    
+    public function modifyEstablishmentAttributes($changeAttributNames, $changeAttributValues, $searchAttributNames, $searchAttributValues){
+        $query = 'UPDATE establishments 
+                  SET '.
+                 'WHERE ';
+        
+    }
+    
+    
+    
+    /*
+            SPECIFIC QUERIES
+            ----------------
+    */
+    
+    public function R1(){
+        // • Tous les utilisateurs qui apprécient au moins 3 établissements que l’utilisateur "Brenda" apprécie.
 
+        $query = 'SELECT *
+                  FROM users
+                  WHERE ';
+                  
+    }
+    
+    public function R2(){
+        // • Tous les établissements qu’apprécie au moins un utilisateur qui apprécie tous les établissements que "Brenda" apprécie.
+        
+        $query = 'SELECT 
+                  FROM establishments
+                  WHERE ';
+                  
+    }
+    
+    public function R3(){
+        // • R3 : Tous les établissements pour lesquels il y a au plus un commentaire.
+        
+        $query = 'SELECT *
+                  FROM establishments
+                  WHERE ';
+                  
+    }
+    
+    public function R4(){
+        // • R4 : La liste des administrateurs n’ayant pas commenté tous les établissements qu’ils ont crées.
+        
+        $query = 'SELECT *
+                  FROM users
+                  WHERE ';
+                  
+    }
+    
+    public function R5(){
+        // • R5 : La liste des établissements ayant au minimum trois commentaires, classée selon la moyenne des scores attribués.
+        
+        $query = 'SELECT *
+                  FROM establishments
+                  WHERE ';
+                  
+    }
+    
+    public function R6(){
+        // • R6 : La liste des labels étant appliqués à au moins 5 établissements, classée selon la moyenne des scores des établissements ayant ce label.
+        
+        $query = 'SELECT *
+                  FROM tags
+                  WHERE ';
+    }
+    
     public function insertQuery($exercise){
 
         $query= 'SELECT level FROM levels WHERE label='.$this->_db->quote($exercise[5]);

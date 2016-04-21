@@ -45,7 +45,7 @@ class SignUpController{
             $email = $_POST["email"];
         }
         if (isset($_POST["admin"])){
-            $admin = TRUE;
+            $admin = 1;
         }
         
         
@@ -57,7 +57,7 @@ class SignUpController{
                     2 => $password,
                     3 => $admin
                     ];
-            Db::getInstance()->insertUser($user);
+            Db::getInstance()->insertUserComplete($user);
             
             
             header("Location: index.php?action=login");
