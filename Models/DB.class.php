@@ -195,7 +195,7 @@ class Db
             ------
     */
     
-<<<<<<< HEAD
+
     public function checkIfUserExists($name){
         $query = "SELECT nickname 
                   FROM users
