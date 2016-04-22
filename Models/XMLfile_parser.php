@@ -120,7 +120,15 @@
     function createClosingDays($Restaurant, $eid) {
         if (is_array($Restaurant->Informations->Closed->On) || is_object($Restaurant->Informations->Closed->Ons)) {
             foreach ($Restaurant->Informations->Closed->On as $On) {
-                $closing_day = $On['day'];
+                switch ( (int)$On['day'] ) {
+                    case 0: $closing_day = 'MON'; break;
+                    case 1: $closing_day = 'TUE'; break;
+                    case 2: $closing_day = 'WED'; break;
+                    case 3: $closing_day = 'THU'; break;
+                    case 4: $closing_day = 'FRI'; break;
+                    case 5: $closing_day = 'SAT'; break;
+                    case 6: $closing_day = 'SUN'; break;
+                }
                 $hour = 'COMPLETE';
                 if(isset($On['hour']))
                     $hour = strtoupper ($On['hour']);

@@ -42,25 +42,25 @@ class Db
 
         $statement->bindParam(':nickname', $array[0]);
         $statement->bindParam(':email', $array[1]);
-        //$pwd = hash("md5",$array[2]);
-        $statement->bindParam(':password', hash("md5",$array[2]));
+        $statement->bindParam(':password', password_hash($array[2], PASSWORD_BCRYPT));
         $statement->bindParam(':admin', $array[3]);
         
         $statement->execute();
         
         return $this->_db->lastInsertId();
-
+    }
     
     public function insertUserNotComplete($array) {
         $query="INSERT INTO users 
-                (nickname, password,admin) 
+                (nickname, admin, password) 
                 VALUES 
-                (:nickname,:password ,:admin)";
+                (:nickname, :admin, :password )";
         $statement = $this->_db->prepare($query);
 
         $statement->bindParam(':nickname', $array[0]);
         $statement->bindParam(':admin', $array[1]);
-        $statement->bindParam(':password', hash("md5",$array[1])); #xml admin password  = admin username
+        $pwd = $array[0];
+        $statement->bindParam(':password', password_hash($pwd, PASSWORD_BCRYPT)); #xml admin password  = admin username
         
         $statement->execute();
         return $this->_db->lastInsertId();
@@ -206,14 +206,18 @@ class Db
     
 
     public function nicknameExists($nickname){
-        $query = "SELECT * FROM users WHERE users.nickname = ".$this->_db->quote($nickname);
+        $query = "SELECT * 
+                  FROM users 
+                  WHERE users.nickname = ".$this->_db->quote($nickname);
         $result =$this->_db->query($query);
 
         return $result->rowcount()!=0;
     }
     
     public function emailAlreadyInUse($email){
-        $query = "SELECT * FROM users WHERE users.email = ".$this->_db->quote($email);
+        $query = "SELECT * 
+                  FROM users 
+                  WHERE users.email = ".$this->_db->quote($email);
         $result =$this->_db->query($query);
         
         return $result->rowcount()!=0; 
@@ -250,7 +254,7 @@ class Db
                   WHERE tags.tname = '$name'";
         $result = $this->_db->query($query);
         return ($result->rowCount() >= 1);
-
+    }
     
     public function checkIfEstablishmenttagExists($tid, $eid, $uid){
         
@@ -352,8 +356,11 @@ class Db
     
     
     
-    public function validLogin($nickname,$password){
-        $query = 'SELECT * from users WHERE nickname='.$this->_db->quote($matricule).' AND password='.$this->_db->quote(hash("md5",$password));
+    public function validLogin($nickname, $password){
+        $query = 'SELECT * 
+                  FROM users 
+                  WHERE nickname = '.$this->_db->quote($matricule).' AND 
+                        password = '.$this->_db->quote(password_hash($password, PASSWORD_BCRYPT));
         $result = $this->_db->query($query);
 
         return $result->rowcount()==1;
