@@ -70,7 +70,7 @@
         $nickname = $estab['nickname'];
         $admin = true;
         $data = array($nickname, $admin);
-        if( ! Db::getInstance()->checkIfUserExists($nickname))
+        if( ! Db::getInstance()->nicknameExists($nickname))
             return Db::getInstance()->insertUserNotComplete($data);
         else{
             $uid = Db::getInstance()->getUIDof($nickname);

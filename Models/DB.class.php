@@ -43,22 +43,24 @@ class Db
         $statement->bindParam(':nickname', $array[0]);
         $statement->bindParam(':email', $array[1]);
         //$pwd = hash("md5",$array[2]);
-        $statement->bindParam(':password', $array[2]);
+        $statement->bindParam(':password', hash("md5",$array[2]));
         $statement->bindParam(':admin', $array[3]);
         
         $statement->execute();
+        
         return $this->_db->lastInsertId();
-    }
+
     
     public function insertUserNotComplete($array) {
         $query="INSERT INTO users 
-                (nickname, admin) 
+                (nickname, password,admin) 
                 VALUES 
-                (:nickname, :admin)";
+                (:nickname,:password ,:admin)";
         $statement = $this->_db->prepare($query);
 
         $statement->bindParam(':nickname', $array[0]);
         $statement->bindParam(':admin', $array[1]);
+        $statement->bindParam(':password', hash("md5",$array[1])); #xml admin password  = admin username
         
         $statement->execute();
         return $this->_db->lastInsertId();
@@ -193,6 +195,7 @@ class Db
             ------
     */
     
+<<<<<<< HEAD
     public function checkIfUserExists($name){
         $query = "SELECT nickname 
                   FROM users
@@ -201,6 +204,21 @@ class Db
         return ($result->rowCount() >= 1);
     }
     
+
+    public function nicknameExists($nickname){
+        $query = "SELECT * FROM users WHERE users.nickname = ".$this->_db->quote($nickname);
+        $result =$this->_db->query($query);
+
+        return $result->rowcount()!=0;
+    }
+    
+    public function emailAlreadyInUse($email){
+        $query = "SELECT * FROM users WHERE users.email = ".$this->_db->quote($email);
+        $result =$this->_db->query($query);
+        
+        return $result->rowcount()!=0; 
+    }
+   
     public function checkIfBarExists($eid){
         $query = "SELECT eid
                   FROM bars
@@ -225,13 +243,14 @@ class Db
         return ($result->rowCount() >= 1);
     }
     
+    
     public function checkIftagExists($name){
         $query = "SELECT *
                   FROM tags
                   WHERE tags.tname = '$name'";
         $result = $this->_db->query($query);
         return ($result->rowCount() >= 1);
-    }
+
     
     public function checkIfEstablishmenttagExists($tid, $eid, $uid){
         
@@ -333,6 +352,15 @@ class Db
     
     
     
+    public function validLogin($nickname,$password){
+        $query = 'SELECT * from users WHERE nickname='.$this->_db->quote($matricule).' AND password='.$this->_db->quote(hash("md5",$password));
+        $result = $this->_db->query($query);
+
+        return $result->rowcount()==1;
+    }
+    
+    
+    
     /*
             SPECIFIC QUERIES
             ----------------
@@ -389,315 +417,8 @@ class Db
         $query = 'SELECT *
                   FROM tags
                   WHERE ';
-    }
+    }   
     
-    public function insertQuery($exercise){
 
-        $query= 'SELECT level FROM levels WHERE label='.$this->_db->quote($exercise[5]);
-        $resultat= $this->_db->query($query);
-        $row= $resultat->fetch();
-        $level= $row->level;
-
-        $query= 'INSERT INTO exercises (number, theme, statement, query, nb_lines, num_exercise, num_level)
-                  VALUES (DEFAULT, :theme, :statement, :query, :nb_lines, :num_exercise, :level)';
-
-        $statement= $this->_db->prepare($query);
-
-        $statement->bindParam(':num_exercise', $exercise[0]);
-        $statement->bindParam(':theme', $exercise[1]);
-        $statement->bindParam(':statement', $exercise[2]);
-        $statement->bindParam(':query', $exercise[3]);
-        $statement->bindParam(':nb_lines', $exercise[4]);
-        $statement->bindParam(':level', $level);
-
-        $statement->execute();
-
-    }
-
-
-    public function deleteLevel($level_label){
-
-        $query= 'DELETE FROM levels WHERE label='.$this->_db->quote($level_label);
-        $this->_db->prepare($query)->execute();
-
-    }
-
-
-    public function insertLevel($level_label, $level_num){
-
-        $query= 'INSERT INTO levels (level, num_level, label) VALUES (DEFAULT,'.$level_num.','.$this->_db->quote($level_label).')';
-        $this->_db->prepare($query)->execute();
-
-    }
-
-
-    public function valid_teacher($login,$password){
-
-        $query = 'SELECT * from teachers WHERE login=' . $this->_db->quote($login) . ' AND password=' . $this->_db->quote(sha1($password));
-        $result = $this->_db->query($query);
-        $authenticated = false;
-
-        if ($result->rowcount() != 0) {
-            $authenticated = true;
-        }
-
-        return $authenticated;
-    }
-
-
-
-    public function valid_student($matricule,$password){
-
-        $query = 'SELECT * from students WHERE matricule='.$this->_db->quote($matricule).' AND password='.$this->_db->quote(sha1($password));
-        $result = $this->_db->query($query);
-        $authenticated = false;
-
-        if ($result->rowcount()!=0) {
-            $authenticated = true;
-        }
-
-        return $authenticated;
-    }
-
-
-    public function update_mdp_Student($matricule,$password) {
-
-        $query = 'UPDATE students SET password= '.$this->_db->quote(sha1($password)).' WHERE matricule=' .$this->_db->quote($matricule).'AND password is NULL';
-        $this->_db->prepare($query)->execute();
-
-    }
-
-
-    public function update_mdp_Teacher($login,$password) {
-
-        $query = 'UPDATE `sitephp`.`teachers` SET `password`= SHA1('.$this->_db->quote($password).') WHERE `teachers`.`login`=' .$this->_db->quote($login).'AND password is NULL';
-        $this->_db->prepare($query)->execute();
-
-    }
-
-
-    public function select_students(){
-
-        $query = 'SELECT * FROM students';
-        $tableau = array();
-        $result =$this->_db->query($query);
-
-        if ($result->rowcount()!=0) {
-            while ($row = $result->fetch()) {
-                $tableau[] = new Student($row->matricule,$row->first_name,$row->last_name,$row->password);
-            }
-        }
-
-        return $tableau;
-    }
-
-
-    public function select_name_student($matricule){
-
-        $query = 'SELECT * FROM `sitephp`.`students` WHERE `sitephp`.`students`.`matricule`='.$this->_db->quote($matricule);
-        $tableau=array();
-        $result = $this->_db->query($query);
-
-        if ($result->rowcount()!=0) {
-            while ($row = $result->fetch()) {
-                $tableau[] = new Student($row->matricule,$row->first_name,$row->last_name,$row->password);
-            }
-        }
-
-        return $tableau;
-
-    }
-
-
-    public function select_exercise($level){
-
-        $query = 'SELECT * FROM exercises where num_level='.$this->_db->quote($level).'';
-        $tableau = array();
-        $result =$this->_db->query($query);
-
-        if ($result->rowcount()!=0) {
-            while ($row = $result->fetch()) {
-                $tableau[] = new Exercises($row->author,$row->last_modification,$row->nb_lines,$row->number,$row->num_exercise,$row->num_level,$row->query,$row->statement,$row->theme);
-            }
-        }
-
-        return $tableau;
-    }
-
-
-    public function select_levels(){
-
-        $query = 'SELECT * FROM levels';
-        $tableau = array();
-        $result =$this->_db->query($query);
-
-        if ($result->rowcount()!=0) {
-            while ($row = $result->fetch()) {
-                $tableau[] = new Levels($row->label,$row->level,$row->num_level);
-            }
-        }
-
-        return $tableau;
-    }
-
-
-    public function select_num_level($level){
-
-        $query = 'SELECT * FROM levels where level='.$this->_db->quote($level);
-        $tableau = array();
-        $result =$this->_db->query($query);
-
-        if ($result->rowcount()!=0) {
-            while ($row = $result->fetch()) {
-                $tableau[] = new Levels($row->label,$row->level,$row->num_level);
-            }
-        }
-
-        return $tableau;
-    }
-
-
-    public function save_answer($matricule,$question_num,$answer){
-
-        $select_answer='SELECT * FROM `sitephp`.`students_answers` WHERE student='.$this->_db->quote($matricule).' AND exercise='.$this->_db->quote($question_num).'';
-        $result = $this->_db->query($select_answer);
-
-        if ($result->rowcount()!=0){
-
-            $query_update='UPDATE `sitephp`.`students_answers` SET answer_query ='.$this->_db->quote($answer).' WHERE student='.$this->_db->quote($matricule).' AND exercise='.$this->_db->quote($question_num).'';
-            $this->_db->prepare($query_update)->execute();
-
-        }else{
-
-            $query_insert='INSERT INTO `sitephp`.`students_answers` (`number`, `answer_query`, `exercise`, `student`) VALUES (NULL,'.$this->_db->quote($answer).','.$this->_db->quote($question_num).','.$this->_db->quote($matricule).')';
-            $this->_db->prepare($query_insert)->execute();
-
-        }
-
-        $authenticated = false;
-
-        if ($result->rowcount()!=0) {
-            $authenticated = true;
-        }
-
-        return $authenticated;
-    }
-
-
-    public function select_answer($matricule,$question_num){
-
-        $query ='SELECT * FROM `students_answers` WHERE `exercise`='.$this->_db->quote($question_num).'AND `student`='.$this->_db->quote($matricule).'';
-        $result =$this->_db->query($query);
-        $tableau=array();
-
-        if ($result->rowcount()!=0) {
-            while ($row = $result->fetch()) {
-                $tableau[] = new Students_answers($row->number, $row->answer_query, $row->exercise, $row->student);
-            }
-        }
-
-        return $tableau;
-    }
-
-
-    public function select_all_answer_student($matricule, $num_level){
-
-        $query ='SELECT * FROM students_answers stu,exercises ex WHERE stu.student='.$this->_db->quote($matricule).'AND stu.exercise = ex.number AND ex.num_level ='.$this->_db->quote($num_level);
-        $result =$this->_db->query($query);
-        $tableau=array();
-
-        if ($result->rowcount()!=0) {
-
-            while ($row = $result->fetch()) {
-                $tableau[] = new Students_answers($row->number, $row->answer_query, $row->exercise, $row->student);
-            }
-
-        }
-
-        return $tableau;
-    }
-
-
-    public function show_answer_DB($answer){
-
-        $query = $answer;
-        $fetch_type = PDO::FETCH_ASSOC;
-        $result = $this->_db->query($query);
-
-        $rows = $result->fetchAll($fetch_type);
-
-        return $rows;
-
-    }
-
-
-    public function getColumnsNames($query_send){
-
-        $query = $query_send;
-        $fetch_type = PDO::FETCH_ASSOC;
-        $result = $this->_db->query($query);
-        $rows = $result->fetchAll($fetch_type);
-        $columns = empty($rows) ? array() : array_keys($rows[0]);
-        return $columns;
-
-    }
-
-
-    public function update_query($query_update,$author,$num_exercise,$nb_lines,$num_level,$statement,$theme) {
-
-        $query = 'UPDATE `sitephp`.`exercises` SET `query`= '.$this->_db->quote($query_update).',`statement`= '.$this->_db->quote($statement) .',`author`= '.$this->_db->quote($author) .',`theme`= '.$this->_db->quote($theme) .',`nb_lines`= '.$this->_db->quote($nb_lines) .' WHERE  `exercises`.`num_exercise`='.$this->_db->quote($num_exercise).'';
-        $this->_db->prepare($query)->execute();
-
-    }
-
-
-    public function update_student_last_co($matricule,$last_co){
-
-        $query='UPDATE `sitephp`.`students` SET `last_connection`= '.$this->_db->quote($last_co).' WHERE `matricule`='.$this->_db->quote($matricule).'';
-        $this->_db->prepare($query)->execute();
-
-    }
-
-
-    public function is_a_good_query($query){
-
-        $not_allowed_words=['delete','update','create','alter','insert','truncate','drop'];
-        $allowed=['bd1','bd2','bd3'];
-
-        for($i=0;$i<count($not_allowed_words);$i++){
-            if(strpos($query, $not_allowed_words[$i])!== FALSE)
-                return false;
-        }
-
-        for ($i=0;$i<count($allowed);$i++){
-            if(strpos($query, $allowed[$i])!==FALSE)
-                return true;
-        }
-
-        return false;
-    }
-    
-    
-    public function validNickname($nickname){
-        $query = "SELECT * FROM users WHERE users.nickname = ".$this->_db->quote($nickname);
-        $result =$this->_db->query($query);
-        
-        if ($result->rowcount()!=0){
-            return FALSE;
-        }
-        return TRUE;
-        
-    }
-    
-    public function emailAlreadyInUse($email){
-        $query = "SELECT * FROM users WHERE users.email = ".$this->_db->quote($email);
-        $result =$this->_db->query($query);
-        
-        
-         if ($result->rowcount()!=0){
-            return TRUE;
-        }
-        return FALSE; 
-    }
 
 }
