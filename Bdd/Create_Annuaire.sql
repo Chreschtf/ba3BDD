@@ -14,15 +14,15 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.users (
 
 CREATE TABLE IF NOT EXISTS annuaire_horeca.establishments (
     eid INT(6) NOT NULL AUTO_INCREMENT ,
-    ename VARCHAR(20) NOT NULL,
+    ename VARCHAR(40) NOT NULL,
     street VARCHAR(40) NOT NULL,
-    house_num INT(5) NOT NULL,
+    house_num VARCHAR(7) NOT NULL,
     zip INT(4) NOT NULL,
     city VARCHAR(20) NOT NULL,
-    longitude INT(5) NOT NULL,
-    latitude INT(5) NOT NULL,
+    longitude DOUBLE(15, 7) NOT NULL,
+    latitude DOUBLE(15, 7) NOT NULL,
     tel VARCHAR(20) NOT NULL,
-    site VARCHAR(20),
+    site VARCHAR(60),
     uid INT(6) NOT NULL,
     entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (eid),
@@ -42,8 +42,7 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.restaurants (
 CREATE TABLE IF NOT EXISTS annuaire_horeca.restaurant_closing_days (
     eid INT(6) NOT NULL,
     closing_day ENUM('MON', 'TUE', 'WEN', 'THU', 'FRI', 'SAT', 'SUN') NOT NULL,
-    hour ENUM('AM', 'PM') NOT NULL,
-    PRIMARY KEY (eid),
+    hour ENUM('AM', 'PM', 'COMPLETE') NOT NULL,
     FOREIGN KEY (eid) REFERENCES establishments(eid)
 );
 
@@ -87,7 +86,6 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.establishment_tags (
     tid INT(6) NOT NULL,
     eid INT(6) NOT NULL,
     uid INT(6) NOT NULL,
-    PRIMARY KEY (tid),
     FOREIGN KEY (tid) REFERENCES tags(tid),
     FOREIGN KEY (uid) REFERENCES users(uid),
     FOREIGN KEY (eid) REFERENCES establishments(eid)

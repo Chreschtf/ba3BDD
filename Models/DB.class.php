@@ -47,7 +47,7 @@ class Db
         $statement->bindParam(':admin', $array[3]);
         
         $statement->execute();
-        return $this->_db->prepare("SELECT LAST_INSERT_ID()")->execute();
+        return $this->_db->lastInsertId();
     }
     
     public function insertUserNotComplete($array) {
@@ -61,7 +61,7 @@ class Db
         $statement->bindParam(':admin', $array[1]);
         
         $statement->execute();
-        return $this->_db->prepare("SELECT LAST_INSERT_ID()")->execute();
+        return $this->_db->lastInsertId();
     }
 
     public function insertEstablishment($array) {
@@ -81,12 +81,9 @@ class Db
         $statement->bindParam(':tel', $array[7]);
         $statement->bindParam(':site', $array[8]);
         $statement->bindParam(':uid', $array[9]);
-        $dateParts = explode("/", $array[10]);
-        $date_ = date($dateParts[2].'-'.$dateParts[1].'-'.$dateParts[0].' 00:00:00');
-        $statement->bindParam(':entry_date', $date_);
-        
+        $statement->bindParam(':entry_date', $array[10]);
         $statement->execute();
-        return $this->_db->prepare("SELECT LAST_INSERT_ID()")->execute();
+        return $this->_db->lastInsertId();
     }
 
     public function insertRestaurant($array){
@@ -150,31 +147,31 @@ class Db
 
     public function insertComment($array){
         $query="INSERT INTO comments 
-                (cid, uid, eid, entry_date, score) 
+                (uid, eid, entry_date, score, text) 
                 VALUES 
-                (:cid, :uid, :eid, :entry_date, :score)";
+                (:uid, :eid, :entry_date, :score, :text)";
         $statement= $this->_db->prepare($query);
 
-        $statement->bindParam(':cid',  $array[0]);
-        $statement->bindParam(':uid',  $array[1]);
-        $statement->bindParam(':eid',  $array[2]);
-        $statement->bindParam(':entry_date',  $array[3]);
-        $statement->bindParam(':score',  $array[4]);
-
+        $statement->bindParam(':uid',  $array[0]);
+        $statement->bindParam(':eid',  $array[1]);
+        $statement->bindParam(':entry_date',  $array[2]);
+        $statement->bindParam(':score',  $array[3]);
+        $statement->bindParam(':text',  $array[4]);
+        
         $statement->execute();
     }
 
     public function insertTag($array){
         $query="INSERT INTO tags 
-                (tid, tname) 
+                (tname) 
                 VALUES 
-                (:tid, :tname)";
+                (:tname)";
+                
         $statement= $this->_db->prepare($query);
-
-        $statement->bindParam(':tid',  $array[0]);
-        $statement->bindParam(':tname',  $array[1]);
-
+        $statement->bindParam(':tname',  $array[0]);
         $statement->execute();
+        
+        return $this->_db->lastInsertId();
     }
 
     public function insertEstablishmentTag($array){
@@ -201,10 +198,10 @@ class Db
                   FROM users
                   WHERE nickname='$name'";
         $result = $this->_db->query($query);
-        return (sizeof($result) >= 1);
+        return ($result->rowCount() >= 1);
     }
     
-    public function checkIfBarExists($eid, $table){
+    public function checkIfBarExists($eid){
         $query = "SELECT eid
                   FROM bars
                   WHERE bars.eid = '$eid'";
@@ -212,15 +209,15 @@ class Db
         return ($result->rowCount() >= 1);
     }
     
-    public function checkIfRestaurantExists($eid, $table){
+    public function checkIfRestaurantExists($eid){
         $query = "SELECT eid
                   FROM restaurants
-                  WHERE restaurant.eid = '$eid'";
+                  WHERE eid = '$eid'";
         $result = $this->_db->query($query);
         return ($result->rowCount() >= 1);
     }
     
-    public function checkIfHotelExists($eid, $table){
+    public function checkIfHotelExists($eid){
         $query = "SELECT eid
                   FROM hotels
                   WHERE hotel.eid = '$eid'";
@@ -228,12 +225,39 @@ class Db
         return ($result->rowCount() >= 1);
     }
     
-    public function checkIftagExists($tid){
-        
+    public function checkIftagExists($name){
+        $query = "SELECT *
+                  FROM tags
+                  WHERE tags.tname = '$name'";
+        $result = $this->_db->query($query);
+        return ($result->rowCount() >= 1);
     }
     
     public function checkIfEstablishmenttagExists($tid, $eid, $uid){
         
+    }
+    
+    public function getTagWithName($name){
+        $query = "SELECT tags.tid
+                  FROM tags
+                  WHERE tags.tname = '$name'";
+                        
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['tid'];
+    }   
+    
+        
+    public function checkIfEstabTagExists($tid, $eid, $uid){
+        $query = "SELECT *
+                  FROM establishment_tags
+                  WHERE establishment_tags.eid = '$eid' AND 
+                        establishment_tags.uid = '$uid' AND 
+                        establishment_tags.tid = '$tid'";
+                        
+        $result = $this->_db->query($query);
+        return ($result->rowCount() >= 1);
     }
     
     
@@ -250,7 +274,7 @@ class Db
     }
     
     public function getUIDof($nickname){
-        $query = "SELECT uid 
+        $query = "SELECT *
                   FROM users
                   WHERE nickname ='$nickname'";
         $stmt = $this->_db->prepare($query);
@@ -286,6 +310,25 @@ class Db
                   SET '.
                  'WHERE ';
         
+    }
+    
+    public function isAdmin($uid){
+        $query = "SELECT *
+                  FROM users
+                  WHERE uid = '$uid'";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return ($result['admin'] == 1);
+    }
+    
+    public function setAdmin($uid, $admin){
+        $query = "UPDATE users
+                  SET admin = '$admin'
+                  WHERE uid = '$uid'";
+                  
+        $this->_db->prepare($query)->execute();
     }
     
     
