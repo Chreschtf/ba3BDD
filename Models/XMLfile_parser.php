@@ -1,6 +1,6 @@
 <?php
-    session_start();
-    require '../Models/Db.class.php';
+    #session_start();
+    #require '../Models/Db.class.php';
     ini_set('display_errors', 'On');
     error_reporting(E_ALL);
     
@@ -19,7 +19,6 @@
         
         // establishment
         $eid = createEstablishment($Cafe, $uid);
-
         // bar
         createBar($Cafe, $eid);
         
@@ -44,7 +43,6 @@
         
         // establishment
         $eid = createEstablishment($Restaurant, $uid);
-
         // restaurant
         createRestaurant($Restaurant, $eid);
         
@@ -165,7 +163,7 @@
     }
     
     function createUserIfnotExists($nickname, $admin){
-        if(Db::getInstance()->checkIfUserExists($nickname)){
+        if(Db::getInstance()->nicknameExists($nickname)){
             $uid = Db::getInstance()->getUIDof($nickname);
         } else{
             $data = array($nickname, $admin, $nickname);
@@ -179,5 +177,4 @@
         $date_ = date($dateParts[2].'-'.$dateParts[1].'-'.$dateParts[0].' 00:00:00');
         return $date_;
     }
-
 ?>
