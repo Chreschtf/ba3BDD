@@ -59,8 +59,8 @@ class Db
 
         $statement->bindParam(':nickname', $array[0]);
         $statement->bindParam(':admin', $array[1]);
-        $pwd = $array[0];
-        $statement->bindParam(':password', password_hash($pwd, PASSWORD_BCRYPT)); #xml admin password  = admin username
+        $pwd = password_hash($array[2], PASSWORD_BCRYPT);
+        $statement->bindParam(':password', $pwd); #xml admin password  = admin username
         
         $statement->execute();
         return $this->_db->lastInsertId();
@@ -378,54 +378,115 @@ class Db
     public function R1(){
         // • Tous les utilisateurs qui apprécient au moins 3 établissements que l’utilisateur "Brenda" apprécie.
 
-        $query = 'SELECT *
-                  FROM users
-                  WHERE ';
+        $query = "SELECT u1.*
+                  FROM users u1, comments c1
+                  WHERE u1.nickname != 'Brenda' AND c1.uid = u1.uid AND c1.score >= 4 AND c1.eid IN (
+                      SELECT DISTINCT c2.eid
+                      FROM comments c2, users u2
+                      WHERE c2.score >= 4 AND u2.nickname = 'Brenda' AND c2.uid = u2.uid
+                      )
+                  GROUP BY u1.uid
+                  HAVING COUNT( DISTINCT c1.eid ) >= 3";
                   
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
     
     public function R2(){
         // • Tous les établissements qu’apprécie au moins un utilisateur qui apprécie tous les établissements que "Brenda" apprécie.
-        
-        $query = 'SELECT 
-                  FROM establishments
-                  WHERE ';
+
+        $query = "SELECT DISTINCT e1.*
+                  FROM users u1, establishments e1, comments c1
+                  WHERE u1.uid = c1.uid AND u1.nickname != 'Brenda' AND e1.eid = c1.eid AND c1.score >= 4 AND 
+                        EXISTS (
+                            SELECT DISTINCT c2.*
+                            FROM comments c2 
+                            WHERE u1.uid = c2.uid AND c2.score >= 4 AND c2.uid = u1.uid AND e1.eid = c2.eid AND c2.eid IN (
+                                SELECT c2.eid
+                                FROM comments c3, users u2
+                                WHERE c3.score >= 4 AND u2.nickname = 'Brenda' AND c3.uid = u2.uid AND c3.eid = e1.eid
+                            )
+                       )";
                   
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
     
     public function R3(){
         // • R3 : Tous les établissements pour lesquels il y a au plus un commentaire.
-        
-        $query = 'SELECT *
-                  FROM establishments
-                  WHERE ';
+
+        $query = "SELECT e1.*
+                  FROM establishments e1
+                  WHERE NOT EXISTS (
+                        SELECT c1.*
+                        FROM comments c1
+                        WHERE e1.eid = c1.eid
+                  ) OR e1.eid IN (
+                        SELECT c2.eid
+                        FROM comments c2
+                        WHERE c2.eid = e1.eid
+                        GROUP BY e1.eid
+                        HAVING COUNT( c2.cid ) = 1
+                  )";
                   
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
     
     public function R4(){
         // • R4 : La liste des administrateurs n’ayant pas commenté tous les établissements qu’ils ont crées.
-        
-        $query = 'SELECT *
-                  FROM users
-                  WHERE ';
+
+        $query = "SELECT u1.*
+                  FROM users u1
+                  WHERE u1.admin = 1 AND EXISTS (
+                        SELECT e1.*
+                        FROM establishments e1
+                        WHERE u1.uid = e1.uid AND NOT EXISTS (
+                            SELECT c1.*
+                            FROM comments c1
+                            WHERE c1.eid = e1.eid AND c1.uid = u1.uid
+                        )
+                  )";
                   
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
     
     public function R5(){
         // • R5 : La liste des établissements ayant au minimum trois commentaires, classée selon la moyenne des scores attribués.
-        
-        $query = 'SELECT *
-                  FROM establishments
-                  WHERE ';
+
+        $query = "SELECT e1.*
+                  FROM establishments e1, comments c1
+                  WHERE e1.eid = c1.eid 
+                  GROUP BY e1.eid 
+                  HAVING COUNT( DISTINCT c1.cid ) >= 3
+                  ORDER BY AVG( c1.score )";
                   
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();         
     }
     
     public function R6(){
         // • R6 : La liste des labels étant appliqués à au moins 5 établissements, classée selon la moyenne des scores des établissements ayant ce label.
-        
-        $query = 'SELECT *
-                  FROM tags
-                  WHERE ';
+
+        $query = "SELECT t1.* 
+                  FROM tags t1, establishment_tags et1 
+                  WHERE t1.tid = et1.tid 
+                  HAVING COUNT( DISTINCT et1.eid ) >= 5 
+                  ORDER BY (
+                      SELECT SUM(c1.score)/COUNT(*) 
+                      FROM establishments e1, comments c1, establishment_tags et2
+                      WHERE e1.eid = c1.eid AND et2.tid = t1.tid AND et2.eid = e1.eid
+                  )";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();  
     }   
     
 
