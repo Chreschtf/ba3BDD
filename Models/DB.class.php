@@ -376,19 +376,40 @@ class Db
     public function R1(){
         // • Tous les utilisateurs qui apprécient au moins 3 établissements que l’utilisateur "Brenda" apprécie.
 
-        $query = 'SELECT *
-                  FROM users
-                  WHERE ';
+        $query = "SELECT u1.*
+                  FROM users u1, comments c1
+                  WHERE u1.nickname != 'Brenda' AND c1.uid = u1.uid AND c1.score >= 4 AND c1.eid IN (
+                      SELECT DISTINCT c2.eid
+                      FROM comments c2, users u2
+                      WHERE c2.score >= 4 AND u2.nickname = 'Brenda' AND c2.uid = u2.uid
+                      )
+                  GROUP BY u1.uid
+                  HAVING COUNT( DISTINCT c1.eid ) >= 3";
                   
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
     
     public function R2(){
         // • Tous les établissements qu’apprécie au moins un utilisateur qui apprécie tous les établissements que "Brenda" apprécie.
-        
-        $query = 'SELECT 
-                  FROM establishments
-                  WHERE ';
+
+        $query = "SELECT DISTINCT e1.*
+                  FROM users u1, establishments e1, comments c1
+                  WHERE u1.uid = c1.uid AND u1.nickname != 'Brenda' AND e1.eid = c1.eid AND c1.score >= 4 AND 
+                        EXISTS (
+                            SELECT DISTINCT c2.*
+                            FROM comments c2 
+                            WHERE u1.uid = c2.uid AND c2.score >= 4 AND c2.uid = u1.uid AND e1.eid = c2.eid AND c2.eid IN (
+                                SELECT c2.eid
+                                FROM comments c3, users u2
+                                WHERE c3.score >= 4 AND u2.nickname = 'Brenda' AND c3.uid = u2.uid AND c3.eid = e1.eid
+                            )
+                       )";
                   
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
     
     public function R3(){
