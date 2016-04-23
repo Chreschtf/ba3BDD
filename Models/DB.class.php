@@ -414,20 +414,44 @@ class Db
     
     public function R3(){
         // • R3 : Tous les établissements pour lesquels il y a au plus un commentaire.
-        
-        $query = 'SELECT *
-                  FROM establishments
-                  WHERE ';
+
+        $query = "SELECT e1.*
+                  FROM establishments e1
+                  WHERE NOT EXISTS (
+                        SELECT c1.*
+                        FROM comments c1
+                        WHERE e1.eid = c1.eid
+                  ) OR e1.eid IN (
+                        SELECT c2.eid
+                        FROM comments c2
+                        WHERE c2.eid = e1.eid
+                        GROUP BY e1.eid
+                        HAVING COUNT( c2.cid ) = 1
+                  )";
                   
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
     
     public function R4(){
         // • R4 : La liste des administrateurs n’ayant pas commenté tous les établissements qu’ils ont crées.
-        
-        $query = 'SELECT *
-                  FROM users
-                  WHERE ';
+
+        $query = "SELECT u1.*
+                  FROM users u1
+                  WHERE u1.admin = 1 AND EXISTS (
+                        SELECT e1.*
+                        FROM establishments e1
+                        WHERE u1.uid = e1.uid AND NOT EXISTS (
+                            SELECT c1.*
+                            FROM comments c1
+                            WHERE c1.eid = e1.eid AND c1.uid = u1.uid
+                        )
+                  )";
                   
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
     
     public function R5(){
