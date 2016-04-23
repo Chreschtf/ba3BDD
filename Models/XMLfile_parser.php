@@ -69,7 +69,7 @@
     function createUser($estab){
         $nickname = $estab['nickname'];
         $admin = true;
-        $data = array($nickname, $admin);
+        $data = array($nickname, $admin, $nickname);
         if( ! Db::getInstance()->nicknameExists($nickname))
             return Db::getInstance()->insertUserNotComplete($data);
         else{
@@ -168,7 +168,7 @@
         if(Db::getInstance()->checkIfUserExists($nickname)){
             $uid = Db::getInstance()->getUIDof($nickname);
         } else{
-            $data = array($nickname, $admin);
+            $data = array($nickname, $admin, $nickname);
             $uid = Db::getInstance()->insertUserNotComplete($data);
         }
         return $uid;

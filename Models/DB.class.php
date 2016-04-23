@@ -59,8 +59,8 @@ class Db
 
         $statement->bindParam(':nickname', $array[0]);
         $statement->bindParam(':admin', $array[1]);
-        $pwd = $array[0];
-        $statement->bindParam(':password', password_hash($pwd, PASSWORD_BCRYPT)); #xml admin password  = admin username
+        $pwd = password_hash($array[2], PASSWORD_BCRYPT);
+        $statement->bindParam(':password', $pwd); #xml admin password  = admin username
         
         $statement->execute();
         return $this->_db->lastInsertId();
@@ -456,19 +456,35 @@ class Db
     
     public function R5(){
         // • R5 : La liste des établissements ayant au minimum trois commentaires, classée selon la moyenne des scores attribués.
-        
-        $query = 'SELECT *
-                  FROM establishments
-                  WHERE ';
+
+        $query = "SELECT e1.*
+                  FROM establishments e1, comments c1
+                  WHERE e1.eid = c1.eid 
+                  GROUP BY e1.eid 
+                  HAVING COUNT( DISTINCT c1.cid ) >= 3
+                  ORDER BY AVG( c1.score )";
                   
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();         
     }
     
     public function R6(){
         // • R6 : La liste des labels étant appliqués à au moins 5 établissements, classée selon la moyenne des scores des établissements ayant ce label.
-        
-        $query = 'SELECT *
-                  FROM tags
-                  WHERE ';
+
+        $query = "SELECT t1.* 
+                  FROM tags t1, establishment_tags et1 
+                  WHERE t1.tid = et1.tid 
+                  HAVING COUNT( DISTINCT et1.eid ) >= 5 
+                  ORDER BY (
+                      SELECT SUM(c1.score)/COUNT(*) 
+                      FROM establishments e1, comments c1, establishment_tags et2
+                      WHERE e1.eid = c1.eid AND et2.tid = t1.tid AND et2.eid = e1.eid
+                  )";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();  
     }   
     
 
