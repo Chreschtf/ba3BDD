@@ -7,8 +7,9 @@
         <form action="?action=login" method="post" class="form-control">
             <p> Username : <input type="text" name="username" />
             <p> Password : <input type="password" name="password" /></p>
-            <p><input type="submit" name="form_login" value="Connect"></p>
+            <p><input type="submit" value="Connect"></p>
+            <input type="checkbox" name="rememberme">Remember me<br>
         </form>
     </div>
-    <p> No account yet? <a href="index.php?action=signUp">Click here to sign up.</a>
+    <p> No account yet? <a href="?action=signUp">Click here to sign up.</a>
 </div><!-- #contenu -->

@@ -13,7 +13,6 @@ class SignUpController{
        
         if (empty($_POST)) {
             $notification='Sign up!';
-
         }
         if (empty($_POST["nickname"])){
             $nicknameErr="Nickname is required";
@@ -61,7 +60,7 @@ class SignUpController{
             
             
             header("Location: index.php?action=login");
-            #die();
+            die();
         }
          
         

@@ -206,21 +206,19 @@ class Db
     
 
     public function nicknameExists($nickname){
-        $query = "SELECT * 
-                  FROM users 
-                  WHERE users.nickname = ".$this->_db->quote($nickname);
-        $result =$this->_db->query($query);
-
-        return $result->rowcount()!=0;
+        $query = $this->_db->prepare("SELECT * FROM users WHERE users.nickname = :nickname");
+        $query->bindParam(':nickname',$nickname);
+        $query->execute();
+        $result=$query->fetchAll(PDO::FETCH_ASSOC);
+        return count($result)!=0;
     }
     
     public function emailAlreadyInUse($email){
-        $query = "SELECT * 
-                  FROM users 
-                  WHERE users.email = ".$this->_db->quote($email);
-        $result =$this->_db->query($query);
-        
-        return $result->rowcount()!=0; 
+        $query = $this->_db->prepare("SELECT * FROM users WHERE users.email = :email");
+        $query->bindParam(':email',$email);
+        $query->execute();
+        $result=$query->fetchAll(PDO::FETCH_ASSOC);
+        return count($result)!=0; 
     }
    
     public function checkIfBarExists($eid){
@@ -357,13 +355,17 @@ class Db
     
     
     public function validLogin($nickname, $password){
-        $query = 'SELECT * 
-                  FROM users 
-                  WHERE nickname = '.$this->_db->quote($matricule).' AND 
-                        password = '.$this->_db->quote(password_hash($password, PASSWORD_BCRYPT));
-        $result = $this->_db->query($query);
-
-        return $result->rowcount()==1;
+        $query = $this->_db->prepare("SELECT password FROM users WHERE nickname = :nickname");
+        $query->bindParam(':nickname', $nickname);
+        $query->execute();
+        $result=$query->fetchAll(PDO::FETCH_ASSOC);
+        if (count($result)!=1){
+            return false;
+        }
+        if (password_verify($password, $result[0]['password'])){
+            return true;
+        }      
+        return false;
     }
     
     

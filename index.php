@@ -41,6 +41,10 @@
             require_once('Controllers/SignUpController.php');
             $controller = new SignUpController();
             break; #/
+        case 'account':
+            require_once('Controllers/AccountController.php');
+            $controller = new AccountController();
+            break;
         default: # 
             require_once('Controllers/LoginController.php');
             $controller = new LoginController();
