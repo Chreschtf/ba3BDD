@@ -35,16 +35,13 @@ class Db
     
     public function insertUserComplete($array) {
         $query="INSERT INTO users 
-                (nickname, email, password, admin) 
+                (nickname, email, password) 
                 VALUES 
-                (:nickname, :email, :password, :admin)";
+                (:nickname, :email, :password)";
         $statement = $this->_db->prepare($query);
-
         $statement->bindParam(':nickname', $array[0]);
         $statement->bindParam(':email', $array[1]);
         $statement->bindParam(':password', password_hash($array[2], PASSWORD_BCRYPT));
-        $statement->bindParam(':admin', $array[3]);
-        
         $statement->execute();
         
         return $this->_db->lastInsertId();
@@ -193,17 +190,7 @@ class Db
     /*
             EXISTS
             ------
-    */
-    
-
-    public function checkIfUserExists($name){
-        $query = "SELECT nickname 
-                  FROM users
-                  WHERE nickname='$name'";
-        $result = $this->_db->query($query);
-        return ($result->rowCount() >= 1);
-    }
-    
+    */    
 
     public function nicknameExists($nickname){
         $query = $this->_db->prepare("SELECT * FROM users WHERE users.nickname = :nickname");
@@ -287,22 +274,41 @@ class Db
             -------
     */
     
-    public function getEstablishmentWithName($name){
-        $query = 'SELECT *
-                  FROM establishments
-                  WHERE ename='.$name;
-
+    public function getEstablishmentsByName($name){
+        $query = $this->_db->prepare('SELECT * FROM establishments WHERE ename LIKE %:name%');
+        $query->bindParam(":name",$name);
+        $query->execute();
+        $result=$query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+    
+    public function getUsersWithSimilarName($name){
+        $query = $this->_db->prepare('SELECT * FROM users WHERE nickname LIKE :name');
+        $newName= '%'.$name.'%';
+        $query->bindParam(":name",$newName);
+        $query->execute();
+        $result=$query->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
     }
     
     public function getUIDof($nickname){
-        $query = "SELECT *
-                  FROM users
-                  WHERE nickname ='$nickname'";
-        $stmt = $this->_db->prepare($query);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $query = $this->_db->prepare("SELECT * FROM users WHERE nickname = :nickname");
+        $query->bindParam(":nickname",$nickname);
+        $query->execute();
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+        #if (count($result)!=1){
+        #    return "NULL";
+        #}
         return $result['uid'];
         
+    }
+    
+    public function getUserData($uid){
+        $query = $this->_db->prepare("SELECT * FROM users WHERE uid = :userid");
+        $query->bindParam(":userid",$uid);
+        $query->execute();
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+        return $result;
     }
     
     public function getHorecaWithEID($table, $eid){

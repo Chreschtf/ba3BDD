@@ -18,7 +18,7 @@
                 setcookie('username', $_POST['username'], false);#, '/account', 'www.example.com');
                 setcookie('password', $_POST['password'], false);#, '/account', 'www.example.com');
             }
-            header('Location: index.php?action=account');
+            header('Location: ?action=userProfile&user='.$_POST['username']);
             die();
         }else{
 
