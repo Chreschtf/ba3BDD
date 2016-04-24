@@ -335,7 +335,7 @@ class Db
         $newName= '%'.$name.'%';
         $stmt->bindParam(":name",$newName);
         $stmt->execute();
-        $result=$query->fetchAll(PDO::FETCH_ASSOC);
+        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }    
 

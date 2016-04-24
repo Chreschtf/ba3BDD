@@ -7,7 +7,7 @@
             <input type="radio" name="all" value="all" checked >All (Users and Establishments)
             <input type="radio" name="all" value="users">Only Users
             <input type="radio" name="all" value="establishments">Only Establishments
-            <input type="radio" name="all" value="cafe">Only Cafes
+            <input type="radio" name="all" value="bar">Only Bars
             <input type="radio" name="all" value="restaurant">Only Restaurants
             <input type="radio" name="all" value="hotel">Only Hotels
         </form>
