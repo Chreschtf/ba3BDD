@@ -28,6 +28,10 @@
             require_once('Controllers/UserProfileController.php');
             $controller = new UserProfileController($user);
             break;
+        case 'search':
+            require_once('Controllers/SearchController.php');
+            $controller = new SearchController();
+            break;
         default: # 
             require_once('Controllers/LoginController.php');
             $controller = new LoginController();
