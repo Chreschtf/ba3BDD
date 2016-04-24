@@ -1,7 +1,7 @@
 <?php
 
     #session_start();
-    #require '../Models/Db.class.php';
+    require '../Models/Db.class.php';
     ini_set('display_errors', 'On');
     error_reporting(E_ALL);
     
