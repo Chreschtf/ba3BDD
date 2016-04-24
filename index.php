@@ -40,9 +40,10 @@
             $controller = new LogoutController();
             break;
         case 'barProfile':
-            $barId = htmlentities($_GET['barId']);
+            $barId = (isset($_GET['barId'])) ? htmlentities($_GET['barId']) : '';
             require_once("Controllers/BarProfileController.php");
-            $controller = new BarProfileController($barId);
+            $controller = new BarProfileController();
+            $controller->setId($barId);
             break;
         case 'createComment':
             $uid = (isset($_GET['uid'])) ? htmlentities($_GET['uid']) : '';
