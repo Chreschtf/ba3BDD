@@ -8,7 +8,7 @@ class SignUpController{
         
         $nicknameErr = $emailErr = $passwordErr = "";
         $nickname = $email = $password = "";
-        $admin= 0;
+
         
        
         if (empty($_POST)) {
@@ -43,9 +43,6 @@ class SignUpController{
         }else{
             $email = $_POST["email"];
         }
-        if (isset($_POST["admin"])){
-            $admin = 1;
-        }
         
         
         
@@ -53,13 +50,12 @@ class SignUpController{
             $user = [
                     0 => $nickname,
                     1 => $email,
-                    2 => $password,
-                    3 => $admin
+                    2 => $password
                     ];
             Db::getInstance()->insertUserComplete($user);
             
             
-            header("Location: index.php?action=login");
+            header("Location: ?action=login");
             die();
         }
          
