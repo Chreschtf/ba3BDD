@@ -32,6 +32,10 @@
             require_once('Controllers/SearchController.php');
             $controller = new SearchController();
             break;
+        case 'logout':
+            require_once('Controllers/LogoutController.php');
+            $controller = new LogoutController();
+            break;
         default: # 
             require_once('Controllers/LoginController.php');
             $controller = new LoginController();

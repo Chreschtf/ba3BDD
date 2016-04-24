@@ -65,9 +65,9 @@ class Db
 
     public function insertEstablishment($array) {
         $query="INSERT INTO establishments 
-                (ename, street, house_num, zip, city, longitude, latitude, tel, site, uid, entry_date) 
+                (ename, street, house_num, zip, city, longitude, latitude, tel, site, uid, entry_date, horeca_type) 
                 VALUES 
-                (:ename, :street, :house_num, :zip, :city, :longitude, :latitude, :tel, :site, :uid, :entry_date)";
+                (:ename, :street, :house_num, :zip, :city, :longitude, :latitude, :tel, :site, :uid, :entry_date, :horeca_type)";
         $statement = $this->_db->prepare($query);
 
         $statement->bindParam(':ename', $array[0]);
@@ -81,6 +81,7 @@ class Db
         $statement->bindParam(':site', $array[8]);
         $statement->bindParam(':uid', $array[9]);
         $statement->bindParam(':entry_date', $array[10]);
+        $statement->bindParam(':horeca_type', $array[11]);
         $statement->execute();
         return $this->_db->lastInsertId();
     }
