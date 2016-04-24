@@ -87,7 +87,7 @@ class Db
         $statement->execute();
         return $this->_db->lastInsertId();
     }
-
+    
     public function insertRestaurant($array){
         $query="INSERT INTO restaurants 
                 (eid, price_range, banquet_capacity, takeaway, delivery) 
@@ -199,9 +199,12 @@ class Db
     public function checkIfUserExists($name){
         $query = "SELECT nickname 
                   FROM users
-                  WHERE nickname='$name'";
-        $result = $this->_db->query($query);
-        return ($result->rowCount() >= 1);
+                  WHERE nickname= :name";
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':name', $name);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return count($result) >= 1;
     }
     
 
@@ -267,7 +270,7 @@ class Db
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['tid'];
-    }   
+    }
     
         
     public function checkIfEstabTagExists($tid, $eid, $uid){
