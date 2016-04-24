@@ -43,11 +43,12 @@
             $barId = htmlentities($_GET['barId']);
             require_once("Controllers/BarProfileController.php");
             $controller = new BarProfileController($barId);
+            break;
         case 'createComment':
             $uid = (isset($_GET['uid'])) ? htmlentities($_GET['uid']) : '';
             $eid = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
             require_once('Controllers/CreateCommentController.php');
-            $controller = new CreateCommentController();
+            $controller = new CreateCommentController($uid,$eid);
             break;
         default: # 
             require_once('Controllers/LoginController.php');
