@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.establishments (
     site VARCHAR(60),
     uid INT(6) NOT NULL,
     entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    horeca_type ENUM('R', 'B', 'H') NOT NULL,
+    horeca_type ENUM('Restaurant', 'Bar', 'Hotel') NOT NULL,
     PRIMARY KEY (eid),
     FOREIGN KEY (uid) REFERENCES users(uid)
 );
