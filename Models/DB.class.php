@@ -206,7 +206,7 @@ class Db
     public function nicknameExists($nickname){
         $query = "SELECT * 
                   FROM users 
-                  WHERE users.nickname = :nickname"
+                  WHERE users.nickname = :nickname";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(':nickname', $nickname);
@@ -218,7 +218,7 @@ class Db
     public function emailAlreadyInUse($email){
         $query = "SELECT * 
                   FROM users 
-                  WHERE users.email = :email"
+                  WHERE users.email = :email";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(':email', $email);
@@ -315,7 +315,7 @@ class Db
     public function getEstablishmentsByName($name){
         $query = "SELECT * 
                   FROM establishments 
-                  WHERE ename LIKE :name"
+                  WHERE ename LIKE :name";
                           
         $stmt = $this->_db->prepare($query);
         $newName= '%'.$name.'%';
@@ -328,7 +328,7 @@ class Db
     public function getUsersWithSimilarName($name){
         $query = "SELECT * 
                   FROM users 
-                  WHERE nickname LIKE :name"
+                  WHERE nickname LIKE :name";
                         
         $stmt = $this->_db->prepare($query);
         $newName= '%'.$name.'%';
@@ -341,7 +341,7 @@ class Db
     public function getUIDof($nickname){
         $query = "SELECT * 
                   FROM users 
-                  WHERE nickname = :nickname"
+                  WHERE nickname = :nickname";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":nickname",$nickname);
@@ -357,7 +357,7 @@ class Db
     public function getUserData($uid){
         $query = "SELECT * 
                   FROM users 
-                  WHERE uid = :userid"
+                  WHERE uid = :userid";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":userid",$uid);
@@ -398,7 +398,7 @@ class Db
                   WHERE uid = :uid";
                   
         $stmt = $this->_db->prepare($query);
-        $stmt->bindParam("uid", $uid)
+        $stmt->bindParam("uid", $uid);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return ($result['admin'] == 1);
@@ -420,11 +420,10 @@ class Db
     public function validLogin($nickname, $password){
         $query = "SELECT password 
                   FROM users 
-                  WHERE nickname = :nickname"
+                  WHERE nickname = :nickname";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(':nickname', $nickname);
-        $stmt->bindParam(':password', $password);
         $stmt->execute();
         $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
         if (count($result)!=1){
