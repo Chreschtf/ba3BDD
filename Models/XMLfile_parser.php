@@ -19,7 +19,7 @@
         $uid = createUser($Cafe);
         
         // establishment
-        $eid = createEstablishment($Cafe, $uid);
+        $eid = createEstablishment($Cafe, $uid, "B");
         // bar
         createBar($Cafe, $eid);
         
@@ -43,7 +43,7 @@
         $uid = createUser($Restaurant);
         
         // establishment
-        $eid = createEstablishment($Restaurant, $uid);
+        $eid = createEstablishment($Restaurant, $uid, "R");
         // restaurant
         createRestaurant($Restaurant, $eid);
         
@@ -79,7 +79,7 @@
         }
     }
     
-    function createEstablishment($estab, $uid){
+    function createEstablishment($estab, $uid, $horeca_type){
         $ename = $estab->Informations->Name;
         $street = $estab->Informations->Address->Street;
         $house_num = $estab->Informations->Address->Num;
@@ -94,7 +94,7 @@
         }
         $entry_date = convertDate($estab['creationDate']);
         $data = array($ename, $street, $house_num, $zip, $city, 
-                      $longitude, $latitude, $tel, $site,  (int)$uid, $entry_date);
+                      $longitude, $latitude, $tel, $site,  (int)$uid, $entry_date, $horeca_type);
         return Db::getInstance()->insertEstablishment($data);
     }
     
