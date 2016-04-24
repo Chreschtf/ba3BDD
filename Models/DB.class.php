@@ -285,7 +285,7 @@ class Db
             -------
     */
     
-    public function getEstablishmentsByName($name){
+    public function getEstablishmentsWithSimilarName($name,$type){
         $query = $this->_db->prepare('SELECT * FROM establishments WHERE ename LIKE %:name%');
         $query->bindParam(":name",$name);
         $query->execute();
