@@ -19,7 +19,7 @@
         $uid = createUser($Cafe);
         
         // establishment
-        $eid = createEstablishment($Cafe, $uid, "B");
+        $eid = createEstablishment($Cafe, $uid, "Bar");
         // bar
         createBar($Cafe, $eid);
         
@@ -43,7 +43,7 @@
         $uid = createUser($Restaurant);
         
         // establishment
-        $eid = createEstablishment($Restaurant, $uid, "R");
+        $eid = createEstablishment($Restaurant, $uid, "Restaurant");
         // restaurant
         createRestaurant($Restaurant, $eid);
         

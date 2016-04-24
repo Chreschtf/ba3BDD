@@ -322,9 +322,24 @@ class Db
         $newName= '%'.$name.'%';
         $stmt->bindParam(":name",$newName);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }      
+    
+    public function getBars($searchQuery){
+        $query = $this->_db->prepare("SELECT e.*, b.* 
+                                    FROM establishments e, bars b 
+                                    WHERE e.horeca_type = 'Bar' AND 
+                                    (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query) AND 
+                                    e.eid = b.eid"); 
+        $newQuery='%'.$searchQuery.'%';
+        $query->bindParam(':query',$newQuery);
+        $query->execute();
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $result;
+        
+    }
     
     public function getUsersWithSimilarName($name){
         $query = "SELECT * 
@@ -362,6 +377,17 @@ class Db
                   
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":userid",$uid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;
+    }
+    
+    public function tagSearch($tag){
+        $query = "SELECT e.*, c.*,tname 
+                  FROM establishments e, bars c,tags t,establishment_tags et 
+                  WHERE t.tname LIKE :tag AND t.tid = et.tid AND et.eid = e.eid AND et.eid = c.eid";
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":tag",$tag);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result;
