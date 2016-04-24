@@ -313,14 +313,14 @@ class Db
             -------
     */
     
-    public function getEstablishmentsByName($name){
+    public function getEstablishmentsWithSimilarName($name,$type){
         $query = "SELECT * 
                   FROM establishments 
                   WHERE ename LIKE :name";
                           
         $stmt = $this->_db->prepare($query);
         $newName= '%'.$name.'%';
-        $query->bindParam(":name",$newName);
+        $stmt->bindParam(":name",$newName);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result;
@@ -333,7 +333,7 @@ class Db
                         
         $stmt = $this->_db->prepare($query);
         $newName= '%'.$name.'%';
-        $query->bindParam(":name",$newName);
+        $stmt->bindParam(":name",$newName);
         $stmt->execute();
         $result=$query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
