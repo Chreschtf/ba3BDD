@@ -9,13 +9,14 @@
                 unset($_COOKIE['username']);
                 setcookie('username', null, -1, '/');
             }
+            
             if (isset($_COOKIE['password'])) {
                 unset($_COOKIE['password']);
                 setcookie('password', null, -1, '/');
             }
             
-            session_destroy();
             session_unset();
+            session_destroy();
             
             header('Location: index.php');
             die();

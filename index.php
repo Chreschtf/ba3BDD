@@ -13,6 +13,9 @@
     #require 'Models/XMLfile_parser.php';
     #XMLParser::parseFiles();
     $action = (isset($_GET['action'])) ? htmlentities($_GET['action']) : 'default';
+    
+    require_once (VIEWSPATH . 'header.php');
+    
     # process what action ?
     switch($action) {
         case 'login':
@@ -36,12 +39,20 @@
             require_once('Controllers/LogoutController.php');
             $controller = new LogoutController();
             break;
+        case 'createComment':
+            $uid = (isset($_GET['uid'])) ? htmlentities($_GET['uid']) : '';
+            $eid = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
+            require_once('Controllers/CreateCommentController.php');
+            $controller = new CreateCommentController();
+            break;
         default: # 
             require_once('Controllers/LoginController.php');
             $controller = new LoginController();
             break;
       
     }
+    
     $controller->run(); 
     
+    require_once (VIEWSPATH . 'footer.php');
 ?>
