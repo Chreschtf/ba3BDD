@@ -204,79 +204,106 @@ class Db
     }
 
     public function nicknameExists($nickname){
-        $query = $this->_db->prepare("SELECT * FROM users WHERE users.nickname = :nickname");
-        $query->bindParam(':nickname',$nickname);
-        $query->execute();
-        $result=$query->fetchAll(PDO::FETCH_ASSOC);
-        return count($result)!=0;
+        $query = "SELECT * 
+                  FROM users 
+                  WHERE users.nickname = :nickname";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':nickname', $nickname);
+        $stmt->execute();
+        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        return count($result) >= 1;
     }
     
     public function emailAlreadyInUse($email){
-        $query = $this->_db->prepare("SELECT * FROM users WHERE users.email = :email");
-        $query->bindParam(':email',$email);
-        $query->execute();
-        $result=$query->fetchAll(PDO::FETCH_ASSOC);
-        return count($result)!=0; 
+        $query = "SELECT * 
+                  FROM users 
+                  WHERE users.email = :email";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        return count($result) >= 1;
     }
    
     public function checkIfBarExists($eid){
         $query = "SELECT eid
                   FROM bars
-                  WHERE bars.eid = '$eid'";
-        $result = $this->_db->query($query);
-        return ($result->rowCount() >= 1);
+                  WHERE bars.eid = :eid";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':eid', $eid);
+        $stmt->execute();
+        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        return count($result) >= 1;
     }
     
     public function checkIfRestaurantExists($eid){
         $query = "SELECT eid
                   FROM restaurants
-                  WHERE eid = '$eid'";
-        $result = $this->_db->query($query);
-        return ($result->rowCount() >= 1);
+                  WHERE eid = :eid";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':eid', $eid);
+        $stmt->execute();
+        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        return count($result) >= 1;
     }
     
     public function checkIfHotelExists($eid){
         $query = "SELECT eid
                   FROM hotels
                   WHERE hotel.eid = '$eid'";
-        $result = $this->_db->query($query);
-        return ($result->rowCount() >= 1);
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':eid', $eid);
+        $stmt->execute();
+        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        return count($result) >= 1;
     }
     
     
     public function checkIftagExists($name){
         $query = "SELECT *
                   FROM tags
-                  WHERE tags.tname = '$name'";
-        $result = $this->_db->query($query);
-        return ($result->rowCount() >= 1);
+                  WHERE tags.tname = :name";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':name', $name);
+        $stmt->execute();
+        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        return count($result) >= 1;
     }
     
-    public function checkIfEstablishmenttagExists($tid, $eid, $uid){
-        
-    }
     
-    public function getTagWithName($name){
+    public function getTagWithName($tname){
         $query = "SELECT tags.tid
                   FROM tags
-                  WHERE tags.tname = '$name'";
-                        
+                  WHERE tags.tname = :tname";
+                          
         $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':tname', $tname);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['tid'];
-    }
+    }         
     
         
     public function checkIfEstabTagExists($tid, $eid, $uid){
         $query = "SELECT *
                   FROM establishment_tags
-                  WHERE establishment_tags.eid = '$eid' AND 
-                        establishment_tags.uid = '$uid' AND 
-                        establishment_tags.tid = '$tid'";
-                        
-        $result = $this->_db->query($query);
-        return ($result->rowCount() >= 1);
+                  WHERE establishment_tags.eid = :eid AND 
+                        establishment_tags.uid = :uid AND 
+                        establishment_tags.tid = :tid ";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':eid', $eid);
+        $stmt->bindParam(':uid', $uid);
+        $stmt->bindParam(':tid', $tid);
+        $stmt->execute();
+        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        return count($result) >= 1;
     }
     
     
@@ -286,49 +313,59 @@ class Db
     */
     
     public function getEstablishmentsWithSimilarName($name,$type){
-        $query = $this->_db->prepare('SELECT * FROM establishments WHERE ename LIKE %:name%');
-        $query->bindParam(":name",$name);
-        $query->execute();
-        $result=$query->fetchAll(PDO::FETCH_ASSOC);
+        $query = "SELECT * 
+                  FROM establishments 
+                  WHERE ename LIKE :name";
+                          
+        $stmt = $this->_db->prepare($query);
+        $newName= '%'.$name.'%';
+        $stmt->bindParam(":name",$newName);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result;
-    }
+    }      
     
     public function getUsersWithSimilarName($name){
-        $query = $this->_db->prepare('SELECT * FROM users WHERE nickname LIKE :name');
+        $query = "SELECT * 
+                  FROM users 
+                  WHERE nickname LIKE :name";
+                        
+        $stmt = $this->_db->prepare($query);
         $newName= '%'.$name.'%';
-        $query->bindParam(":name",$newName);
-        $query->execute();
+        $stmt->bindParam(":name",$newName);
+        $stmt->execute();
         $result=$query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
-    }
-    
+    }    
+
     public function getUIDof($nickname){
-        $query = $this->_db->prepare("SELECT * FROM users WHERE nickname = :nickname");
-        $query->bindParam(":nickname",$nickname);
-        $query->execute();
-        $result = $query->fetch(PDO::FETCH_ASSOC);
+        $query = "SELECT * 
+                  FROM users 
+                  WHERE nickname = :nickname";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":nickname",$nickname);
+        $stmt->execute();
+        $stmt = $stmt->fetch(PDO::FETCH_ASSOC);
         #if (count($result)!=1){
         #    return "NULL";
         #}
-        return $result['uid'];
+        return $stmt['uid'];
         
     }
     
     public function getUserData($uid){
-        $query = $this->_db->prepare("SELECT * FROM users WHERE uid = :userid");
-        $query->bindParam(":userid",$uid);
-        $query->execute();
-        $result = $query->fetch(PDO::FETCH_ASSOC);
+        $query = "SELECT * 
+                  FROM users 
+                  WHERE uid = :userid";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":userid",$uid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result;
     }
     
-    public function getHorecaWithEID($table, $eid){
-        $query = 'SELECT *
-                  FROM'.$table.
-                 'WHERE eid='.$eid;
-        $result = $this->_db->query($query);
-
-    }
     
     /*
             UPDATES / DELETES
@@ -336,26 +373,32 @@ class Db
     */
     
     public function deleteEstablishmentWithEID($eid){
-        $query = 'DELETE 
+        $query = "DELETE 
                   FROM establishments 
-                  WHERE eid='.$eid;
+                  WHERE eid= :eid";
                  
-        $this->_db->prepare($query)->execute();
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
     }
     
     public function modifyEstablishmentAttributes($changeAttributNames, $changeAttributValues, $searchAttributNames, $searchAttributValues){
         $query = 'UPDATE establishments 
                   SET '.
                  'WHERE ';
-        
+                         
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
     }
     
     public function isAdmin($uid){
         $query = "SELECT *
                   FROM users
-                  WHERE uid = '$uid'";
+                  WHERE uid = :uid";
                   
         $stmt = $this->_db->prepare($query);
+        $stmt->bindParam("uid", $uid);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return ($result['admin'] == 1);
@@ -363,19 +406,26 @@ class Db
     
     public function setAdmin($uid, $admin){
         $query = "UPDATE users
-                  SET admin = '$admin'
-                  WHERE uid = '$uid'";
-                  
-        $this->_db->prepare($query)->execute();
+                  SET admin = :admin
+                  WHERE uid = :uid ";
+                         
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":admin", $admin);
+        $stmt->bindParam(":uid", $uid);
+        $stmt->execute();
     }
     
     
     
     public function validLogin($nickname, $password){
-        $query = $this->_db->prepare("SELECT password FROM users WHERE nickname = :nickname");
-        $query->bindParam(':nickname', $nickname);
-        $query->execute();
-        $result=$query->fetchAll(PDO::FETCH_ASSOC);
+        $query = "SELECT password 
+                  FROM users 
+                  WHERE nickname = :nickname";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':nickname', $nickname);
+        $stmt->execute();
+        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
         if (count($result)!=1){
             return false;
         }
