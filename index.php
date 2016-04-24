@@ -36,6 +36,11 @@
             require_once('Controllers/LogoutController.php');
             $controller = new LogoutController();
             break;
+        case 'barProfile':
+            $barId = htmlentities($_GET['barId']);
+            require_once("Controllers/BarProfileController.php");
+            $controller = new BarProfileController($barId);
+            break;
         default: # 
             require_once('Controllers/LoginController.php');
             $controller = new LoginController();

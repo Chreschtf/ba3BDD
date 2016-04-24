@@ -36,8 +36,7 @@
                             break;
                         case 'hotel':
                             $this->seachHotels($searchQuery);
-                            break;
-                        
+                            break;  
                     }
                     die();          
                 } 
@@ -56,7 +55,7 @@
                 echo "</tr>";
                 for ($i=0;$i<count($users);$i++) {       
                     echo "<tr>";
-                    echo "<td> <a href='?action=userProfile&user='".$users[$i]['nickname'].">".$users[$i]['nickname']."</a> </td>";
+                    echo "<td> <a href='?action=userProfile&user=".$users[$i]['nickname']."'>".$users[$i]['nickname']."</a> </td>";
                     echo "<td> ".$users[$i]['email']."  </td>";
                     echo "<td> ".$users[$i]['entry_date']."  </td>";
                     echo '</tr>';
@@ -83,7 +82,7 @@
                 echo "</tr>";
                 for ($i=0;$i<count($bars);$i++) {
                     echo "<tr>";
-                    echo "<td> ".$bars[$i]['ename']."  </td>";
+                    echo "<td> <a href='?action=barProfile&barId=".$bars[$i]["eid"]."'>".$bars[$i]['ename']."</a>  </td>";
                     echo "<td> ".$bars[$i]['street']."  </td>";
                     echo "<td> ".$bars[$i]['house_num']."  </td>";
                     echo "<td> ".$bars[$i]['city']."  </td>";

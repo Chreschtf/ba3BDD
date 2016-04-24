@@ -382,6 +382,19 @@ class Db
         return $result;
     }
     
+    public function getBarData($eid){
+        $query = "SELECT * 
+                  FROM establishments,bars 
+                  WHERE establishments.eid = :eid AND
+                  bars.eid = establishments.eid";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid",$eid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;
+    }
+    
     public function tagSearch($tag){
         $query = "SELECT e.*, c.*,tname 
                   FROM establishments e, bars c,tags t,establishment_tags et 
