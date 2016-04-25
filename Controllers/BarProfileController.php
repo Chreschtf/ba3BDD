@@ -12,7 +12,8 @@
             require_once(VIEWSPATH."barProfile.php");
             require_once("EstablishmentProfileController.php");
             $barData=Db::getInstance()->getBarData($this->_id);
-            EstablishmentProfileController::displayGenericInfo($barData);
+            
+            EstablishmentProfileController::displayGenericInfo($barData, Db::getinstance()->getUIDof($_COOKIE['username']));
             $this->displayBarSpecificInfo($barData);
             EstablishmentProfileController::displayComments($barData['eid']);
         }

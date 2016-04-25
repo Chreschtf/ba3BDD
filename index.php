@@ -14,6 +14,8 @@
     #XMLParser::parseFiles();
     $action = (isset($_GET['action'])) ? htmlentities($_GET['action']) : 'default';
     
+    $commentController = NULL;
+    
     require_once (VIEWSPATH . 'header.php');
     
     # process what action ?

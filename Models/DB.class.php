@@ -145,7 +145,7 @@ class Db
         $statement->execute();
     }
 
-    public function insertComment($array){
+    public function insertCommentSpecificDate($array){
         $query="INSERT INTO comments 
                 (uid, eid, entry_date, score, text) 
                 VALUES 
@@ -157,6 +157,21 @@ class Db
         $statement->bindParam(':entry_date',  $array[2]);
         $statement->bindParam(':score',  $array[3]);
         $statement->bindParam(':text',  $array[4]);
+        
+        $statement->execute();
+    }
+
+    public function insertCommentNow($array){
+        $query="INSERT INTO comments 
+                (uid, eid, score, text) 
+                VALUES 
+                (:uid, :eid, :score, :text)";
+        $statement= $this->_db->prepare($query);
+
+        $statement->bindParam(':uid',  $array[0]);
+        $statement->bindParam(':eid',  $array[1]);
+        $statement->bindParam(':score',  $array[2]);
+        $statement->bindParam(':text',  $array[3]);
         
         $statement->execute();
     }
@@ -408,7 +423,7 @@ class Db
     
     public function getAllTagnames(){
         $query = "SELECT tname, tid
-                  FROM tags"
+                  FROM tags";
                         
         $stmt = $this->_db->prepare($query);
         $stmt->execute();

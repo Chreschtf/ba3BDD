@@ -2,7 +2,21 @@
     class EstablishmentProfileController{
         private function __construct(){
         }
-        public static function displayGenericInfo($data){
+        public static function displayGenericInfo($data, $uid){
+            
+            // temporary :
+            echo "<td> <a href='?action=createComment&eid=".$data['eid']."&uid=".$uid."'>Write a new Comment</a> </td>";
+            
+            //echo "<div class='form-createComment' >";
+            //echo "  <form action='?action=createComment' method='get' >";
+            //echo "      <input type='hidden' name='eid' value='" . $data['eid'] . "'/>";
+            //echo "      <input type='hidden' name='uid' value='" . $uid . "'/>";
+            //echo "      <input type='submit' value='Create a Comment'/>";
+            //echo "  </form>";
+            //echo "</div>";
+            
+            // end temporary
+            
             echo '<table style="width:*%">';
             echo "<tr>";            
                 echo "<td><b>Name : </b> </td";
@@ -43,6 +57,8 @@
             #echo "<b>Adress : </b>".$data['house_num'].", ".$data['street']."<br>";
             #echo "<b>City : </b>".$data['city'].'<br>';
             #echo "<b>Zip Code :</b>".$data["zip"]."<br>";
+            
+            
             
         }
         public function displayComments($id){

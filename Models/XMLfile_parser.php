@@ -143,7 +143,7 @@
         $score =  (int)$comment['score'];
         $text_ = $comment;
         $data = array($uid, $eid, $entry_date, $score, $text_);
-        Db::getInstance()->insertComment($data);
+        Db::getInstance()->insertCommentSpecificDate($data);
     }
     
     function createTag($tag, $eid){
