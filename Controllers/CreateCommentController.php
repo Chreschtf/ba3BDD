@@ -18,9 +18,8 @@
         }else{
             
             if ($this->_uid == '' || $this->_eid == ''){
-                echo 'OO';
-                //header('Location: ?action=userProfile&user='.$_POST[$_COOKIE["username"]]);
-                //die();
+                header('Location: ?action=userProfile&user='.$_POST[$_COOKIE["username"]]);
+                die();
             }
             
             require_once (VIEWSPATH . 'createComment.php');

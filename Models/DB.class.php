@@ -406,6 +406,16 @@ class Db
         return $result;
     }
     
+    public function getAllTagnames(){
+        $query = "SELECT tname, tid
+                  FROM tags"
+                        
+        $stmt = $this->_db->prepare($query);
+        $stmt->execute();
+        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+    
     
     /*
             UPDATES / DELETES

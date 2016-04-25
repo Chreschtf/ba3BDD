@@ -51,6 +51,12 @@
             require_once('Controllers/CreateCommentController.php');
             $controller = new CreateCommentController($uid,$eid);
             break;
+        case 'createTag':
+            $uid = (isset($_GET['uid'])) ? htmlentities($_GET['uid']) : '';
+            $eid = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
+            require_once('Controllers/CreateTagController.php');
+            $controller = new CreateTagController($uid,$eid);
+            break;
         default: # 
             require_once('Controllers/LoginController.php');
             $controller = new LoginController();
