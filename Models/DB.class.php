@@ -292,6 +292,18 @@ class Db
         return count($result) >= 1;
     }
     
+    public function checkIftagExistsTID($tid){
+        $query = "SELECT *
+                  FROM tags
+                  WHERE tags.tid = :tid";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':tid', $tid);
+        $stmt->execute();
+        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        return count($result) >= 1;
+    }
+    
     
     public function getTagWithName($tname){
         $query = "SELECT tags.tid
@@ -339,7 +351,19 @@ class Db
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
-    }      
+    }
+    
+    public function getEstablishmentWihtEID($eid){
+        $query = "SELECT ename 
+                  FROM establishments 
+                  WHERE eid = :eid";
+                          
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['ename'];
+    }
     
     public function getBars($searchQuery){
         $query = $this->_db->prepare("SELECT e.*, b.* 

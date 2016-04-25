@@ -6,6 +6,7 @@
             
             // temporary :
             echo "<td> <a href='?action=createComment&eid=".$data['eid']."&uid=".$uid."'>Write a new Comment</a> </td>";
+            echo "<td> <a href='?action=createTag&eid=".$data['eid']."&uid=".$uid."'>Tag this establishment</a> </td>";
             
             //echo "<div class='form-createComment' >";
             //echo "  <form action='?action=createComment' method='get' >";
