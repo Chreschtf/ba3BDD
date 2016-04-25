@@ -12,11 +12,31 @@
             require_once(VIEWSPATH."barProfile.php");
             require_once("EstablishmentProfileController.php");
             $barData=Db::getInstance()->getBarData($this->_id);
-            echo empty($barData);
             EstablishmentProfileController::displayGenericInfo($barData);
-            
+            $this->displayBarSpecificInfo($barData);
+            EstablishmentProfileController::displayComments($barData['eid']);
         }
-     
+        public function displayBarSpecificInfo($data){
+            
+            echo "<tr>";
+            echo "<td><b>Smoking allowed :</b></td>";
+            if ($data['smoking']){
+                echo "<td> Yes  </td>";
+            }else{
+                echo "<td> No  </td>";
+            }
+            echo "</tr>";
+            echo "<tr>";
+            echo "<td><b>Serves snacks :</b></td>";
+            if ($data['snack']){
+                echo "<td> Yes  </td>";
+            }else{
+                echo "<td> No  </td>";
+            }
+            echo "<tr>";
+            
+            echo "</table>";
+        }
         
     }
 ?>

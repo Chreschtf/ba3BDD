@@ -60,5 +60,5 @@
     
     $controller->run(); 
     
-    require_once (VIEWSPATH . 'footer.php');
+    #require_once (VIEWSPATH . 'footer.php');
 ?>
