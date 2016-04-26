@@ -52,18 +52,23 @@
             echo "<tr>";
                 echo "<td><b>Latitude : </b></td>";
                 echo "<td>".$data['latitude']."</td>";
-            echo "</tr>";
-            #echo "</table>";
-            #echo "<b>Name : </b>".$data['ename']."<br>";
-            #echo "<b>Adress : </b>".$data['house_num'].", ".$data['street']."<br>";
-            #echo "<b>City : </b>".$data['city'].'<br>';
-            #echo "<b>Zip Code :</b>".$data["zip"]."<br>";
-            
-            
-            
+            echo "</tr>";        
+                        
         }
-        public function displayComments($id){
-            
+        public static function displayComments($id){
+            $comments = Db::getInstance()->getCommentsOnEstablishment($id);
+            echo "<h2>Comments</h2>";
+            if (count($comments) == 0){
+                echo "No comments available";
+            }else{
+                echo "<b>Average Score : </b>".round($comments[0]['average'],2)."<br><br>";
+                for ($i=0;$i<count($comments);$i++){
+                    echo "<b>Date : </b>".$comments[$i]['entry_date'].'<br>';
+                    echo "<b>From :</b> ".$comments[$i]["nickname"]."<br>";
+                    echo "<b>Score : </b>".$comments[$i]['score'].'<br>';
+                    echo $comments[$i]['text'].'<br><br>';
+                }
+            }
         }
     }
 ?>
