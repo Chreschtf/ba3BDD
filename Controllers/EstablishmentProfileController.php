@@ -7,7 +7,7 @@
             // temporary :
             echo "<td> <a href='?action=createComment&eid=".$data['eid']."&uid=".$uid."'>Write a new Comment</a> </td>";
             echo "<td> <a href='?action=createTag&eid=".$data['eid']."&uid=".$uid."'>Tag this establishment</a> </td>";
-            
+            echo "<a href='?action=search'>Click here to go back to search.</a>";
             //echo "<div class='form-createComment' >";
             //echo "  <form action='?action=createComment' method='get' >";
             //echo "      <input type='hidden' name='eid' value='" . $data['eid'] . "'/>";
@@ -20,7 +20,7 @@
             
             echo '<table style="width:*%">';
             echo "<tr>";            
-                echo "<td><b>Name : </b> </td";
+                echo "<td><b>Name : </b> </td>";
                 echo "<td> ".$data['ename']."</td>";
             echo "</tr>";
             echo "<tr>";
@@ -66,9 +66,22 @@
                     echo "<b>Date : </b>".$comments[$i]['entry_date'].'<br>';
                     echo "<b>From :</b> ".$comments[$i]["nickname"]."<br>";
                     echo "<b>Score : </b>".$comments[$i]['score'].'<br>';
-                    echo $comments[$i]['text'].'<br><br>';
+                    echo '"'.$comments[$i]['text'].'"<br><br>';
                 }
             }
         }
+        
+        public static function displayTags($id){
+            $tags = Db::getInstance()->getTagsOnEstablishment($id);
+            echo "<h2>Tags</h2>";
+            if (count($tags)==0){
+                echo "No tags available";
+            }
+            else{
+                for ($i=0;$i<count($tags);$i++){
+                    echo $tags[$i]['tname'].' ; ';
+                }
+            }
+        } 
     }
 ?>

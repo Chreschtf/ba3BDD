@@ -377,7 +377,21 @@ class Db
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         
         return $result;
+    }
+    
+    public function getRestaurants($searchQuery){
+        $query = "SELECT e.*, r.* 
+                FROM establishments e, restaurants r 
+                WHERE e.horeca_type = 'Restaurant' AND 
+                (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query) 
+                AND e.eid = r.eid";
+        $newQuery='%'.$searchQuery.'%';
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':query',$newQuery);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
+        return $result;
     }
     
     public function getUsersWithSimilarName($name){
@@ -434,6 +448,19 @@ class Db
         return $result;
     }
     
+    public function getRestaurantData($eid){
+        $query = "SELECT * 
+                  FROM establishments,restaurants 
+                  WHERE establishments.eid = :eid AND
+                  restaurants.eid = establishments.eid";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid",$eid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;
+    }
+    
     public function tagSearch($tag){
         $query = "SELECT e.*, c.*,tname 
                   FROM establishments e, bars c,tags t,establishment_tags et 
@@ -464,6 +491,17 @@ class Db
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
+    }
+    
+    public function getTagsOnEstablishment($eid){
+        $query = "SELECT DISTINCT t.tname 
+                FROM tags t,establishment_tags et 
+                WHERE et.eid = :eid and et.tid =t.tid";
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid",$eid);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;      
     }
     
     
