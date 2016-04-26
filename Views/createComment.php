@@ -1,16 +1,17 @@
 
 <div class="wrapper">
     <h2>Write a Comment</h2>
-    <div style='color:#FF0000'> <?php echo $notification;?> </div>
+     <?php 
+        if ($notification != "")
+            echo "<div style='color:#FF0000'>" . $notification . "</div>";
+    ?>
 
     <div class="form-createComment" >
         <form action="?action=createComment" method="post" class="form-control">
-            <p> 
-                Your Comment :
-            </p>
-            <p>
+
+
                 <textarea name="comment_text" id="textarea" cols="35" rows="5"></textarea>       
-            </p>
+
             <p>
                 <select name='score' >
                      <option value='0' selected='selected'>0</option>

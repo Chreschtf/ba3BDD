@@ -41,13 +41,14 @@
             <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <?php 
-                    if(isset($_COOKIE['username']))
+                    if(isset($_COOKIE['username'])){
                         echo "<li class='active'><a href='?action=userProfile&user=" . $_COOKIE['username'] . "'>Home</a></li>";
-                    else
+                        echo "<li><a href='?action=search'>Search</a></li>";
+                        echo "<li><a href='?action=logout'>Logout</a></li>";
+                    } else{
                         echo "<li class='active'><a href='?index.php'>Home</a></li>";
+                    }
                 ?>
-                <li><a href="?action=search">Search</a></li>
-                <li><a href="?action=logout">Logout</a></li>
 
             </ul>
             </div><!--/.nav-collapse -->

@@ -6,13 +6,13 @@
         public function run() {
             
             if (isset($_COOKIE['username'])) {
-                unset($_COOKIE['username']);
-                setcookie('username', null, -1, '/');
+                //unset($_COOKIE['username']);
+                setcookie('username');
             }
             
             if (isset($_COOKIE['password'])) {
-                unset($_COOKIE['password']);
-                setcookie('password', null, -1, '/');
+                //unset($_COOKIE['password']);
+                setcookie('password');
             }
             
             session_unset();

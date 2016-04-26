@@ -61,7 +61,7 @@
                 echo "    <h2>Tag " . Db::getInstance()->getEstablishmentWihtEID($this->_eid) . "</h2>";
                 echo "    <div style='color:#FF0000'>" . $notification . "</div> ";
                 echo "    <form action='?action=createTag' method='post' class='form-control'>";
-                echo "        <p> ";
+                //echo "        <p> ";
                 echo "            Choose from the existing tags : ";
                 echo "            <select name='tag' >";
                 echo "                <option value='' selected='selected'></option>";

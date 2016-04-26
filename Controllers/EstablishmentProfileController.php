@@ -31,7 +31,8 @@
             // end temporary
             
             echo "<p></p>";
-            echo '<table style="width:*%">';
+            echo "<div class='col-md-6'>";
+            echo '<table class="table table-striped" style="width:*%">';
             echo "<tr>";            
                 echo "<td><b>Name : </b> </td>";
                 echo "<td> ".$data['ename']."</td>";
@@ -65,7 +66,8 @@
             echo "<tr>";
                 echo "<td><b>Latitude : </b></td>";
                 echo "<td>".$data['latitude']."</td>";
-            echo "</tr>";        
+            echo "</tr>";
+            echo "</div>";
                         
         }
         public static function displayComments($id){
