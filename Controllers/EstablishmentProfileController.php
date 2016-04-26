@@ -69,9 +69,7 @@
                         
         }
         public static function displayComments($id){
-<<<<<<< HEAD
-            
-=======
+
             $comments = Db::getInstance()->getCommentsOnEstablishment($id);
             echo "<h2>Comments</h2>";
             if (count($comments) == 0){
@@ -85,7 +83,6 @@
                     echo '"'.$comments[$i]['text'].'"<br><br>';
                 }
             }
->>>>>>> 922ce852b5efd8cc36ef0713bf4d569a3866ff78
         }
         
         public static function displayTags($id){
