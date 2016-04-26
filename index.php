@@ -47,6 +47,12 @@
             $controller = new BarProfileController();
             $controller->setId($barId);
             break;
+        case 'restaurantProfile':
+            $restaurantId = (isset($_GET['restaurantId'])) ? htmlentities($_GET['restaurantId']) : '';
+            require_once("Controllers/RestaurantProfileController.php");
+            $controller = new RestaurantProfileController();
+            $controller->setId($restaurantId);
+            break;
         case 'createComment':
             $uid = (isset($_GET['uid'])) ? htmlentities($_GET['uid']) : '';
             $eid = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';

@@ -68,27 +68,14 @@
             $bars = Db::getInstance()->getBars($searchQuery);
             if (count($bars)!=0){
                 echo "<h3>Bars</h3>";
-                echo "<table style='width:100%'>";
-                echo "<tr>";
-                echo "<td> <b>Name</b> </td>";
-                echo "<td> <b>Street</b> </td>";
-                echo "<td> <b>Number</b> </td>";
-                echo "<td> <b>City</b> </td>";
-                echo "<td> <b>Zip</b> </td>";
-                echo "<td> <b>Phone number</b> </td>";
-                echo "<td> <b>Website</b> </td>";
+                $this->standardTableEcho();
                 echo "<td> <b>Smoking allowed</b> </td>";
                 echo "<td> <b>Serves snacks</b> </td>";
                 echo "</tr>";
                 for ($i=0;$i<count($bars);$i++) {
                     echo "<tr>";
                     echo "<td> <a href='?action=barProfile&barId=".$bars[$i]["eid"]."'>".$bars[$i]['ename']."</a>  </td>";
-                    echo "<td> ".$bars[$i]['street']."  </td>";
-                    echo "<td> ".$bars[$i]['house_num']."  </td>";
-                    echo "<td> ".$bars[$i]['city']."  </td>";
-                    echo "<td> ".$bars[$i]['zip']."  </td>";
-                    echo "<td> ".$bars[$i]['tel']."  </td>";
-                    echo "<td> ".$bars[$i]['site']."  </td>";
+                    $this->standardEstablishmentInfo($bars[$i]);
                     if ($bars[$i]['smoking']){
                         echo "<td> Yes  </td>";
                     }else{
@@ -106,11 +93,60 @@
         }
         
         private function seachRestaurants($searchQuery){
-            
+            $restaurants = Db::getInstance()->getRestaurants($searchQuery);
+            if (count($restaurants)!=0){
+                echo "<h3>Restaurants</h3>";
+                $this->standardTableEcho();
+                echo "<td> <b>Price Range</b> </td>";
+                echo "<td> <b>Banquet capacity</b> </td>";
+                echo "<td> <b>Takeaway</b> </td>";
+                echo "<td> <b>Delivery</b> </td>";
+                echo "</tr>";
+                for ($i=0;$i<count($restaurants);$i++){
+                    echo "<tr>";
+                    echo "<td> <a href='?action=restaurantProfile&restaurantId=".$restaurants[$i]["eid"]."'>".$restaurants[$i]['ename']."</a>  </td>";
+                    $this->standardEstablishmentInfo($restaurants[$i]);
+                    echo "<td>".$restaurants[$i]['price_range']." € </td>";
+                    echo "<td>".$restaurants[$i]['banquet_capacity']." </td>";
+                    if ($restaurants[$i]['takeaway']){
+                        echo "<td> Yes  </td>";
+                    }else{
+                        echo "<td> No  </td>";
+                    }
+                    if ($restaurants[$i]['delivery']){
+                        echo "<td> Yes  </td>";
+                    }else{
+                        echo "<td> No  </td>";
+                    }
+                    echo "</tr>";
+                }
+                echo "</table>";
+            }
         }
         
         private function searchHotels($searchQuery){
             
+        }
+        
+        private function standardTableEcho(){
+            echo "<table style='width:100%'>";
+            echo "<tr>";
+            echo "<td> <b>Name</b> </td>";
+            echo "<td> <b>Street</b> </td>";
+            echo "<td> <b>Number</b> </td>";
+            echo "<td> <b>City</b> </td>";
+            echo "<td> <b>Zip</b> </td>";
+            echo "<td> <b>Phone number</b> </td>";
+            echo "<td> <b>Website</b> </td>";
+        }
+        
+        private function standardEstablishmentInfo($info){
+            echo "<td> ".$info['street']."  </td>";
+            echo "<td> ".$info['house_num']."  </td>";
+            echo "<td> ".$info['city']."  </td>";
+            echo "<td> ".$info['zip']."  </td>";
+            echo "<td> ".$info['tel']."  </td>";
+            echo "<td> ".$info['site']."  </td>";
         }
     }
 ?>

@@ -1,5 +1,5 @@
 <?php
-    class BarProfileController{
+    class RestaurantProfileController{
         private $_id;
         public function __contruct(){
             
@@ -15,22 +15,27 @@
                 header("Location:?action=login");
                 die();
             }else{
-                require_once(VIEWSPATH."barProfile.php");
+                require_once(VIEWSPATH."restaurantProfile.php");
                 require_once("EstablishmentProfileController.php");
-                $barData=Db::getInstance()->getBarData($this->_id);
-                
-                EstablishmentProfileController::displayGenericInfo($barData, Db::getinstance()->getUIDof($_COOKIE['username']));
-                $this->displayBarSpecificInfo($barData);
-                EstablishmentProfileController::displayTags($barData['eid']);
-                EstablishmentProfileController::displayComments($barData['eid']);
+                $restaurantData=Db::getInstance()->getRestaurantData($this->_id);
+                EstablishmentProfileController::displayGenericInfo($restaurantData, Db::getinstance()->getUIDof($_COOKIE['username']));
+                $this->displayRestaurantSpecificInfo($restaurantData);
+                EstablishmentProfileController::displayTags($restaurantData['eid']);
+                EstablishmentProfileController::displayComments($restaurantData['eid']);
             }
-            
         }
-        public function displayBarSpecificInfo($data){
-            
+        
+        public function displayRestaurantSpecificInfo($data){
             echo "<tr>";
+            echo "<td><b>Price range : </b></td>";
+            echo "<td>".$data['price_range'].' € </td>';
+            echo "</tr>";
+            echo "<tr>";
+            echo "<td><b>Banquet capacity : </b> </td>";
+            echo "<td>".$data['banquet_capacity'].'</td>';
+            echo "</tr>";
             echo "<td><b>Smoking allowed :</b></td>";
-            if ($data['smoking']){
+            if ($data['takeaway']){
                 echo "<td> Yes  </td>";
             }else{
                 echo "<td> No  </td>";
@@ -38,7 +43,7 @@
             echo "</tr>";
             echo "<tr>";
             echo "<td><b>Serves snacks :</b></td>";
-            if ($data['snack']){
+            if ($data['delivery']){
                 echo "<td> Yes  </td>";
             }else{
                 echo "<td> No  </td>";
@@ -47,6 +52,5 @@
             
             echo "</table>";
         }
-        
     }
 ?>
