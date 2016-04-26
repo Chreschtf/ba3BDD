@@ -1,13 +1,15 @@
 
 <div class="wrapper">
     <h2>Write a Comment</h2>
+    <div style='color:#FF0000'> <?php echo $notification;?> </div>
 
-    <!--<div id="notification"><?php echo $notification; ?></div>-->
     <div class="form-createComment" >
         <form action="?action=createComment" method="post" class="form-control">
             <p> 
-                Your Comment : <input type="text" name="comment_text" required/>
-                <!--<span class="error">* <?php echo $comment_text_error;?></span><br>  -->            
+                Your Comment :
+            </p>
+            <p>
+                <textarea name="comment_text" id="textarea" cols="35" rows="5"></textarea>       
             </p>
             <p>
                 <select name='score' >

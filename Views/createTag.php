@@ -7,7 +7,7 @@
     </form>
     <form action='?action=createTag' method='post' class='form-control'>
         <p> 
-            Your new Tag : <input type='text' name='tag_name' required/>
+            Create a new Tag : <input type='text' name='tag_name' required/>
             <!--<span class='error'>* <?php echo $comment_text_error;?></span><br>  -->
         </p>
         <input type='hidden' name='uid' value=<?php echo $uid ?> >

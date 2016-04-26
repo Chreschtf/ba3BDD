@@ -22,14 +22,19 @@
                 
                 if ( ! empty ( $_POST )) {
                     if ( isset($_POST['createTag']) ) { // create new tag
-                        if( strlen($_POST['tag_name']) >= 3 ){
+                        if( strlen($_POST['tag_name']) >= 3 && ! Db::getInstance()->checkIftagExists($_POST['tag_name']) ){
                             $tid = Db::getInstance()->insertTag( array($_POST['tag_name']) );
                             Db::getInstance()->insertEstablishmentTag( array( $tid,  (int)$_POST['eid'], (int)$_POST['uid'] ) );
                             
                             header('Location: ?action=userProfile&user='.$_COOKIE["username"]);
                             die();
                         } else {
-                            $notification = "You didn't select a tag";
+                            if (Db::getInstance()->checkIftagExists($_POST['tag_name']))
+                                $notification = "This tagname exists already";
+                            else
+                                $notification = "The tagname was not long enough";
+                            $this->_uid = (int)$_POST['uid'];
+                            $this->_eid = (int)$_POST['eid'];
                         }
                         
                     } elseif (  isset($_POST['useTag']) ) { // use existing tag
@@ -39,7 +44,9 @@
                             header('Location: ?action=userProfile&user='.$_COOKIE["username"]);
                             die();
                         } else {
-                            $notification = "The tagname was not long enough";
+                            $this->_uid = (int)$_POST['uid'];
+                            $this->_eid = (int)$_POST['eid'];
+                            $notification = "You didn't select a tag";
                         }
                     }
                     
@@ -52,7 +59,7 @@
                 
                 echo "<div class='wrapper'>";
                 echo "    <h2>Tag " . Db::getInstance()->getEstablishmentWihtEID($this->_eid) . "</h2>";
-                echo "    <div>" . $notification . "</div> ";
+                echo "    <div style='color:#FF0000'>" . $notification . "</div> ";
                 echo "    <form action='?action=createTag' method='post' class='form-control'>";
                 echo "        <p> ";
                 echo "            Choose from the existing tags : ";

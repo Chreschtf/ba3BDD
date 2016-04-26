@@ -19,13 +19,14 @@
                 $notification = "";
                 
                 if ( ! empty ( $_POST )) {
-                    var_dump($_POST);
                     if ( strlen($_POST['comment_text']) > 5 ){
                         Db::getInstance()->insertCommentNow( array( (int)$_POST['uid'], (int)$_POST['eid'], (int)$_POST['score'], $_POST['comment_text'] ) );
                         
                         header('Location: ?action=userProfile&user='.$_COOKIE["username"]);
                         die();
                     } else {
+                        $this->_uid = (int)$_POST['uid'];
+                        $this->_eid = (int)$_POST['eid'];
                         $notification = "Your comment was too short !";
                         
                     }
