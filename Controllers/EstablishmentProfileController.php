@@ -74,7 +74,7 @@
 
             $comments = Db::getInstance()->getCommentsOnEstablishment($id);
             echo "<h2>Comments</h2>";
-            if (count($comments) == 0){
+            if (empty($comments)){
                 echo "No comments available";
             }else{
                 echo "<b>Average Score : </b>".round($comments[0]['average'],2)."<br><br>";

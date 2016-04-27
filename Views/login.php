@@ -1,12 +1,5 @@
 <div class="container">
-    <?php 
-            if(isset($notification)){
-                //echo "<p>" . $notification . "</p>";
-                echo "      <div class='alert alert-danger' role='alert'>";
-                echo            $notification;
-                echo "      </div> ";
-            }
-    ?>
+    
     <form action="?action=login" method="post" class="form-signin">
         <h2 class="form-signin-heading">Login Page</h2>
         <p>Welcome, please enter your credentials.</p>

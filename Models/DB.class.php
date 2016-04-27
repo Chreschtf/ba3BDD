@@ -483,7 +483,7 @@ class Db
     }
     
     public function getCommentsOnEstablishment($eid){
-        $query = "SELECT c.*,u.nickname, AVG(c.score) AS average
+        $query = "SELECT c.*, u.nickname, AVG(c.score) AS average
                 FROM comments c, users u 
                 WHERE c.eid = :eid and c.uid = u.uid";
         $stmt = $this->_db->prepare($query);
@@ -571,6 +571,17 @@ class Db
             return true;
         }      
         return false;
+    }
+    
+    public function getEstablishment($eid){
+        $query = "SELECT *
+                FROM establishments 
+                WHERE eid = :eid ";
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid",$eid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;  
     }
     
     

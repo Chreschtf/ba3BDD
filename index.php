@@ -42,13 +42,13 @@
             $controller = new LogoutController();
             break;
         case 'barProfile':
-            $barId = (isset($_GET['barId'])) ? htmlentities($_GET['barId']) : '';
+            $barId = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
             require_once("Controllers/BarProfileController.php");
             $controller = new BarProfileController();
             $controller->setId($barId);
             break;
         case 'restaurantProfile':
-            $restaurantId = (isset($_GET['restaurantId'])) ? htmlentities($_GET['restaurantId']) : '';
+            $restaurantId = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
             require_once("Controllers/RestaurantProfileController.php");
             $controller = new RestaurantProfileController();
             $controller->setId($restaurantId);

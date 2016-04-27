@@ -8,6 +8,19 @@
             $this->_uid = $uid;
             $this->_eid = $eid;
         }
+        
+        
+        private function getEstabType($data){
+            $type = "";
+            if ( $data['horeca_type'] == 'Bar' ) {
+                $type = "barProfile";
+            } else if ( $data['horeca_type'] == 'Restaurant' ) {
+                $type = "restaurantProfile";
+            } else { // Hotel
+                $type = "hotelProfile";
+            }
+            return $type;
+        }
     
         public function run() {
             require_once('Controllers/CookieController.php');
@@ -21,31 +34,33 @@
                 $notification = "";
                 
                 if ( ! empty ( $_POST )) {
+                    $this->_uid = (int)$_POST['uid'];
+                    $this->_eid = (int)$_POST['eid'];
                     if ( isset($_POST['createTag']) ) { // create new tag
                         if( strlen($_POST['tag_name']) >= 3 && ! Db::getInstance()->checkIftagExists($_POST['tag_name']) ){
                             $tid = Db::getInstance()->insertTag( array($_POST['tag_name']) );
                             Db::getInstance()->insertEstablishmentTag( array( $tid,  (int)$_POST['eid'], (int)$_POST['uid'] ) );
                             
-                            header('Location: ?action=userProfile&user='.$_COOKIE["username"]);
+                            $type =  $this->getEstabType( Db::getInstance()->getEstablishment($this->_eid) );
+                        
+                            header('Location: ?action=' . $type . '&eid=' . $this->_eid);
                             die();
                         } else {
                             if (Db::getInstance()->checkIftagExists($_POST['tag_name']))
                                 $notification = "This tagname exists already";
                             else
                                 $notification = "The tagname was not long enough";
-                            $this->_uid = (int)$_POST['uid'];
-                            $this->_eid = (int)$_POST['eid'];
                         }
                         
                     } elseif (  isset($_POST['useTag']) ) { // use existing tag
                         if( Db::getInstance()->checkIftagExistsTID( (int)$_POST['tag'] ) ){
                             Db::getInstance()->insertEstablishmentTag( array( (int)$_POST['tag'], (int)$_POST['eid'], (int)$_POST['uid'] ) );
 
-                            header('Location: ?action=userProfile&user='.$_COOKIE["username"]);
+                            $type =  $this->getEstabType( Db::getInstance()->getEstablishment($this->_eid) );
+                        
+                            header('Location: ?action=' . $type . '&eid=' . $this->_eid);
                             die();
                         } else {
-                            $this->_uid = (int)$_POST['uid'];
-                            $this->_eid = (int)$_POST['eid'];
                             $notification = "You didn't select a tag";
                         }
                     }
