@@ -125,7 +125,25 @@
         }
         
         private function searchHotels($searchQuery){
-            
+            $hotels = Db::getInstance()->getHotels($searchQuery);
+             if (count($hotels)!=0){
+                echo "<h3>Hotels</h3>";
+                $this->standardTableEcho();
+                echo "<td> <b>Stars</b> </td>";
+                echo "<td> <b>Rooms</b> </td>";
+                echo "<td> <b>Standard Price</b> </td>";
+                echo "</tr>";
+                for ($i=0;$i<count($hotels);$i++){
+                    echo "<tr>";
+                    echo "<td> <a href='?action=hotelProfile&hotelId=".$hotels[$i]["eid"]."'>".$hotels[$i]['ename']."</a>  </td>";
+                    $this->standardEstablishmentInfo($hotels[$i]);
+                    echo "<td>".$hotels[$i]['stars']." € </td>";
+                    echo "<td>".$hotels[$i]['rooms']." </td>"; 
+                    echo "<td>".$hotels[$i]['standard_price']." € </td>"; 
+                    echo "</tr>";
+                }
+                echo "</table>";
+            }
         }
         
         private function standardTableEcho(){
@@ -146,7 +164,7 @@
             echo "<td> ".$info['city']."  </td>";
             echo "<td> ".$info['zip']."  </td>";
             echo "<td> ".$info['tel']."  </td>";
-            echo "<td> ".$info['site']."  </td>";
+            echo "<td> <a href='http://".trim($info['site'])."'>".$info['site']."</a> </td>";
         }
     }
 ?>

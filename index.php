@@ -47,6 +47,12 @@
             $controller = new BarProfileController();
             $controller->setId($barId);
             break;
+        case 'hotelProfile':
+            $hotelId = (isset($_GET['hotelId'])) ? htmlentities($_GET['hotelId']) : '';
+            require_once("Controllers/HotelProfileController.php");
+            $controller = new HotelProfileController();
+            $controller->setId($hotelId);
+            break;
         case 'restaurantProfile':
             $restaurantId = (isset($_GET['restaurantId'])) ? htmlentities($_GET['restaurantId']) : '';
             require_once("Controllers/RestaurantProfileController.php");

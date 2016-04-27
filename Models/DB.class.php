@@ -394,6 +394,21 @@ class Db
         return $result;
     }
     
+    public function getHotels($searchQuery){
+        $query = "SELECT e.*, h.* 
+                FROM establishments e, hotels h 
+                WHERE e.horeca_type = 'Hotel' AND 
+                (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query) 
+                AND e.eid = h.eid";
+        $newQuery='%'.$searchQuery.'%';
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':query',$newQuery);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $result;
+    }
+    
     public function getUsersWithSimilarName($name){
         $query = "SELECT * 
                   FROM users 
@@ -453,6 +468,19 @@ class Db
                   FROM establishments,restaurants 
                   WHERE establishments.eid = :eid AND
                   restaurants.eid = establishments.eid";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid",$eid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;
+    }
+    
+    public function getHotelData($eid){
+        $query = "SELECT * 
+                  FROM establishments,hotels 
+                  WHERE establishments.eid = :eid AND
+                  hotels.eid = establishments.eid";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid",$eid);
