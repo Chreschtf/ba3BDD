@@ -12,7 +12,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         
-        <link rel="icon" href="../images/horeca.ico">
+        <link rel="icon" href="../ba3BDD/images/horeca.ico">
 
         <link href="../ba3BDD/css/bootstrap.min.css" type="text/css" rel="stylesheet">
         

@@ -59,7 +59,15 @@
                 
                 echo "<div class='wrapper'>";
                 echo "    <h2>Tag " . Db::getInstance()->getEstablishmentWihtEID($this->_eid) . "</h2>";
-                echo "    <div style='color:#FF0000'>" . $notification . "</div> ";
+                //echo "    <div style='color:#FF0000'>" . $notification . "</div> ";
+
+                if(isset($notification) && $notification != ""){
+                    //echo "<p>" . $notification . "</p>";
+                    echo "      <div class='alert alert-danger' role='alert'>";
+                    echo            $notification;
+                    echo "      </div> ";
+                }
+                
                 echo "    <form action='?action=createTag' method='post' class='form-control'>";
                 //echo "        <p> ";
                 echo "            Choose from the existing tags : ";

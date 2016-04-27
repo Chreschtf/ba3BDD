@@ -3,6 +3,8 @@
         <input type='hidden' name='eid' value=<?php echo $eid ?> >
         <input type='submit' name='useTag' value='Submit'>
     </form>
+    <p></p>
+    <p></p>
     <form action='?action=createTag' method='post' class='form-control'>
 
             Create a new Tag : <input type='text' name='tag_name' required/>
