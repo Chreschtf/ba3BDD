@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.hotels (
     eid INT(6) NOT NULL,
     stars INT(1) NOT NULL,
     rooms INT(3) NOT NULL,
-    standart_price INT(3) NOT NULL,
+    standard_price INT(3) NOT NULL,
     PRIMARY KEY (eid),
     FOREIGN KEY (eid) REFERENCES establishments(eid)
 );
