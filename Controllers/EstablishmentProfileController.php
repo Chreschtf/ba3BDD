@@ -6,26 +6,23 @@
             
             // temporary :
             
-            echo "<td> <a href='?action=createComment&eid=".$data['eid']."&uid=".$uid."'>Write a new Comment</a> </td>";
-            echo "<td> <a href='?action=createTag&eid=".$data['eid']."&uid=".$uid."'>Tag this establishment</a> </td>";
-            
-            
-            // echo "<div class = 'two-col'>";
-            // echo "<form action='?action=createComment' method=get>";
-            // echo "      <div class='col1'>";
-            // echo "          <input type='hidden' name='eid' value='".(int)$data['eid']."'>";
-            // echo "          <input type='hidden' name='uid' value='".(int)$data['uid']."'>";
-            // echo "          <input type='submit' value='Write a new Comment' >";
-            // echo "      </div>";
-            // echo "</form>";
-            // echo "<form action='?action=createTag' method=get>";
-            // echo "      <div class='col2'>";
-            // echo "          <input type='hidden' name='eid' value='".(int)$data['eid']."'>";
-            // echo "          <input type='hidden' name='uid' value='".(int)$data['uid']."'>";
-            // echo "          <input type='submit' value='Tag this establishment' >";
-            // echo "      </div>";
-            // echo "</form>";
-            // echo "</div>";
+            echo "<div class = 'row'>";
+            echo "      <div class='col-xs-8 col-sm-2'>";
+            echo "<form action='?action=createComment' method='post' >\n";
+            echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";
+            echo "    <input type='hidden' name='uid' value='".$uid."'>\n";
+            echo "    <button type='submit' class='btn btn-success'>Write a new Comment</button>\n";
+            echo "</form>\n";
+            echo "      </div>";
+                        
+            echo "      <div class='col-xs-8 col-sm-2'>";
+            echo "<form action='?action=createTag' method='post' >\n";
+            echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";
+            echo "    <input type='hidden' name='uid' value='".$uid."'>\n";
+            echo "    <button type='submit' class='btn btn-warning'>Tag this establishment</button>\n";
+            echo "</form>\n";
+            echo "      </div>";
+            echo "</div>";
 
             
             // end temporary

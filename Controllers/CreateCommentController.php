@@ -30,7 +30,7 @@
             }else{
                 $notification = "";
                 
-                if ( ! empty ( $_POST )) {
+                if ( ! empty ( $_POST ) && isset($_POST['comment_text']) ) {
                     $this->_uid = (int)$_POST['uid'];
                     $this->_eid = (int)$_POST['eid'];
                     if ( strlen($_POST['comment_text']) > 5 ){

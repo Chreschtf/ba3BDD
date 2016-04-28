@@ -54,8 +54,8 @@
             $controller->setId($restaurantId);
             break;
         case 'createComment':
-            $uid = (isset($_GET['uid'])) ? htmlentities($_GET['uid']) : '';
-            $eid = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
+            $uid = (isset($_POST['uid'])) ? htmlentities($_POST['uid']) : '';
+            $eid = (isset($_POST['eid'])) ? htmlentities($_POST['eid']) : '';
             require_once('Controllers/CreateCommentController.php');
             $controller = new CreateCommentController($uid,$eid);
             break;
