@@ -74,7 +74,7 @@
                 echo "</tr>";
                 for ($i=0;$i<count($bars);$i++) {
                     echo "<tr>";
-                    echo "<td> <a href='?action=barProfile&barId=".$bars[$i]["eid"]."'>".$bars[$i]['ename']."</a>  </td>";
+                    echo "<td> <a href='?action=barProfile&eid=".$bars[$i]["eid"]."'>".$bars[$i]['ename']."</a>  </td>";
                     $this->standardEstablishmentInfo($bars[$i]);
                     if ($bars[$i]['smoking']){
                         echo "<td> Yes  </td>";
@@ -104,7 +104,7 @@
                 echo "</tr>";
                 for ($i=0;$i<count($restaurants);$i++){
                     echo "<tr>";
-                    echo "<td> <a href='?action=restaurantProfile&restaurantId=".$restaurants[$i]["eid"]."'>".$restaurants[$i]['ename']."</a>  </td>";
+                    echo "<td> <a href='?action=restaurantProfile&eid=".$restaurants[$i]["eid"]."'>".$restaurants[$i]['ename']."</a>  </td>";
                     $this->standardEstablishmentInfo($restaurants[$i]);
                     echo "<td>".$restaurants[$i]['price_range']." € </td>";
                     echo "<td>".$restaurants[$i]['banquet_capacity']." </td>";

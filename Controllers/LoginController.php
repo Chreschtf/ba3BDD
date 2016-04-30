@@ -4,7 +4,7 @@
         }
 
         public function run() {
-            
+            $notification = "";
             if (empty ( $_POST )) {#if no connexion is attempted
                 $notification = 'Please Log in';
             }

@@ -4,6 +4,7 @@
     public function __construct($user) {
         $this->_user = $user;
     }
+    
     public function run() {
         require_once('Controllers/CookieController.php');
         $controller = new CookieController();

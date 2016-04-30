@@ -42,7 +42,7 @@
             $controller = new LogoutController();
             break;
         case 'barProfile':
-            $barId = (isset($_GET['barId'])) ? htmlentities($_GET['barId']) : '';
+            $barId = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
             require_once("Controllers/BarProfileController.php");
             $controller = new BarProfileController();
             $controller->setId($barId);
@@ -54,14 +54,14 @@
             $controller->setId($hotelId);
             break;
         case 'restaurantProfile':
-            $restaurantId = (isset($_GET['restaurantId'])) ? htmlentities($_GET['restaurantId']) : '';
+            $restaurantId = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
             require_once("Controllers/RestaurantProfileController.php");
             $controller = new RestaurantProfileController();
             $controller->setId($restaurantId);
             break;
         case 'createComment':
-            $uid = (isset($_GET['uid'])) ? htmlentities($_GET['uid']) : '';
-            $eid = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
+            $uid = (isset($_POST['uid'])) ? htmlentities($_POST['uid']) : '';
+            $eid = (isset($_POST['eid'])) ? htmlentities($_POST['eid']) : '';
             require_once('Controllers/CreateCommentController.php');
             $controller = new CreateCommentController($uid,$eid);
             break;
@@ -70,6 +70,10 @@
             $eid = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
             require_once('Controllers/CreateTagController.php');
             $controller = new CreateTagController($uid,$eid);
+            break;
+        case 'queryScreen':
+            require_once('Controllers/QueryController.php');
+            $controller = new QueryController();
             break;
         default: # 
             require_once('Controllers/LoginController.php');

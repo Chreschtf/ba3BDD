@@ -1,12 +1,9 @@
 <div class="container">
-
+    
     <form action="?action=login" method="post" class="form-signin">
         <h2 class="form-signin-heading">Login Page</h2>
         <p>Welcome, please enter your credentials.</p>
-        <?php 
-            if(isset($notification))
-                echo "<p>" . $notification . "</p>"; 
-        ?>
+        
         
         <label for="username" class="sr-only">Username</label>
         <input type="text" id="username" class="form-control" name="username" placeholder="Username" required autofocus>

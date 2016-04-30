@@ -9,6 +9,18 @@
             $this->_eid = $eid;
         }
         
+        private function getEstabType($data){
+            $type = "";
+            if ( $data['horeca_type'] == 'Bar' ) {
+                $type = "barProfile";
+            } else if ( $data['horeca_type'] == 'Restaurant' ) {
+                $type = "restaurantProfile";
+            } else { // Hotel
+                $type = "hotelProfile";
+            }
+            return $type;
+        }
+        
         public function run() {
             require_once('Controllers/CookieController.php');
             $controller = new CookieController();
@@ -18,15 +30,17 @@
             }else{
                 $notification = "";
                 
-                if ( ! empty ( $_POST )) {
+                if ( ! empty ( $_POST ) && isset($_POST['comment_text']) ) {
+                    $this->_uid = (int)$_POST['uid'];
+                    $this->_eid = (int)$_POST['eid'];
                     if ( strlen($_POST['comment_text']) > 5 ){
                         Db::getInstance()->insertCommentNow( array( (int)$_POST['uid'], (int)$_POST['eid'], (int)$_POST['score'], $_POST['comment_text'] ) );
                         
-                        header('Location: ?action=userProfile&user='.$_COOKIE["username"]);
+                        $type =  $this->getEstabType( Db::getInstance()->getEstablishment($this->_eid) );
+                        
+                        header('Location: ?action=' . $type . '&eid=' . $this->_eid);
                         die();
                     } else {
-                        $this->_uid = (int)$_POST['uid'];
-                        $this->_eid = (int)$_POST['eid'];
                         $notification = "Your comment was too short !";
                         
                     }

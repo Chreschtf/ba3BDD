@@ -12,7 +12,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         
-        <link rel="icon" href="../images/horeca.ico">
+        <link rel="icon" href="../ba3BDD/images/horeca.ico">
 
         <link href="../ba3BDD/css/bootstrap.min.css" type="text/css" rel="stylesheet">
         
@@ -44,6 +44,7 @@
                     if(isset($_COOKIE['username'])){
                         echo "<li class='active'><a href='?action=userProfile&user=" . $_COOKIE['username'] . "'>Home</a></li>";
                         echo "<li><a href='?action=search'>Search</a></li>";
+                        echo "<li><a href='?action=queryScreen'>Queries</a></li>";
                         echo "<li><a href='?action=logout'>Logout</a></li>";
                     } else{
                         echo "<li class='active'><a href='?index.php'>Home</a></li>";

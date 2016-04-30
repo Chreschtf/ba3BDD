@@ -511,9 +511,14 @@ class Db
     }
     
     public function getCommentsOnEstablishment($eid){
-        $query = "SELECT c.*,u.nickname, AVG(c.score) AS average
-                FROM comments c, users u 
-                WHERE c.eid = :eid and c.uid = u.uid";
+        $query = "SELECT c.*, u.nickname, subquery.average
+                FROM comments c, users u, (
+                    SELECT AVG(c2.score) as average
+                    FROM comments c2
+                    WHERE c2.eid = :eid
+                ) AS subquery
+                WHERE c.eid = :eid and c.uid = u.uid
+                GROUP BY c.cid";
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid",$eid);
         $stmt->execute();
@@ -601,6 +606,17 @@ class Db
         return false;
     }
     
+    public function getEstablishment($eid){
+        $query = "SELECT *
+                FROM establishments 
+                WHERE eid = :eid ";
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid",$eid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;  
+    }
+    
     
     
     /*
@@ -623,7 +639,7 @@ class Db
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     public function R2(){
@@ -644,7 +660,7 @@ class Db
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     public function R3(){
@@ -666,7 +682,7 @@ class Db
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     public function R4(){
@@ -686,7 +702,7 @@ class Db
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     public function R5(){
@@ -701,7 +717,7 @@ class Db
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();         
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);         
     }
     
     public function R6(){
@@ -719,7 +735,7 @@ class Db
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();  
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);  
     }   
     
 
