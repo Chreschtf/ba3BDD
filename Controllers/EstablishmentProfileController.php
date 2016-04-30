@@ -53,7 +53,7 @@
             if ($data['site']!=NULL){
                 echo "<tr>";
                     echo "<td><b>Web site : </b></td>";
-                    echo "<td> <a href='http://".trim($data['site'])."'>".$data['site']."</a> </td>";
+                    echo "<td> <a href='".trim($data['site'])."'>".$data['site']."</a> </td>";
                 echo "</tr>";
             }
             echo "<tr>";
