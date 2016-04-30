@@ -483,9 +483,14 @@ class Db
     }
     
     public function getCommentsOnEstablishment($eid){
-        $query = "SELECT c.*, u.nickname, AVG(c.score) AS average
-                FROM comments c, users u 
-                WHERE c.eid = :eid and c.uid = u.uid";
+        $query = "SELECT c.*, u.nickname, subquery.average
+                FROM comments c, users u, (
+                    SELECT AVG(c2.score) as average
+                    FROM comments c2
+                    WHERE c2.eid = :eid
+                ) AS subquery
+                WHERE c.eid = :eid and c.uid = u.uid
+                GROUP BY c.cid";
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid",$eid);
         $stmt->execute();
