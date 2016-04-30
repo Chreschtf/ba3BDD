@@ -606,7 +606,7 @@ class Db
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     public function R2(){
@@ -627,7 +627,7 @@ class Db
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     public function R3(){
@@ -649,7 +649,7 @@ class Db
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     public function R4(){
@@ -669,7 +669,7 @@ class Db
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     public function R5(){
@@ -684,7 +684,7 @@ class Db
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();         
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);         
     }
     
     public function R6(){
@@ -702,7 +702,7 @@ class Db
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();  
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);  
     }   
     
 

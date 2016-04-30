@@ -65,6 +65,10 @@
             require_once('Controllers/CreateTagController.php');
             $controller = new CreateTagController($uid,$eid);
             break;
+        case 'queryScreen':
+            require_once('Controllers/QueryController.php');
+            $controller = new QueryController();
+            break;
         default: # 
             require_once('Controllers/LoginController.php');
             $controller = new LoginController();
