@@ -553,6 +553,36 @@ class Db
         $stmt->execute();
     }
     
+    public function deleteRestaurantWithEID($eid){
+        $query = "DELETE 
+                  FROM restaurants 
+                  WHERE eid= :eid";
+                 
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
+    }
+    
+    public function deleteBarWithEID($eid){
+        $query = "DELETE 
+                  FROM bars 
+                  WHERE eid= :eid";
+                 
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
+    }
+    
+    public function deleteHotelWithEID($eid){
+        $query = "DELETE 
+                  FROM hotels 
+                  WHERE eid= :eid";
+                 
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
+    }
+    
     public function modifyEstablishmentAttributes($changeAttributNames, $changeAttributValues, $searchAttributNames, $searchAttributValues){
         $query = 'UPDATE establishments 
                   SET '.

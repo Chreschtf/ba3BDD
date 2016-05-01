@@ -75,6 +75,15 @@
             require_once('Controllers/QueryController.php');
             $controller = new QueryController();
             break;
+        case 'deleteEstablishment':
+            require_once('Controllers/DeleteEstabController.php');
+            $controller = new DeleteEstabController();
+            break;
+        case 'modifyEstablishment':
+            require_once('Controllers/DeleteEstabController.php');
+            $controller = new DeleteEstabController();
+            break;
+            
         default: # 
             require_once('Controllers/LoginController.php');
             $controller = new LoginController();
