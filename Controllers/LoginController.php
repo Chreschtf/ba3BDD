@@ -4,9 +4,13 @@
         }
 
         public function run() {
+            
             $notification = "";
-            if (empty ( $_POST )) {#if no connexion is attempted
-                $notification = 'Please Log in';
+            require_once (VIEWSPATH . 'login.php');
+            
+            if (empty ( $_POST ) || !isset($_POST['username']) || !isset($_POST['password']) ) {#if no connexion is attempted
+                $notification = "Not sucessful";
+                die();
             }
             elseif (DB::getInstance()->validLogin((htmlentities ( $_POST ['username'] )), (htmlentities ( $_POST ['password'] )))) {
                 if (isset($_POST['rememberme'])) {
@@ -20,12 +24,7 @@
                 }
                 header('Location: ?action=userProfile&user='.$_POST['username']);
                 die();
-            }else{
-
             }
-            
-            require_once (VIEWSPATH . 'login.php');
-            
         }
     }
 ?>

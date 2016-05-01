@@ -2,6 +2,7 @@
     class EstablishmentProfileController{
         private function __construct(){
         }
+        
         public static function displayGenericInfo($data, $uid){
             
             // temporary :
@@ -23,6 +24,27 @@
             echo "</form>\n";
             echo "      </div>";
             echo "</div>";
+            
+            if(Db::getInstance()->isAdmin($uid)){
+                echo "      <div class='col-xs-8 col-sm-2'>";
+                echo "<form action='?action=modifyEstablishment' method='post' >\n";
+                echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";
+                echo "    <input type='hidden' name='uid' value='".$uid."'>\n";
+                echo "    <button type='submit' class='btn btn-warning'>Modify information</button>\n";
+                echo "</form>\n";
+                echo "      </div>";
+                echo "</div>";
+                
+                echo "      <div class='col-xs-8 col-sm-2'>";
+                echo "<form action='?action=deleteEstablishment' method='post' >\n";
+                echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";
+                echo "    <input type='hidden' name='uid' value='".$uid."'>\n";
+                echo "    <button type='submit' class='btn btn-warning'>Delete</button>\n";
+                echo "</form>\n";
+                echo "      </div>";
+                echo "</div>";
+            }
+            
 
             
             // end temporary
