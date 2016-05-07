@@ -45,6 +45,8 @@
                         echo "<li class='active'><a href='?action=userProfile&user=" . $_COOKIE['username'] . "'>Home</a></li>";
                         echo "<li><a href='?action=search'>Search</a></li>";
                         echo "<li><a href='?action=queryScreen'>Queries</a></li>";
+                        if (Db::getInstance()->isAdminByNickname($_COOKIE["username"]))
+                            echo "<li><a href='?action=createEstablishment'>Create Establishment</a></li>";
                         echo "<li><a href='?action=logout'>Logout</a></li>";
                     } else{
                         echo "<li class='active'><a href='?index.php'>Home</a></li>";

@@ -83,7 +83,10 @@
             require_once('Controllers/DeleteEstabController.php');
             $controller = new DeleteEstabController();
             break;
-            
+        case 'createEstablishment':
+            require_once('Controllers/CreateEstablishmentController.php');
+            $controller = new CreateEstablishmentController();
+            break;
         default: # 
             require_once('Controllers/LoginController.php');
             $controller = new LoginController();

@@ -51,7 +51,7 @@ class QueryController
             $this->showTags($result,
                                        "R6",
                                        "All the tags that have been used on at least 5 different establishments 
-                                       sorted by the average score of the establishments beeing tagged by this tag.");
+                                       sorted by the average score of the establishments being tagged by this tag.");
             
             echo "</div>";
             }

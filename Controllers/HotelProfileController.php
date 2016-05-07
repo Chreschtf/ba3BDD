@@ -21,6 +21,7 @@
                 
                 EstablishmentProfileController::displayGenericInfo($hotelData, Db::getinstance()->getUIDof($_COOKIE['username']));
                 $this->displayHotelSpecificInfo($hotelData);
+                EstablishmentProfileController::displayClosingDays($hotelData['eid']);
                 EstablishmentProfileController::displayTags($hotelData['eid']);
                 EstablishmentProfileController::displayComments($hotelData['eid']);
             }

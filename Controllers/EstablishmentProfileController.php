@@ -87,8 +87,86 @@
                 echo "<td>".$data['latitude']."</td>";
             echo "</tr>";
             echo "</div>";
-                        
+                       
         }
+        
+        public static function displayClosingDays($eid){
+            $closingDays = Db::getInstance()->getClosingDays($eid);
+            if (count($closingDays)>0){
+                echo "<h2>Closing hours</h2>";
+                echo "<p></p>";
+                echo "<table>";
+                echo "<div class='col-md-6'>";
+                echo '<table class="table table-striped" style="width:*%">';
+                
+                for ($i =0;$i<count($closingDays);$i++){
+                    if ($closingDays[$i]['closing_day']=='MON'){   
+                        echo "<tr>";
+                            echo "<td><b>Mondays : </b></td>";
+                            echo "<td>".$closingDays[$i]['hour']."</td>";
+                        echo "</tr>";               
+                    }
+                }
+                
+                for ($i =0;$i<count($closingDays);$i++){
+                    if ($closingDays[$i]['closing_day']=='TUE'){   
+                        echo "<tr>";
+                            echo "<td><b>Tuesdays : </b></td>";
+                            echo "<td>".$closingDays[$i]['hour']."</td>";
+                        echo "</tr>";               
+                    }
+                }
+                
+                for ($i =0;$i<count($closingDays);$i++){
+                    if ($closingDays[$i]['closing_day']=='WED'){   
+                        echo "<tr>";
+                            echo "<td><b>Wednesdays : </b></td>";
+                            echo "<td>".$closingDays[$i]['hour']."</td>";
+                        echo "</tr>";               
+                    }
+                }
+                
+                for ($i =0;$i<count($closingDays);$i++){
+                    if ($closingDays[$i]['closing_day']=='THU'){   
+                        echo "<tr>";
+                            echo "<td><b>Thursdays : </b></td>";
+                            echo "<td>".$closingDays[$i]['hour']."</td>";
+                        echo "</tr>";               
+                    }
+                }
+                
+                for ($i =0;$i<count($closingDays);$i++){
+                    if ($closingDays[$i]['closing_day']=='FRI'){   
+                        echo "<tr>";
+                            echo "<td><b>Fridays : </b></td>";
+                            echo "<td>".$closingDays[$i]['hour']."</td>";
+                        echo "</tr>";               
+                    }
+                }
+                
+                for ($i =0;$i<count($closingDays);$i++){
+                    if ($closingDays[$i]['closing_day']=='SAT'){   
+                        echo "<tr>";
+                            echo "<td><b>Saturdays : </b></td>";
+                            echo "<td>".$closingDays[$i]['hour']."</td>";
+                        echo "</tr>";               
+                    }
+                }
+                
+                for ($i =0;$i<count($closingDays);$i++){
+                    if ($closingDays[$i]['closing_day']=='SUN'){   
+                        echo "<tr>";
+                            echo "<td><b>Sundays : </b></td>";
+                            echo "<td>".$closingDays[$i]['hour']."</td>";
+                        echo "</tr>";               
+                    }
+                }
+                
+                echo "</div>";
+                echo "</table>";
+            }
+        }
+        
         public static function displayComments($id){
 
             $comments = Db::getInstance()->getCommentsOnEstablishment($id);

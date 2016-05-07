@@ -21,6 +21,7 @@
                 
                 EstablishmentProfileController::displayGenericInfo($barData, Db::getinstance()->getUIDof($_COOKIE['username']));
                 $this->displayBarSpecificInfo($barData);
+                EstablishmentProfileController::displayClosingDays($barData['eid']);
                 EstablishmentProfileController::displayTags($barData['eid']);
                 EstablishmentProfileController::displayComments($barData['eid']);
             }

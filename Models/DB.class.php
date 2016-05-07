@@ -340,7 +340,7 @@ class Db
             -------
     */
     
-    public function getEstablishmentsWithSimilarName($name,$type){
+    /*public function getEstablishmentsWithSimilarName($name,$type){
         $query = "SELECT * 
                   FROM establishments 
                   WHERE ename LIKE :name";
@@ -351,7 +351,7 @@ class Db
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
-    }
+    }*/
     
     public function getEstablishmentWihtEID($eid){
         $query = "SELECT ename 
@@ -537,6 +537,17 @@ class Db
         return $result;      
     }
     
+    public function getClosingDays($eid){
+        $query = "SELECT * 
+                  FROM `restaurant_closing_days` 
+                  WHERE eid = :eid";
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid",$eid);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;  
+    }
+    
     
     /*
             UPDATES / DELETES
@@ -599,7 +610,19 @@ class Db
                   WHERE uid = :uid";
                   
         $stmt = $this->_db->prepare($query);
-        $stmt->bindParam("uid", $uid);
+        $stmt->bindParam(":uid", $uid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return ($result['admin'] == 1);
+    }
+    
+    public function isAdminByNickname($nickname){
+        $query = "SELECT *
+                  FROM users
+                  WHERE nickname = :nickname";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":nickname", $nickname);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return ($result['admin'] == 1);

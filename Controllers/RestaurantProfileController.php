@@ -20,6 +20,7 @@
                 $restaurantData=Db::getInstance()->getRestaurantData($this->_id);
                 EstablishmentProfileController::displayGenericInfo($restaurantData, Db::getinstance()->getUIDof($_COOKIE['username']));
                 $this->displayRestaurantSpecificInfo($restaurantData);
+                EstablishmentProfileController::displayClosingDays($restaurantData['eid']);
                 EstablishmentProfileController::displayTags($restaurantData['eid']);
                 EstablishmentProfileController::displayComments($restaurantData['eid']);
             }
