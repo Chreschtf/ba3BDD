@@ -63,7 +63,7 @@ class Db
         return $this->_db->lastInsertId();
     }
 
-    public function insertEstablishment($array) {
+    public function insertEstablishmentWithDate($array) {
         $query="INSERT INTO establishments 
                 (ename, street, house_num, zip, city, longitude, latitude, tel, site, uid, entry_date, horeca_type) 
                 VALUES 
@@ -82,6 +82,28 @@ class Db
         $statement->bindParam(':uid', $array[9]);
         $statement->bindParam(':entry_date', $array[10]);
         $statement->bindParam(':horeca_type', $array[11]);
+        $statement->execute();
+        return $this->_db->lastInsertId();
+    }
+
+    public function insertEstablishmentWithoutDate($array) {
+        $query="INSERT INTO establishments 
+                (ename, street, house_num, zip, city, longitude, latitude, tel, site, uid, horeca_type) 
+                VALUES 
+                (:ename, :street, :house_num, :zip, :city, :longitude, :latitude, :tel, :site, :uid, :horeca_type)";
+        $statement = $this->_db->prepare($query);
+
+        $statement->bindParam(':ename', $array[0]);
+        $statement->bindParam(':street', $array[1]);
+        $statement->bindParam(':house_num', $array[2]);
+        $statement->bindParam(':zip', $array[3]);
+        $statement->bindParam(':city', $array[4]);
+        $statement->bindParam(':longitude', $array[5]);
+        $statement->bindParam(':latitude', $array[6]);
+        $statement->bindParam(':tel', $array[7]);
+        $statement->bindParam(':site', $array[8]);
+        $statement->bindParam(':uid', $array[9]);
+        $statement->bindParam(':horeca_type', $array[10]);
         $statement->execute();
         return $this->_db->lastInsertId();
     }
@@ -132,15 +154,15 @@ class Db
 
     public function insertHotel($array){
         $query="INSERT INTO hotels 
-                (eid, stars, rooms, standart_price) 
+                (eid, stars, rooms, standard_price) 
                 VALUES 
-                (:eid, :stars, :rooms, :standart_price)";
+                (:eid, :stars, :rooms, :standard_price)";
         $statement= $this->_db->prepare($query);
 
         $statement->bindParam(':eid',  $array[0]);
         $statement->bindParam(':stars',  $array[1]);
         $statement->bindParam(':rooms',  $array[2]);
-        $statement->bindParam(':standart_price',  $array[3]);
+        $statement->bindParam(':standard_price',  $array[3]);
 
         $statement->execute();
     }

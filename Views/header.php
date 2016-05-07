@@ -45,8 +45,18 @@
                         echo "<li class='active'><a href='?action=userProfile&user=" . $_COOKIE['username'] . "'>Home</a></li>";
                         echo "<li><a href='?action=search'>Search</a></li>";
                         echo "<li><a href='?action=queryScreen'>Queries</a></li>";
-                        if (Db::getInstance()->isAdminByNickname($_COOKIE["username"]))
-                            echo "<li><a href='?action=createEstablishment'>Create Establishment</a></li>";
+                        
+                        if (Db::getInstance()->isAdminByNickname($_COOKIE["username"])){
+                            echo "<li class='dropdown' id='menu1'>";
+                            echo "<a  href='#menu1' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='true'>Create Establishment<span class='caret'></span></a>";
+                            echo "<ul class='dropdown-menu'>";
+                            echo "    <li><a href='?action=createEstablishment&horeca_type=Restaurant' >Create Restaurant</a></li>";
+                            echo "    <li><a href='?action=createEstablishment&horeca_type=Bar' >Create Bar</a></li>";
+                            echo "    <li><a href='?action=createEstablishment&horeca_type=Hotel' >Create Hotel</a></li>";
+                            echo "</ul>";
+                            echo "</li>";
+                        }
+                        
                         echo "<li><a href='?action=logout'>Logout</a></li>";
                     } else{
                         echo "<li class='active'><a href='?index.php'>Home</a></li>";

@@ -11,7 +11,7 @@
             <div class="control-group">
               <label class="control-label" for="username">Username (length: 6-32)</label>
               <div class="controls">
-                <input type="text" id="username" name="nickname" placeholder="" class="form-control input-lg">
+                <input type="text" id="username" name="nickname" placeholder="" required class="form-control input-lg">
                 <p class="help-block"><?php echo $nicknameErr;?></p>
               </div>
             </div>
@@ -19,7 +19,7 @@
             <div class="control-group">
               <label class="control-label" for="password">Password (length: 6-32)</label>
               <div class="controls">
-                <input type="password" id="password" name="password" placeholder="" class="form-control input-lg">
+                <input type="password" id="password" name="password" placeholder="" required class="form-control input-lg">
                 <p class="help-block"><?php echo $passwordErr;?></p>
               </div>
             </div>
@@ -27,7 +27,7 @@
             <div class="control-group">
               <label class="control-label" for="password_confirm">Password (Confirm)</label>
               <div class="controls">
-                <input type="password" id="password_confirm" name="passwordconfirm" placeholder="" class="form-control input-lg">
+                <input type="password" id="password_confirm" name="passwordconfirm" required placeholder="" class="form-control input-lg">
                 <p class="help-block">Please confirm password</p>
               </div>
             </div>
@@ -35,7 +35,7 @@
             <div class="control-group">
               <label class="control-label" for="email">E-mail</label>
               <div class="controls">
-                <input type="email" id="email" name="email" placeholder="" class="form-control input-lg">
+                <input type="email" id="email" name="email" placeholder="" required class="form-control input-lg">
                 <p class="help-block"><?php echo $emailErr;?></p>
               </div>
             </div>

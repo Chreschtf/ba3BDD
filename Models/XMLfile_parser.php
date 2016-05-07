@@ -95,7 +95,7 @@
         $entry_date = convertDate($estab['creationDate']);
         $data = array($ename, $street, $house_num, $zip, $city, 
                       $longitude, $latitude, $tel, $site,  (int)$uid, $entry_date, $horeca_type);
-        return Db::getInstance()->insertEstablishment($data);
+        return Db::getInstance()->insertEstablishmentWithDate($data);
     }
     
     function createBar($estab, $eid){

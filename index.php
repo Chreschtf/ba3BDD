@@ -48,7 +48,7 @@
             $controller->setId($barId);
             break;
         case 'hotelProfile':
-            $hotelId = (isset($_GET['hotelId'])) ? htmlentities($_GET['hotelId']) : '';
+            $hotelId = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
             require_once("Controllers/HotelProfileController.php");
             $controller = new HotelProfileController();
             $controller->setId($hotelId);
@@ -84,8 +84,10 @@
             $controller = new DeleteEstabController();
             break;
         case 'createEstablishment':
+            $horeca_type = (isset($_GET['horeca_type'])) ? htmlentities($_GET['horeca_type']) : '';
             require_once('Controllers/CreateEstablishmentController.php');
             $controller = new CreateEstablishmentController();
+            $controller->setType($horeca_type);
             break;
         default: # 
             require_once('Controllers/LoginController.php');
