@@ -32,7 +32,7 @@
                     }
                     
                 }
-                require_once(VIEWSPATH.'createEstablishment.php');
+            require_once(VIEWSPATH.'createEstablishment.php');
             }
         }
         
