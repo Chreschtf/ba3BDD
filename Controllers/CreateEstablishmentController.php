@@ -101,6 +101,13 @@
             $delivery = ($_POST["hasDelivery"] == 'Y') ? 1 : 0;
             $data = array($eid, $price_range, $banquet_capacity, $takeaway, $delivery);
             Db::getInstance()->insertRestaurant($data);
+            
+            $days = array("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN");
+            foreach($days as $day){
+                $hour = $_POST[$day];
+                if ($hour != "open")
+                    Db::getInstance()->insertRestaurantClosingDays( array($eid, $day, $hour) );
+            }
         }
         
         public function createBar($eid){
@@ -139,47 +146,47 @@
            echo "<div class='control-group'>";
               
               echo "<div class='controls'>";
-                echo "<label class='control-label' for='Mon'>Monday : </label><p>";
-                echo "<input type='radio' value='open' name='Mon'  checked >Open all day</input>";
-                echo "<input type='radio' value='am' name='Mon' >Closed AM</input>";
-                echo "<input type='radio' value='pm' name='Mon' >Closed PM</input>";
-                echo "<input type='radio' value='complete' name='Mon'  >Closed all day</input>";
+                echo "<label class='control-label' for='MON'>Monday : </label><p>";
+                echo "<input type='radio' value='open' name='MON'  checked >Open all day</input>";
+                echo "<input type='radio' value='AM' name='MON' >Closed AM</input>";
+                echo "<input type='radio' value='PM' name='MON' >Closed PM</input>";
+                echo "<input type='radio' value='COMPLETE' name='MON'  >Closed all day</input>";
                 echo "<br>";
-                echo "<label class='control-label' for='Tue'>Tuesday : </label><p>";
-                echo "<input type='radio' value='open' name='Tue'  checked >Open all day</input>";
-                echo "<input type='radio' value='am' name='Tue' >Closed AM</input>";
-                echo "<input type='radio' value='pm' name='Tue' >Closed PM</input>";
-                echo "<input type='radio' value='complete' name='Tue'  >Closed all day</input>";
+                echo "<label class='control-label' for='TUE'>Tuesday : </label><p>";
+                echo "<input type='radio' value='open' name='TUE'  checked >Open all day</input>";
+                echo "<input type='radio' value='AM' name='TUE' >Closed AM</input>";
+                echo "<input type='radio' value='PM' name='TUE' >Closed PM</input>";
+                echo "<input type='radio' value='COMPLETE' name='TUE'  >Closed all day</input>";
                 echo "<br>";
-                echo "<label class='control-label' for='Wed'>Wednesday : </label><p>";
-                echo "<input type='radio' value='open' name='Wed'  checked >Open all day</input>";
-                echo "<input type='radio' value='am' name='Wed' >Closed AM</input>";
-                echo "<input type='radio' value='pm' name='Wed' >Closed PM</input>";
-                echo "<input type='radio' value='complete' name='Wed'  >Closed all day</input>";
+                echo "<label class='control-label' for='WED'>Wednesday : </label><p>";
+                echo "<input type='radio' value='open' name='WED'  checked >Open all day</input>";
+                echo "<input type='radio' value='AM' name='WED' >Closed AM</input>";
+                echo "<input type='radio' value='PM' name='WED' >Closed PM</input>";
+                echo "<input type='radio' value='COMPLETE' name='WED'  >Closed all day</input>";
                 echo "<br>";
-                echo "<label class='control-label' for='Thu'>Thursday : </label><p>";
-                echo "<input type='radio' value='open' name='Thu'  checked >Open all day</input>";
-                echo "<input type='radio' value='am' name='Thu' >Closed AM</input>";
-                echo "<input type='radio' value='pm' name='Thu' >Closed PM</input>";
-                echo "<input type='radio' value='complete' name='Thu'  >Closed all day</input>";
+                echo "<label class='control-label' for='THU'>Thursday : </label><p>";
+                echo "<input type='radio' value='open' name='THU'  checked >Open all day</input>";
+                echo "<input type='radio' value='AM' name='THU' >Closed AM</input>";
+                echo "<input type='radio' value='PM' name='THU' >Closed PM</input>";
+                echo "<input type='radio' value='COMPLETE' name='THU'  >Closed all day</input>";
                 echo "<br>";
-                echo "<label class='control-label' for='Fri'>Friday : </label><p>";
-                echo "<input type='radio' value='open' name='Fri'  checked >Open all day</input>";
-                echo "<input type='radio' value='am' name='Fri' >Closed AM</input>";
-                echo "<input type='radio' value='pm' name='Fri' >Closed PM</input>";
-                echo "<input type='radio' value='complete' name='Fri'  >Closed all day</input>";
+                echo "<label class='control-label' for='FRI'>Friday : </label><p>";
+                echo "<input type='radio' value='open' name='FRI'  checked >Open all day</input>";
+                echo "<input type='radio' value='AM' name='FRI' >Closed AM</input>";
+                echo "<input type='radio' value='PM' name='FRI' >Closed PM</input>";
+                echo "<input type='radio' value='COMPLETE' name='FRI'  >Closed all day</input>";
                 echo "<br>";
-                echo "<label class='control-label' for='Sat'>Saturday : </label><p>";
-                echo "<input type='radio' value='open' name='Sat'  checked >Open all day</input>";
-                echo "<input type='radio' value='am' name='Sat' >Closed AM</input>";
-                echo "<input type='radio' value='pm' name='Sat' >Closed PM</input>";
-                echo "<input type='radio' value='complete' name='Sat'  >Closed all day</input>";
+                echo "<label class='control-label' for='SAT'>Saturday : </label><p>";
+                echo "<input type='radio' value='open' name='SAT'  checked >Open all day</input>";
+                echo "<input type='radio' value='AM' name='SAT' >Closed AM</input>";
+                echo "<input type='radio' value='PM' name='SAT' >Closed PM</input>";
+                echo "<input type='radio' value='COMPLETE' name='SAT'  >Closed all day</input>";
                 echo "<br>";
-                echo "<label class='control-label' for='Sun'>Sunday : </label><p>";
-                echo "<input type='radio' value='open' name='Sun'  checked >Open all day</input>";
-                echo "<input type='radio' value='am' name='Sun' >Closed AM</input>";
-                echo "<input type='radio' value='pm' name='Sun' >Closed PM</input>";
-                echo "<input type='radio' value='complete' name='Sun'  >Closed all day</input>";
+                echo "<label class='control-label' for='SUN'>Sunday : </label><p>";
+                echo "<input type='radio' value='open' name='SUN'  checked >Open all day</input>";
+                echo "<input type='radio' value='AM' name='SUN' >Closed AM</input>";
+                echo "<input type='radio' value='PM' name='SUN' >Closed PM</input>";
+                echo "<input type='radio' value='COMPLETE' name='SUN'  >Closed all day</input>";
                 echo "<br>";
                 
                 echo "<label class='control-label' for='Takeaway'>Takeaway  : </label><p>";

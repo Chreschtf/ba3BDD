@@ -55,7 +55,7 @@
             <div class="control-group">
               <label class="control-label" for="longitude">Longitude</label>
               <div class="controls">
-                <input type="text" pattern=".{0}|.{1,3}" id="longitude" name="longitude" placeholder="" required class="form-control input-lg">
+                <input type="text" pattern=".{0}|.{1,23}" id="longitude" name="longitude" placeholder="" required class="form-control input-lg">
                 <!--<p class="help-block"><?php echo $longitudeErr;?></p>-->
               </div>
             </div>
@@ -63,7 +63,7 @@
             <div class="control-group">
               <label class="control-label" for="latitude">Latitude</label>
               <div class="controls">
-                <input type="text" pattern=".{0}|.{1,3}" id="latitude" name="latitude" placeholder="" required class="form-control input-lg">
+                <input type="text" pattern=".{0}|.{1,23}" id="latitude" name="latitude" placeholder="" required class="form-control input-lg">
                 <!--<p class="help-block"><?php echo $latitudeErr;?></p>-->
               </div>
             </div>
