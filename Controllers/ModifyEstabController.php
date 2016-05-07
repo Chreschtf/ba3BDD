@@ -31,7 +31,7 @@
                 this->_uid = (int)$_POST['uid'];
                 $data = Db::getInstance()->getEstablishment($this->_eid);
                 if(isset($_POST['ename'])){ // modify request fullfilled
-                    $this->verifyInputs($data);
+                    $this->verifyAndApplyModifications($data);
                 } else { // modify request to fullfill
                     $this->showInputs($data);
                 }
@@ -39,7 +39,7 @@
             }
         }
         
-        public function verifyInputs($data){
+        public function verifyAndApplyModifications($data){
             
             
             
