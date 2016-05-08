@@ -17,7 +17,7 @@
                         case 'all':
                             $this->searchUsers($searchQuery);
                             $this->searchBars($searchQuery);
-                            $this->seachRestaurants($searchQuery);
+                            $this->searchRestaurants($searchQuery);
                             $this->searchHotels($searchQuery);
                             break;
                         case'users':
@@ -25,17 +25,17 @@
                             break;
                         case 'establishments':
                             $this->searchBars($searchQuery);
-                            $this->seachRestaurants($searchQuery);
+                            $this->searchRestaurants($searchQuery);
                             $this->searchHotels($searchQuery);
                             break;
                         case 'bar':
                             $this->searchBars($searchQuery);
                             break;
                         case 'restaurant':
-                            $this->seachRestaurants($searchQuery);
+                            $this->searchRestaurants($searchQuery);
                             break;
                         case 'hotel':
-                            $this->seachHotels($searchQuery);
+                            $this->searchHotels($searchQuery);
                             break;  
                     }
                     die();          
@@ -92,7 +92,7 @@
             }
         }
         
-        private function seachRestaurants($searchQuery){
+        private function searchRestaurants($searchQuery){
             $restaurants = Db::getInstance()->getRestaurants($searchQuery);
             if (count($restaurants)!=0){
                 echo "<h3>Restaurants</h3>";
