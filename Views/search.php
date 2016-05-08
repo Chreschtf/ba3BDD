@@ -36,7 +36,7 @@
           <a class="navbar-brand" href="#"></a>
       </ul>
         <div class="form-group">
-          <input type="text" name="searchQuery" placeholder="Search" required/>
+          <input type="search" pattern="([A-Za-z0-9\u00C0-\u024F\u0400-\u04FF\u0374-\u03FF\s])*" name="searchQuery" placeholder="Search" required/>
         </div>
         <button type="submit" class="btn btn-default">Search</button>
       
