@@ -80,8 +80,8 @@
             $controller = new DeleteEstabController();
             break;
         case 'modifyEstablishment':
-            require_once('Controllers/DeleteEstabController.php');
-            $controller = new DeleteEstabController();
+            require_once('Controllers/ModifyEstabController.php');
+            $controller = new ModifyEstabController();
             break;
         case 'createEstablishment':
             $horeca_type = (isset($_GET['horeca_type'])) ? htmlentities($_GET['horeca_type']) : '';

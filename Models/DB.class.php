@@ -561,7 +561,7 @@ class Db
     
     public function getClosingDays($eid){
         $query = "SELECT * 
-                  FROM `restaurant_closing_days` 
+                  FROM restaurant_closing_days
                   WHERE eid = :eid";
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid",$eid);
