@@ -596,6 +596,78 @@ class Db
         $stmt->execute();
     }
     
+    public function updateRestaurant($eid, $data){
+        $query = "UPDATE restaurants
+                  SET price_range = :price_range, 
+                      banquet_capacity = :banquet_capacity,
+                      takeaway = :takeaway,
+                      delivery = :delivery
+                  WHERE eid = :eid ";
+                         
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":price_range", $data[0]);
+        $stmt->bindParam(":banquet_capacity", $data[1]);
+        $stmt->bindParam(":takeaway", $data[2]);
+        $stmt->bindParam(":delivery", $data[3]);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
+    }
+    
+    public function updateEstablishment($eid, $data){
+        $query = "UPDATE establishments
+                  SET ename = :ename, 
+                      street = :street,
+                      house_num = :house_num,
+                      zip = :zip,
+                      city = :city,
+                      longitude = :longitude,
+                      latitude = :latitude,
+                      tel = :tel,
+                      site = :site
+                  WHERE eid = :eid ";
+                         
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":ename", $data[0]);
+        $stmt->bindParam(":street", $data[1]);
+        $stmt->bindParam(":house_num", $data[2]);
+        $stmt->bindParam(":zip", $data[3]);
+        $stmt->bindParam(":city", $data[4]);
+        $stmt->bindParam(":longitude", $data[5]);
+        $stmt->bindParam(":latitude", $data[6]);
+        $stmt->bindParam(":tel", $data[7]);
+        $stmt->bindParam(":site", $data[8]);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
+    }
+    
+    public function updateHotel($eid, $data){
+        $query = "UPDATE hotels
+                  SET stars = :stars, 
+                      rooms = :rooms,
+                      standard_price = :standard_price
+                  WHERE eid = :eid ";
+                         
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":stars", $data[0]);
+        $stmt->bindParam(":rooms", $data[1]);
+        $stmt->bindParam(":standard_price", $data[2]);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
+    }
+    
+    public function updateBar($eid, $data){
+        $query = "UPDATE bars
+                  SET smoking = :smoking, 
+                      snack = :snack
+                  WHERE eid = :eid ";
+                         
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":smoking", $data[0]);
+        $stmt->bindParam(":snack", $data[1]);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
+    }
+    
     public function deleteBarWithEID($eid){
         $query = "DELETE 
                   FROM bars 
@@ -609,8 +681,18 @@ class Db
     public function deleteHotelWithEID($eid){
         $query = "DELETE 
                   FROM hotels 
-                  WHERE eid= :eid";
+                  WHERE eid = :eid";
                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
+    }
+    
+    public function deleteRestaurantClosingDays($eid){
+        $query = "DELETE 
+                  FROM restaurant_closing_days
+                  WHERE eid = :eid ";
+        
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid", $eid);
         $stmt->execute();
@@ -798,7 +880,20 @@ class Db
     public function R6(){
         // • R6 : La liste des labels étant appliqués à au moins 5 établissements, classée selon la moyenne des scores des établissements ayant ce label.
 
-        $query = "";
+        $query = "SELECT t1.*
+                  FROM tags t1
+                  WHERE t1.tid IN (
+                      SELECT et1.tid 
+                      FROM establishment_tags et1
+                      GROUP BY et1.tid
+                      HAVING COUNT(DISTINCT et1.eid) >= 5
+                  )
+                  ORDER BY (
+                      SELECT AVG(c.score)/COUNT(e.eid)
+                      FROM establishments e, establishment_tags et2, comments c 
+                      WHERE c.eid = e.eid = et2.eid AND et2.tid = t1.tid 
+                      
+                  )";
 
                   
         $stmt = $this->_db->prepare($query);

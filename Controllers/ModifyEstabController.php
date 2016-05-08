@@ -3,17 +3,17 @@
         
         private $_eid;
         private $_uid;
-        
+        private $horeca_type;
         
         public function __contruct(){
             
         }
         
-        private function getEstabType($data){
+        private function getEstabType($horeca_type){
             $type = "";
-            if ( $data['horeca_type'] == 'Bar' ) {
+            if ( $horeca_type == 'Bar' ) {
                 $type = "barProfile";
-            } else if ( $data['horeca_type'] == 'Restaurant' ) {
+            } else if ( $horeca_type == 'Restaurant' ) {
                 $type = "restaurantProfile";
             } else { // Hotel
                 $type = "hotelProfile";
@@ -31,8 +31,10 @@
                 $this->_eid = (int)$_POST['eid'];
                 $this->_uid = (int)$_POST['uid'];
                 $data = Db::getInstance()->getEstablishment($this->_eid);
+                $this->horeca_type = $data['horeca_type'];
+                
                 if(isset($_POST['ename'])){ // modify request fullfilled
-                    $this->verifyAndApplyModifications($data);
+                    $this->applyModifications();
                 } else {                    // modify request to fullfill
                     $this->showInputs($data);
                 }
@@ -40,13 +42,68 @@
             }
         }
         
-        public function verifyAndApplyModifications($data){
+        public function applyModifications(){
+            $type =  $this->getEstabType($_POST['horeca_type']);
             
+            $this->applyEstablishmentModifs();
             
+            if($_POST['horeca_type'] == 'Restaurant'){
+                $this->applyRestaurantModifs();
+            } elseif ($_POST['horeca_type'] == 'Bar') {
+                $this->applyBarModifs();
+            } else { // Hotel
+                $this->applyHotelModifs();
+            }
             
-            $type =  $this->getEstabType(  );
             header('Location: ?action=' . $type . '&eid=' . $this->_eid);
             die();
+        }
+        
+        public function applyEstablishmentModifs(){
+            $ename = $_POST["ename"];
+            $street = $_POST["street"];
+            $house_num = $_POST["house_num"];
+            $zip = $_POST["zip"];
+            $city = $_POST["city"];
+            $longitude = floatval($_POST["longitude"]);
+            $latitude = floatval($_POST["latitude"]);
+            $tel = $_POST["tel"];
+            $site = $_POST["site"];
+            $data = array($ename, $street, $house_num, $zip, $city, 
+                        $longitude, $latitude, $tel, $site);
+            Db::getInstance()->updateEstablishment($this->_eid, $data);
+        }
+        
+        public function applyRestaurantModifs() {
+            $price_range = (int)$_POST["price_range"];
+            $banquet_capacity = (int)$_POST["banquet_capacity"];
+            $takeaway = ($_POST["hasTakeaway"] == 'Y') ? 1 : 0;
+            $delivery = ($_POST["hasDelivery"] == 'Y') ? 1 : 0;
+            $data = array($price_range, $banquet_capacity, $takeaway, $delivery);
+            Db::getInstance()->updateRestaurant($this->_eid, $data);
+            
+            Db::getInstance()->deleteRestaurantClosingDays($this->_eid);
+            $days = array("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN");
+            foreach($days as $day){
+                $hour = $_POST[$day];
+                if ($hour != "open")
+                    Db::getInstance()->insertRestaurantClosingDays( array($this->_eid, $day, $hour) );
+            }
+        }
+        
+        public function applyBarModifs() {
+            $smoking = ($_POST["hasSmoking"] == 'Y') ? 1 : 0;
+            $snack = ($_POST["hasSnack"] == 'Y') ? 1 : 0;
+            $data = array($smoking, $snack);
+            Db::getInstance()->updateBar($this->_eid, $data);
+        }
+        
+        public function applyHotelModifs() {
+            $stars = (int)$_POST["stars"];
+            $rooms = (int)$_POST["rooms"];
+            $standard_price = (int)$_POST["standard_price"];
+            $data = array($stars, $rooms, $standard_price);
+            Db::getInstance()->updateHotel($this->_eid, $data);
         }
         
         public function showInputs($data){
@@ -74,7 +131,7 @@
                      echo "<div style='color:#FF0000'>" . $notification . "</div>';";
                      
             echo "       ";
-            echo "         <form class='form-horizontal' action='?action=createEstablishment' method='post'>";
+            echo "         <form class='form-horizontal' action='?action=modifyEstablishment' method='post'>";
             echo "         <fieldset>";
             echo "           <div id='legend'>";
             echo "              <p></p><p></p><p></p><p></p>";
@@ -143,6 +200,9 @@
             echo "               <input type='text' pattern='.{0}|.{5,60}' id='site' name='site'  value=".$site." class='form-control input-lg'>";
             echo "             </div>";
             echo "           </div>";
+            echo "           <input type='hidden' name='eid' value=" . $this->_eid . ">";
+            echo "           <input type='hidden' name='uid' value=" . $this->_uid . ">";
+            echo "           <input type='hidden' name='horeca_type' value=" . $this->horeca_type . ">";
         }
         
         public function displayRestaurantInputs($data){
@@ -266,21 +326,21 @@
         public function displayHotelInputs($data){
             $hotelData = Db::getInstance()->getHotelData($this->_eid);
             
-            $0 = ($hotelData['stars'] == 0) ? "checked" : "";
-            $1 = ($hotelData['stars'] == 1) ? "checked" : "";
-            $2 = ($hotelData['stars'] == 2) ? "checked" : "";
-            $3 = ($hotelData['stars'] == 3) ? "checked" : "";
-            $4 = ($hotelData['stars'] == 4) ? "checked" : "";
-            $5 = ($hotelData['stars'] == 5) ? "checked" : "";
+            $_0 = ($hotelData['stars'] == 0) ? "checked" : "";
+            $_1 = ($hotelData['stars'] == 1) ? "checked" : "";
+            $_2 = ($hotelData['stars'] == 2) ? "checked" : "";
+            $_3 = ($hotelData['stars'] == 3) ? "checked" : "";
+            $_4 = ($hotelData['stars'] == 4) ? "checked" : "";
+            $_5 = ($hotelData['stars'] == 5) ? "checked" : "";
             echo "<div class='control-group'>";
                 echo "<div class='controls'>";
                     echo "<label class='control-label' for='Stars'>Stars  : </label><p>";
-                    echo "<input type='radio' value='0' name='stars'  " . $0 . " >0</input>";
-                    echo "<input type='radio' value='1' name='stars'  " . $1 . ">1</input>";
-                    echo "<input type='radio' value='2' name='stars'  " . $2 . ">2</input>";
-                    echo "<input type='radio' value='3' name='stars'  " . $3 . ">3</input>";
-                    echo "<input type='radio' value='4' name='stars'  " . $4 . ">4</input>";
-                    echo "<input type='radio' value='5' name='stars'  " . $5 . ">5</input>";
+                    echo "<input type='radio' value='0' name='stars'  " . $_0 . " >0</input>";
+                    echo "<input type='radio' value='1' name='stars'  " . $_1 . ">1</input>";
+                    echo "<input type='radio' value='2' name='stars'  " . $_2 . ">2</input>";
+                    echo "<input type='radio' value='3' name='stars'  " . $_3 . ">3</input>";
+                    echo "<input type='radio' value='4' name='stars'  " . $_4 . ">4</input>";
+                    echo "<input type='radio' value='5' name='stars'  " . $_5 . ">5</input>";
                 echo "</div>";
             echo "</div>";
                         

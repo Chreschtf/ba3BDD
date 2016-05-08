@@ -17,7 +17,7 @@
             }else{
                 require_once(VIEWSPATH."hotelProfile.php");
                 require_once("EstablishmentProfileController.php");
-                $hotelData=Db::getInstance()->getHotelData($this->_id);
+                $hotelData = Db::getInstance()->getHotelData($this->_id);
                 
                 EstablishmentProfileController::displayGenericInfo($hotelData, Db::getinstance()->getUIDof($_COOKIE['username']));
                 $this->displayHotelSpecificInfo($hotelData);
