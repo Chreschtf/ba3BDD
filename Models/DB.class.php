@@ -41,7 +41,8 @@ class Db
         $statement = $this->_db->prepare($query);
         $statement->bindParam(':nickname', $array[0]);
         $statement->bindParam(':email', $array[1]);
-        $statement->bindParam(':password', password_hash($array[2], PASSWORD_BCRYPT));
+        $pwd = password_hash($array[2], PASSWORD_BCRYPT);
+        $statement->bindParam(':password', $pwd);
         $statement->execute();
         
         return $this->_db->lastInsertId();

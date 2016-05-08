@@ -31,7 +31,7 @@ class SignUpController{
         }elseif ($_POST["password"]!=$_POST["passwordconfirm"]){
             $passwordErr="Passwords don't match";
         }else{
-            $password=$_POST["password"];
+            $password = $_POST["password"];
         }
         
         if (empty($_POST["email"])){
