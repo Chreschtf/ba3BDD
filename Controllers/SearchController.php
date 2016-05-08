@@ -12,34 +12,32 @@
                 require_once(VIEWSPATH.'search.php');
                 if (!empty($_POST["searchQuery"]) and isset($_POST["choice"])){
                     $searchQuery = $_POST["searchQuery"];
-                    if (ctype_alnum($searchQuery) ){
-                        $choice = $_POST["choice"];
-                        switch($choice){
-                            case 'all':
-                                $this->searchUsers($searchQuery);
-                                $this->searchBars($searchQuery);
-                                $this->seachRestaurants($searchQuery);
-                                $this->searchHotels($searchQuery);
-                                break;
-                            case'users':
-                                $this->searchUsers($searchQuery);
-                                break;
-                            case 'establishments':
-                                $this->searchBars($searchQuery);
-                                $this->seachRestaurants($searchQuery);
-                                $this->searchHotels($searchQuery);
-                                break;
-                            case 'bar':
-                                $this->searchBars($searchQuery);
-                                break;
-                            case 'restaurant':
-                                $this->seachRestaurants($searchQuery);
-                                break;
-                            case 'hotel':
-                                $this->seachHotels($searchQuery);
-                                break;  
-                        }
-                    }   
+                    $choice = $_POST["choice"];
+                    switch($choice){
+                        case 'all':
+                            $this->searchUsers($searchQuery);
+                            $this->searchBars($searchQuery);
+                            $this->seachRestaurants($searchQuery);
+                            $this->searchHotels($searchQuery);
+                            break;
+                        case'users':
+                            $this->searchUsers($searchQuery);
+                            break;
+                        case 'establishments':
+                            $this->searchBars($searchQuery);
+                            $this->seachRestaurants($searchQuery);
+                            $this->searchHotels($searchQuery);
+                            break;
+                        case 'bar':
+                            $this->searchBars($searchQuery);
+                            break;
+                        case 'restaurant':
+                            $this->seachRestaurants($searchQuery);
+                            break;
+                        case 'hotel':
+                            $this->seachHotels($searchQuery);
+                            break;  
+                    }
                     die();          
                 } 
             }
