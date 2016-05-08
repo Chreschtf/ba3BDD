@@ -241,13 +241,62 @@
         }
         
         public function displayBarInputs($data){
-            $restData = Db::getInstance()->getBarData($this->_eid);
+            $barData = Db::getInstance()->getBarData($this->_eid);
             
+            $smokingYes = ($barData["smoking"]) ? 'checked'  : "";
+            $smokingNo = ( ! $barData["smoking"]) ? 'checked'  : "";
+            
+            $snackYes = ($barData["snack"]) ? 'checked'  : "";
+            $snackNo = ( ! $barData["snack"]) ? 'checked'  : "";
+            
+            echo "<div class='control-group'>";
+                echo "<div class='controls'>";
+                    echo "<label class='control-label' for='Smoking'>Smoking allowed  : </label><p>";
+                    echo "<input type='radio' value='Y' name='hasSmoking'  " . $smokingYes . " >Yes</input>";
+                    echo "<input type='radio' value='N' name='hasSmoking' " . $smokingNo . ">No</input>";
+                    
+                    echo "<br>";
+                    echo "<label class='control-label' for='Snack'>Snack's : </label><p>";
+                    echo "<input type='radio' value='Y' name='hasSnack'  " . $snackYes . " >Yes</input>";
+                    echo "<input type='radio' value='N' name='hasSnack' " . $snackNo . ">No</input>";
+              echo "</div>";
+            echo "</div>";
         }
         
         public function displayHotelInputs($data){
-            $restData = Db::getInstance()->getHotelData($this->_eid);
+            $hotelData = Db::getInstance()->getHotelData($this->_eid);
             
+            $0 = ($hotelData['stars'] == 0) ? "checked" : "";
+            $1 = ($hotelData['stars'] == 1) ? "checked" : "";
+            $2 = ($hotelData['stars'] == 2) ? "checked" : "";
+            $3 = ($hotelData['stars'] == 3) ? "checked" : "";
+            $4 = ($hotelData['stars'] == 4) ? "checked" : "";
+            $5 = ($hotelData['stars'] == 5) ? "checked" : "";
+            echo "<div class='control-group'>";
+                echo "<div class='controls'>";
+                    echo "<label class='control-label' for='Stars'>Stars  : </label><p>";
+                    echo "<input type='radio' value='0' name='stars'  " . $0 . " >0</input>";
+                    echo "<input type='radio' value='1' name='stars'  " . $1 . ">1</input>";
+                    echo "<input type='radio' value='2' name='stars'  " . $2 . ">2</input>";
+                    echo "<input type='radio' value='3' name='stars'  " . $3 . ">3</input>";
+                    echo "<input type='radio' value='4' name='stars'  " . $4 . ">4</input>";
+                    echo "<input type='radio' value='5' name='stars'  " . $5 . ">5</input>";
+                echo "</div>";
+            echo "</div>";
+                        
+            echo "<div class='control-group'>";
+            echo "  <label class='control-label' for='rooms'>Rooms  : </label>";
+            echo "  <div class='controls'>";
+            echo "    <input type='number' id='rooms' name='rooms' min='1' max='100' value=" . $hotelData["rooms"] . " required>";
+            echo "  </div>";
+            echo "</div>";
+                        
+            echo "<div class='control-group'>";
+            echo "  <label class='control-label' for='standard_price'>Standard price  : </label>";
+            echo "  <div class='controls'>";
+            echo "    <input type='number' id='standard_price' name='standard_price' min='1' max='1000' value=" . $hotelData["standard_price"] . " required>";
+            echo "  </div>";
+            echo "</div>";
         }
         
         private function displaySubmit(){

@@ -798,21 +798,13 @@ class Db
     public function R6(){
         // • R6 : La liste des labels étant appliqués à au moins 5 établissements, classée selon la moyenne des scores des établissements ayant ce label.
 
-        $query = "SELECT t1.* 
-                  FROM tags t1, establishment_tags et1 
-                  WHERE t1.tid = et1.tid 
-                  HAVING COUNT( DISTINCT et1.eid ) >= 5 
-                  ORDER BY (
-                      SELECT SUM(c1.score)/COUNT(*) 
-                      FROM establishments e1, comments c1, establishment_tags et2
-                      WHERE e1.eid = c1.eid AND et2.tid = t1.tid AND et2.eid = e1.eid
-                  )";
+        $query = "";
+
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);  
     }   
-    
 
 
 }
