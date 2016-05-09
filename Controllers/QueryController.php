@@ -181,6 +181,7 @@ class QueryController
             echo "    <tr>";
             echo "        <th>#</th>";
             echo "        <th>Tag</th>";
+            echo "        <th>Average Score</th>";
             echo "    </tr>";
             echo "    </thead>";
             echo "    <tbody>";
@@ -190,7 +191,9 @@ class QueryController
                 echo "    <tr>";
                 echo "        <td>" . $i . "</td>";
                 echo "        <td>" . $Tag['tname'] . "</td>";
+                echo "        <td>" . $Tag['score_avg'] . "</td>";
                 echo "    </tr>";
+                
                 $i = $i +1;
             }
             

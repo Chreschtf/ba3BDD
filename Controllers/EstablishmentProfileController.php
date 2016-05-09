@@ -20,7 +20,7 @@
             echo "<form action='?action=createTag' method='post' >\n";
             echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";
             echo "    <input type='hidden' name='uid' value='".$uid."'>\n";
-            echo "    <button type='submit' class='btn btn-warning'>Tag this establishment</button>\n";
+            echo "    <button type='submit' class='btn btn-success'>Tag this establishment</button>\n";
             echo "</form>\n";
             echo "      </div>";
             
