@@ -883,13 +883,11 @@ class Db
 
         $query = "SELECT t1.*, (
                                     SELECT AVG( estab_scores.avg_score )
-                                    FROM establishment_tags et2
-                                    WHERE et2.tid = t1.tid AND estab_scores._eid IN (
-                                        SELECT e3.eid 
-                                        FROM establishments e3
-                                        WHERE e3.eid = et2.eid
+                                    WHERE estab_scores._eid IN (
+                                        SELECT et2.eid 
+                                        FROM establishment_tags et2
+                                        WHERE et2.tid = t1.tid 
                                     )
-                                    GROUP BY et2.tid
                                 ) AS score_avg
                   FROM tags t1, 
                   (
@@ -903,12 +901,7 @@ class Db
                       FROM establishment_tags et3
                       GROUP BY et3.tid
                   ) AS nbr_establishments
-                  WHERE t1.tid IN (
-                      SELECT et1.tid
-                      FROM establishment_tags et1
-                      GROUP BY et1.tid
-                      HAVING COUNT(DISTINCT et1.eid) >= 5
-                  )
+                  WHERE nbr_establishments._tid = t1.tid AND nbr_establishments.nbr >= 5
                   GROUP BY t1.tid
                   ORDER BY score_avg DESC";
 
@@ -917,6 +910,5 @@ class Db
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);  
     }   
-
 
 }
