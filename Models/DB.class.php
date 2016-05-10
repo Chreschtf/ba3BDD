@@ -880,31 +880,23 @@ class Db
     
     public function R6(){
         // • R6 : La liste des labels étant appliqués à au moins 5 établissements, classée selon la moyenne des scores des établissements ayant ce label.
-
-        $query = "SELECT t1.*, (
-                                    SELECT AVG( estab_scores.avg_score )
-                                    WHERE estab_scores._eid IN (
-                                        SELECT et2.eid 
-                                        FROM establishment_tags et2
-                                        WHERE et2.tid = t1.tid 
-                                    )
-                                ) AS score_avg
-                  FROM tags t1, 
-                  (
-                      SELECT AVG( c1.score ) AS avg_score, e1.eid AS _eid
-                      FROM establishments e1, comments c1
-                      WHERE e1.eid = c1.eid
-                      GROUP BY e1.eid
-                  ) AS estab_scores,
-                  (
-                      SELECT COUNT( DISTINCT et3.eid ) AS nbr, et3.tid AS _tid
-                      FROM establishment_tags et3
-                      GROUP BY et3.tid
-                  ) AS nbr_establishments
-                  WHERE nbr_establishments._tid = t1.tid AND nbr_establishments.nbr >= 5
-                  GROUP BY t1.tid
-                  ORDER BY score_avg DESC";
-
+                  
+        $query = "SELECT t.*, AVG( estab_score._avg ) AS score_avg
+                  FROM tags t
+                  INNER JOIN (
+        
+                        SELECT et2.tid AS _tid, et2.eid AS _eid, AVG(c.score) AS _avg
+                        FROM comments c, establishment_tags et2
+                        WHERE c.eid = et2.eid AND et2.tid IN (
+                            SELECT et3.tid AS _tid
+                            FROM establishment_tags et3
+                            GROUP BY et3.tid
+                            HAVING COUNT( DISTINCT et3.eid ) >= 5
+                        )
+                        GROUP BY et2.eid
+                  ) AS estab_score ON estab_score._tid = t.tid
+                  GROUP BY t.tid 
+                  ORDER BY AVG( estab_score._avg ) DESC";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();
