@@ -1,32 +1,35 @@
 <?php
     class HotelProfileController{
+        
         private $_id;
-        public function __contruct(){
-            
-        }
+        
+        public function __contruct(){}
         
         public function setId($id){
             $this->_id=$id;
         }
+        
         public function run(){
             require_once('Controllers/CookieController.php');
             $controller = new CookieController();
+            
             if (!$controller->checkCookies()) {
                 header("Location:?action=login");
                 die();
+                
             }else{
-                require_once(VIEWSPATH."hotelProfile.php");
+                echo "<h1>Hotel Profile</h1>";
                 require_once("EstablishmentProfileController.php");
                 $hotelData = Db::getInstance()->getHotelData($this->_id);
                 
                 EstablishmentProfileController::displayGenericInfo($hotelData, Db::getinstance()->getUIDof($_COOKIE['username']));
                 $this->displayHotelSpecificInfo($hotelData);
-                EstablishmentProfileController::displayClosingDays($hotelData['eid']);
+                
                 EstablishmentProfileController::displayTags($hotelData['eid']);
                 EstablishmentProfileController::displayComments($hotelData['eid']);
             }
-            
         }
+        
         public function displayHotelSpecificInfo($data){
             
             echo "<tr>";

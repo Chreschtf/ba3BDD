@@ -4,9 +4,7 @@
 
         private $horeca_type;
         
-        public function __contruct(){
-            
-        }
+        public function __contruct(){}
         
         public function setType($horeca_type){
             $this->horeca_type = $horeca_type;
@@ -36,7 +34,7 @@
                 if (isset($_POST['ename'])) {     // create request fullfilled
                 
                     $this->horeca_type = $_POST['horeca_type'];
-                    $this->verifyAndCreateEstab();
+                    $this->createEstab();
                     
                 } elseif ( ! empty($_GET) ) {                        // create request to fullfill
                 
@@ -51,10 +49,8 @@
             }
         }
         
-        public function verifyAndCreateEstab(){
-            
-            // if ($this->verifyEstablishmentInputs()){
-                
+        public function createEstab(){
+
             $eid = $this->createEstablishment();
             
             $type = "";
@@ -71,11 +67,7 @@
             
             header('Location: ?action=' . $type . '&eid=' . $eid);
             die();
-                
-            // } else {
-            //     $notification = "The submitted data is incorrect";
-            //     $this->showInputs(); // TODO : include previous data
-            // }
+
         }
         
         public function createEstablishment(){
@@ -105,7 +97,7 @@
             $days = array("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN");
             foreach($days as $day){
                 $hour = $_POST[$day];
-                if ($hour != "open")
+                if ($hour != "open") // only when hour = complete or am or pm
                     Db::getInstance()->insertRestaurantClosingDays( array($eid, $day, $hour) );
             }
         }

@@ -1,27 +1,30 @@
 <?php
     class BarProfileController{
+        
         private $_id;
-        public function __contruct(){
-            
-        }
+        
+        public function __contruct(){}
         
         public function setId($id){
             $this->_id=$id;
         }
+        
         public function run(){
             require_once('Controllers/CookieController.php');
             $controller = new CookieController();
+            
             if (!$controller->checkCookies()) {
                 header("Location:?action=login");
                 die();
+                
             }else{
-                require_once(VIEWSPATH."barProfile.php");
+                echo "<h1>Bar Profile</h1>";
                 require_once("EstablishmentProfileController.php");
                 $barData=Db::getInstance()->getBarData($this->_id);
                 
                 EstablishmentProfileController::displayGenericInfo($barData, Db::getinstance()->getUIDof($_COOKIE['username']));
                 $this->displayBarSpecificInfo($barData);
-                EstablishmentProfileController::displayClosingDays($barData['eid']);
+                
                 EstablishmentProfileController::displayTags($barData['eid']);
                 EstablishmentProfileController::displayComments($barData['eid']);
             }

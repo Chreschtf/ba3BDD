@@ -474,10 +474,10 @@ class Db
     }
     
     public function getBarData($eid){
-        $query = "SELECT * 
-                  FROM establishments,bars 
+        $query = "SELECT establishments.*, bars.* 
+                  FROM establishments, bars 
                   WHERE establishments.eid = :eid AND
-                  bars.eid = establishments.eid";
+                        bars.eid = establishments.eid";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid",$eid);
@@ -487,10 +487,10 @@ class Db
     }
     
     public function getRestaurantData($eid){
-        $query = "SELECT * 
+        $query = "SELECT establishments.*, restaurants.* 
                   FROM establishments,restaurants 
                   WHERE establishments.eid = :eid AND
-                  restaurants.eid = establishments.eid";
+                        restaurants.eid = establishments.eid";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid",$eid);
@@ -500,10 +500,10 @@ class Db
     }
     
     public function getHotelData($eid){
-        $query = "SELECT * 
-                  FROM establishments,hotels 
+        $query = "SELECT establishments.*, hotels.*
+                  FROM establishments, hotels 
                   WHERE establishments.eid = :eid AND
-                  hotels.eid = establishments.eid";
+                        hotels.eid = establishments.eid";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid",$eid);
@@ -523,18 +523,22 @@ class Db
         return $result;
     }
     
-    public function getAllTagnames($uid){
+    public function getNotYetUsedTags($uid, $eid){
+        // get the tags which were not already used by the user with 
+        // uid on the establishment with eid
         $query = "SELECT tname, tid
                   FROM tags
                   WHERE NOT EXISTS(
                       SELECT * 
                       FROM establishment_tags
                       WHERE establishment_tags.tid = tags.tid AND 
-                            establishment_tags.uid = :uid
+                            establishment_tags.uid = :uid AND
+                            establishment_tags.eid = :eid
                   )";
                         
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":uid",$uid);
+        $stmt->bindParam(":eid",$eid);
         $stmt->execute();
         $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;

@@ -14,6 +14,8 @@ class SignUpController{
         if (empty($_POST)) {
             $notification='Sign up!';
         }
+        
+        // NICKNAME
         if (empty($_POST["nickname"])){
             $nicknameErr="Nickname is required";
         } elseif (strlen($_POST["nickname"])<6 or strlen($_POST["nickname"])>32) {
@@ -24,6 +26,7 @@ class SignUpController{
             $nickname = $_POST["nickname"];
         }
         
+        // PASSWORD
         if (empty($_POST["password"])){
             $passwordErr="Password is required";
         }elseif (strlen($_POST["password"])<6 or strlen($_POST["password"])>32){
@@ -34,6 +37,7 @@ class SignUpController{
             $password = $_POST["password"];
         }
         
+        // EMAIL
         if (empty($_POST["email"])){
             $emailErr = "Email is required";
         }elseif (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
@@ -43,7 +47,6 @@ class SignUpController{
         }else{
             $email = $_POST["email"];
         }
-        
         
         
         if ($emailErr == "" and $nicknameErr == "" and $passwordErr == ""){
@@ -58,9 +61,7 @@ class SignUpController{
             header("Location: ?action=login");
             die();
         }
-         
         
-
         require_once(VIEWSPATH . 'signUp.php');
 
     }

@@ -10,9 +10,12 @@
                 die();
             }else{
                 require_once(VIEWSPATH.'search.php');
+                
                 if (!empty($_POST["searchQuery"]) and isset($_POST["choice"])){
+                    
                     $searchQuery = $_POST["searchQuery"];
                     $choice = $_POST["choice"];
+                    
                     switch($choice){
                         case 'all':
                             $this->searchUsers($searchQuery);

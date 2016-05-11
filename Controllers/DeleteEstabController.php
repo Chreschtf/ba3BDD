@@ -1,9 +1,7 @@
 <?php
     class DeleteEstabController {
         
-        public function __construct() {
-            
-        }
+        public function __construct() {}
         
         public function run() {
             require_once('Controllers/CookieController.php');
@@ -19,12 +17,11 @@
                     Db::getInstance()->deleteRestaurantWithEID((int)$_POST['eid']);
                 } elseif ($estabData['horeca_type'] == 'Bar') {
                     Db::getInstance()->deleteBarWithEID((int)$_POST['eid']);
-                } else {
+                } else {        // Hotel
                     Db::getInstance()->deleteHotelWithEID((int)$_POST['eid']);
                 }
                 
                 Db::getInstance()->deleteEstablishmentWithEID((int)$_POST['eid']);
-                
                 
                 header('Location: ?action=userProfile&user='.$_COOKIE['username']);
                 die();

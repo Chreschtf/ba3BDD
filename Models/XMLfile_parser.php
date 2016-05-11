@@ -1,11 +1,6 @@
 <?php
 
-    #session_start();
     require '../Models/Db.class.php';
-    ini_set('display_errors', 'On');
-    error_reporting(E_ALL);
-    
-    //mysql_select_db("annuaire_horeca");
     
     $Cafes = new SimpleXMLElement("../data/Cafes.xml", 0, true) 
                             OR die('Could not open xml file');
@@ -69,9 +64,9 @@
         $nickname = $estab['nickname'];
         $admin = true;
         $data = array($nickname, $admin, $nickname);
-        if( ! Db::getInstance()->nicknameExists($nickname))
+        if( ! Db::getInstance()->nicknameExists($nickname)) // does not yet exist -> create
             return Db::getInstance()->insertUserNotComplete($data);
-        else{
+        else{                                               // does already exist -> get uid and set admin to true if not yet the case
             $uid = Db::getInstance()->getUIDof($nickname);
             if( ! Db::getInstance()->isAdmin($uid) )
                 Db::getInstance()->setAdmin($uid, 1);
@@ -129,7 +124,7 @@
                     case 6: $closing_day = 'SUN'; break;
                 }
                 $hour = 'COMPLETE';
-                if(isset($On['hour']))
+                if(isset($On['hour'])) // if not complete then am or pm
                     $hour = strtoupper ($On['hour']);
                 $data = array($eid, $closing_day, $hour);
                 Db::getInstance()->insertRestaurantClosingDays($data);
@@ -150,13 +145,14 @@
         $name = $tag['name'];
         $data = array($name);
         $tid = Db::getInstance()->getTagWithName($name);
-        if( $tid == NULL )
-            $tid = Db::getInstance()->insertTag($data);
+        if( $tid == NULL ) // create tag if not already exists
+            $tid = Db::getInstance()->insertTag($data); 
             
         foreach ($tag as $user) {
             $nickname = $user['nickname'];
             $uid = createUserIfnotExists($nickname, 0);
-            if( ! Db::getInstance()->checkIfEstabTagExists($tid, $eid, $uid)){
+            if( ! Db::getInstance()->checkIfEstabTagExists($tid, $eid, $uid)){ // if this user has already tagged this estab with this tag 
+                                                                               // -> not allowed to tag this estab a second time
                 $data = array($tid, $eid, $uid);
                 Db::getInstance()->insertEstablishmentTag($data);
             }
@@ -174,8 +170,12 @@
     }
     
     function convertDate($dateString){
-        $dateParts = explode("/", $dateString);
-        $date_ = date($dateParts[2].'-'.$dateParts[1].'-'.$dateParts[0].' 00:00:00');
-        return $date_;
+        if( strlen($dateString) == 9 && substr_count($dateString ,"/") == 2 ){
+            $dateParts = explode("/", $dateString);
+            $date_ = date($dateParts[2].'-'.$dateParts[1].'-'.$dateParts[0].' 00:00:00');
+            return $date_;
+        } else {         // if the date string is corrupted we set the date to the current date
+            return (new \DateTime())->format('Y-m-d H:i:s');
+        }
     }
 ?>

@@ -5,49 +5,9 @@
         
         public static function displayGenericInfo($data, $uid){
             
-            // temporary :
+            EstablishmentProfileController::displayButtons($data, $uid);
             
-            echo "<div class = 'row'>";
-            echo "      <div class='col-xs-8 col-sm-2'>";
-            echo "<form action='?action=createComment' method='post' >\n";
-            echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";
-            echo "    <input type='hidden' name='uid' value='".$uid."'>\n";
-            echo "    <button type='submit' class='btn btn-success'>Write a new Comment</button>\n";
-            echo "</form>\n";
-            echo "      </div>";
-                        
-            echo "      <div class='col-xs-8 col-sm-2'>";
-            echo "<form action='?action=createTag' method='post' >\n";
-            echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";
-            echo "    <input type='hidden' name='uid' value='".$uid."'>\n";
-            echo "    <button type='submit' class='btn btn-success'>Tag this establishment</button>\n";
-            echo "</form>\n";
-            echo "      </div>";
-            
-            if(Db::getInstance()->isAdmin($uid)){
-                echo "      <div class='col-xs-8 col-sm-4'>";
-                echo "<form action='?action=modifyEstablishment' method='post' >\n";
-                echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";
-                echo "    <input type='hidden' name='uid' value='".$uid."'>\n";
-                echo "    <button type='submit' class='btn btn-warning'>Modify information</button>\n";
-                echo "</form>\n";
-                echo "      </div>";
-                
-                echo "      <div class='col-xs-8 col-sm-0'>";
-                echo "<form action='?action=deleteEstablishment' method='post' >\n";
-                echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";
-                echo "    <input type='hidden' name='uid' value='".$uid."'>\n";
-                echo "    <button type='submit' class='btn btn-danger'>Delete</button>\n";
-                echo "</form>\n";
-                echo "      </div>";
-            }
-            
-            echo "</div>";
-            
-
-            
-            // end temporary
-            
+            // show the establishment data
             echo "<p></p>";
             echo "<div class='col-md-6'>";
             echo '<table class="table table-striped" style="width:*%">';
@@ -89,81 +49,44 @@
                        
         }
         
-        public static function displayClosingDays($eid){
-            $closingDays = Db::getInstance()->getClosingDays($eid);
-            if (count($closingDays)>0){
-                echo "<h2>Closing hours</h2>";
-                echo "<p></p>";
-                echo "<table>";
-                echo "<div class='col-md-6'>";
-                echo '<table class="table table-striped" style="width:*%">';
+        public static function displayButtons($data, $uid){
+            // show buttons : Tag and Comment :
+            echo "<div class = 'row'>";
+            echo "      <div class='col-xs-8 col-sm-2'>";
+            echo "<form action='?action=createComment' method='post' >\n";
+            echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";
+            echo "    <input type='hidden' name='uid' value='".$uid."'>\n";
+            echo "    <button type='submit' class='btn btn-success'>Write a new Comment</button>\n";
+            echo "</form>\n";
+            echo "      </div>";
+                        
+            echo "      <div class='col-xs-8 col-sm-2'>";
+            echo "<form action='?action=createTag' method='post' >\n";
+            echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";
+            echo "    <input type='hidden' name='uid' value='".$uid."'>\n";
+            echo "    <button type='submit' class='btn btn-success'>Tag this establishment</button>\n";
+            echo "</form>\n";
+            echo "      </div>";
+            
+            if(Db::getInstance()->isAdmin($uid)){ // show admin buttons : Delete and Modify :
+                echo "      <div class='col-xs-8 col-sm-4'>";
+                echo "<form action='?action=modifyEstablishment' method='post' >\n";
+                echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";
+                echo "    <input type='hidden' name='uid' value='".$uid."'>\n";
+                echo "    <button type='submit' class='btn btn-warning'>Modify information</button>\n";
+                echo "</form>\n";
+                echo "      </div>";
                 
-                for ($i =0;$i<count($closingDays);$i++){
-                    if ($closingDays[$i]['closing_day']=='MON'){   
-                        echo "<tr>";
-                            echo "<td><b>Mondays : </b></td>";
-                            echo "<td>".$closingDays[$i]['hour']."</td>";
-                        echo "</tr>";               
-                    }
-                }
-                
-                for ($i =0;$i<count($closingDays);$i++){
-                    if ($closingDays[$i]['closing_day']=='TUE'){   
-                        echo "<tr>";
-                            echo "<td><b>Tuesdays : </b></td>";
-                            echo "<td>".$closingDays[$i]['hour']."</td>";
-                        echo "</tr>";               
-                    }
-                }
-                
-                for ($i =0;$i<count($closingDays);$i++){
-                    if ($closingDays[$i]['closing_day']=='WED'){   
-                        echo "<tr>";
-                            echo "<td><b>Wednesdays : </b></td>";
-                            echo "<td>".$closingDays[$i]['hour']."</td>";
-                        echo "</tr>";               
-                    }
-                }
-                
-                for ($i =0;$i<count($closingDays);$i++){
-                    if ($closingDays[$i]['closing_day']=='THU'){   
-                        echo "<tr>";
-                            echo "<td><b>Thursdays : </b></td>";
-                            echo "<td>".$closingDays[$i]['hour']."</td>";
-                        echo "</tr>";               
-                    }
-                }
-                
-                for ($i =0;$i<count($closingDays);$i++){
-                    if ($closingDays[$i]['closing_day']=='FRI'){   
-                        echo "<tr>";
-                            echo "<td><b>Fridays : </b></td>";
-                            echo "<td>".$closingDays[$i]['hour']."</td>";
-                        echo "</tr>";               
-                    }
-                }
-                
-                for ($i =0;$i<count($closingDays);$i++){
-                    if ($closingDays[$i]['closing_day']=='SAT'){   
-                        echo "<tr>";
-                            echo "<td><b>Saturdays : </b></td>";
-                            echo "<td>".$closingDays[$i]['hour']."</td>";
-                        echo "</tr>";               
-                    }
-                }
-                
-                for ($i =0;$i<count($closingDays);$i++){
-                    if ($closingDays[$i]['closing_day']=='SUN'){   
-                        echo "<tr>";
-                            echo "<td><b>Sundays : </b></td>";
-                            echo "<td>".$closingDays[$i]['hour']."</td>";
-                        echo "</tr>";               
-                    }
-                }
-                
-                echo "</div>";
-                echo "</table>";
+                echo "      <div class='col-xs-8 col-sm-0'>";
+                echo "<form action='?action=deleteEstablishment' method='post' >\n";
+                echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";
+                echo "    <input type='hidden' name='uid' value='".$uid."'>\n";
+                echo "    <button type='submit' class='btn btn-danger'>Delete</button>\n";
+                echo "</form>\n";
+                echo "      </div>";
             }
+            
+            echo "</div>";
         }
         
         public static function displayComments($id){

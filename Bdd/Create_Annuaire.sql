@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS annuaire_horeca DEFAULT COLLATE = utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS annuaire_horeca.users (
     uid INT(6) NOT NULL AUTO_INCREMENT,
-    nickname VARCHAR(40) NOT NULL,
+    nickname VARCHAR(40) UNIQUE NOT NULL,
     email VARCHAR(40) DEFAULT NULL,
     password VARCHAR(70) DEFAULT NULL,
     entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.restaurants (
     eid INT(6) NOT NULL,
     price_range INT(3) NOT NULL,
     banquet_capacity INT(3) NOT NULL,
-    takeaway BOOLEAN DEFAULT NULL,
-    delivery BOOLEAN DEFAULT NULL,
+    takeaway BOOLEAN DEFAULT 0,
+    delivery BOOLEAN DEFAULT 0,
     PRIMARY KEY (eid),
     FOREIGN KEY (eid) REFERENCES establishments(eid)
 );
@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.restaurant_closing_days (
 
 CREATE TABLE IF NOT EXISTS annuaire_horeca.bars (
     eid INT(6) NOT NULL,
-    smoking BOOLEAN DEFAULT NULL,
-    snack BOOLEAN DEFAULT NULL,
+    smoking BOOLEAN DEFAULT 0,
+    snack BOOLEAN DEFAULT 0,
     PRIMARY KEY (eid),
     FOREIGN KEY (eid) REFERENCES establishments(eid)
 );

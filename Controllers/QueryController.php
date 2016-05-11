@@ -15,7 +15,6 @@ class QueryController
             
         }else{
             
-            //$this->showTitle();
             require_once(VIEWSPATH."queryScreen.php");
 
             $result = Db::getInstance()->R1();
