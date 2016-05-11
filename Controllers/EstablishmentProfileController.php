@@ -115,7 +115,7 @@
             }
             else{
                 for ($i=0;$i<count($tags);$i++){
-                    echo $tags[$i]['tname'].' ; ';
+                    echo "<a href='?action=tagProfile&tid=".$tags[$i]["tid"]."'>".$tags[$i]['tname']."</a> (". $tags[$i]['_nbrTagged'] .") ; ";
                 }
             }
         } 

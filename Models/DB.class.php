@@ -553,6 +553,7 @@ class Db
                 ) AS subquery
                 WHERE c.eid = :eid and c.uid = u.uid
                 GROUP BY c.cid";
+                
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid",$eid);
         $stmt->execute();
@@ -561,14 +562,44 @@ class Db
     }
     
     public function getTagsOnEstablishment($eid){
-        $query = "SELECT DISTINCT t.tname 
-                FROM tags t,establishment_tags et 
-                WHERE et.eid = :eid and et.tid =t.tid";
+        $query = "SELECT t.*, COUNT(et.uid) AS _nbrTagged
+                FROM tags t, establishment_tags et 
+                WHERE et.eid = :eid and et.tid =t.tid
+                GROUP BY t.tid
+                ORDER BY COUNT(et.uid) DESC";
+                
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid",$eid);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;      
+    }
+    
+    public function getTagsUsedByUser($uid){
+        $query = "SELECT t.*, e.*
+                FROM tags t, establishment_tags et, establishments e
+                WHERE et.uid = :uid AND et.tid = t.tid AND e.eid = et.eid
+                GROUP BY et.eid";
+                
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":uid", $uid);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;      
+    }
+    
+    
+    public function getCommentsOfUser($uid){
+        $query = "SELECT c.*, e.*
+                  FROM comments c, establishments e
+                  WHERE c.uid = :uid AND e.eid = c.eid
+                  GROUP BY c.cid";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":uid",$uid);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
     }
     
     public function getClosingDays($eid){
@@ -786,6 +817,31 @@ class Db
         return $result;  
     }
     
+    public function getTagAndNbrTagged($tid){
+        $query = "SELECT t.*, COUNT(et1.uid) AS _nbrTagged
+                  FROM tags t, establishment_tags et1
+                  WHERE t.tid = t.tid AND et1.tid = :tid 
+                  GROUP BY t.tid";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":tid", $tid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;  
+    }
+    
+    public function getTagOnEstabs($tid){
+        $query = "SELECT e.*, COUNT(et.uid) AS _nbrTagged
+                  FROM establishment_tags et, establishments e
+                  WHERE et.tid = :tid AND e.eid = et.eid
+                  GROUP BY et.eid";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":tid", $tid);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;  
+    }
     
     
     /*

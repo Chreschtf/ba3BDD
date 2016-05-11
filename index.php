@@ -81,6 +81,12 @@
             $controller = new CreateEstablishmentController();
             $controller->setType($horeca_type);
             break;
+        case 'tagProfile':
+            $tid = (isset($_GET['tid'])) ? htmlentities($_GET['tid']) : '';
+            require_once("Controllers/TagProfileController.php");
+            $controller = new TagProfileController();
+            $controller->setTid($tid);
+            break;
         default: # 
             require_once('Controllers/LoginController.php');
             $controller = new LoginController();
