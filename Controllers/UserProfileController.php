@@ -33,8 +33,18 @@
                         echo "<b>Email</b> : ".$userdata['email']."<br>";
                     echo "<b>Member since :</b> ".$userdata['entry_date'];
                     
+                    echo "<div class='row'>";
+                    echo "    <div class='col-md-6'>";
+                    
                     $this->displayComments();
+                    
+                    echo "    </div>";
+                    echo "    <div class='col-md-6'>";
+                    
                     $this->displayTags();
+                    
+                    echo "    </div>";
+                    echo "</div>";
                 }
             }
         }
