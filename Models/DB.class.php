@@ -523,11 +523,18 @@ class Db
         return $result;
     }
     
-    public function getAllTagnames(){
+    public function getAllTagnames($uid){
         $query = "SELECT tname, tid
-                  FROM tags";
+                  FROM tags
+                  WHERE NOT EXISTS(
+                      SELECT * 
+                      FROM establishment_tags
+                      WHERE establishment_tags.tid = tags.tid AND 
+                            establishment_tags.uid = :uid
+                  )";
                         
         $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":uid",$uid);
         $stmt->execute();
         $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;

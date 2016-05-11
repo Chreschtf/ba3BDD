@@ -180,7 +180,7 @@ class QueryController
             echo "</div>";
             
             echo "<div>";
-            echo "<table class='table table-striped'>";
+            echo "<table class='table table-stripedd'>";
             echo "    <thead>";
             echo "    <tr>";
             echo "        <th>#</th>";

@@ -32,9 +32,9 @@
                 
             }else{
                 $notification = "";
-                
+                $this->_uid = Db::getInstance()->getUIDof($_COOKIE["username"]);
+                echo $this->_uid;
                 if ( ! empty ( $_POST )) {
-                    $this->_uid = (int)$_POST['uid'];
                     $this->_eid = (int)$_POST['eid'];
                     if ( isset($_POST['createTag']) ) { // create new tag
                         if( strlen($_POST['tag_name']) >= 3 && ! Db::getInstance()->checkIftagExists($_POST['tag_name']) ){
@@ -88,8 +88,8 @@
                 echo "            Choose from the existing tags : ";
                 echo "            <select name='tag' >";
                 echo "                <option value='' selected='selected'></option>";
-                foreach (Db::getinstance()->getAllTagnames() as $tag) {
-                       echo "<option value=" . $tag['tid'] . ">" . $tag['tname'] . "</option>";
+                foreach (Db::getinstance()->getAllTagnames($this->_uid) as $tag) {
+                       echo "<option value='" . $tag['tid'] . "'>" . $tag['tname'] . "</option>";
                 }
                 echo "            </select>";
                 
