@@ -866,12 +866,12 @@ class Db
     public function R5(){
         // • R5 : La liste des établissements ayant au minimum trois commentaires, classée selon la moyenne des scores attribués.
 
-        $query = "SELECT e1.*
+        $query = "SELECT e1.*, AVG( c1.score ) AS _avg
                   FROM establishments e1, comments c1
                   WHERE e1.eid = c1.eid 
                   GROUP BY e1.eid 
                   HAVING COUNT( DISTINCT c1.cid ) >= 3
-                  ORDER BY AVG( c1.score )";
+                  ORDER BY AVG( c1.score ) DESC";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->execute();

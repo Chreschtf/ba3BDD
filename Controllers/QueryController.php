@@ -86,7 +86,9 @@ class QueryController
             echo "        <th>Longitude</th>";
             echo "        <th>Latitude</th>";
             echo "        <th>Type</th>";
-            //echo "        <th>Average Score</th>";
+            if( !empty($results) && isset($results[0]['_avg']) ){
+                 echo "<th>Average Comment Score</th>";
+            }
             echo "    </tr>";
             echo "    </thead>";
             echo "    <tbody>";
@@ -114,7 +116,9 @@ class QueryController
                 echo "        <td>" . $Estab['longitude'] . "</td>";
                 echo "        <td>" . $Estab['latitude'] . "</td>";
                 echo "        <td>" . $Estab['horeca_type'] . "</td>";
-                //echo "        <td>" . $Estab['average'] . "</td>"
+                if( isset($Estab['_avg']) ){
+                    echo "<td>" . $Estab['_avg'] . "</td>";
+                }
                 echo "    </tr>";
                 $i = $i +1;
             }
@@ -176,7 +180,7 @@ class QueryController
             echo "</div>";
             
             echo "<div>";
-            echo "<table class='table table-stiped'>";
+            echo "<table class='table table-striped'>";
             echo "    <thead>";
             echo "    <tr>";
             echo "        <th>#</th>";

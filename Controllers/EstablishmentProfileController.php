@@ -176,7 +176,8 @@
                 echo "<b>Average Score : </b>".round($comments[0]['average'],2)."<br><br>";
                 for ($i=0;$i<count($comments);$i++){
                     echo "<b>Date : </b>".$comments[$i]['entry_date'].'<br>';
-                    echo "<b>From :</b> ".$comments[$i]["nickname"]."<br>";
+                    //echo "<b>From :</b> ". Db::getInstance()->getUsersWithSimilarName($comments[$i]["nickname"]) ."<br>";
+                    echo "<b>From :</b> <a href='?action=userProfile&user=" . $comments[$i]["nickname"] . "'>" . $comments[$i]["nickname"] . "</a> <br>";
                     echo "<b>Score : </b>".$comments[$i]['score'].'<br>';
                     echo '"'.$comments[$i]['text'].'"<br><br>';
                 }
