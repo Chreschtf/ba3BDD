@@ -35,11 +35,10 @@
                          echo "<h3 style='color:red;'>". $_GET['error'] ."</h3>";
                     }
                         
-                    if($userdata["picture_name"] != NULL){
+                    if($userdata["picture_name"] != NULL && file_exists("UserImages/" . $userdata["picture_name"])){
                         
                         // show profile picture
                         $file = $userdata["picture_name"];
-                        $name_pieces = explode('.', $file);
                         echo "<p></p>";
                         echo "<img src='UserImages/". $file. "' height='200' width='300' >";
                     } else {
