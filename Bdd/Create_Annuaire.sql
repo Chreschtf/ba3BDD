@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.users (
     password VARCHAR(70) DEFAULT NULL,
     entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     admin BOOLEAN DEFAULT 0,
+    picture_name VARCHAR(255) DEFAULT NULL,
     PRIMARY KEY (uid),
     UNIQUE(nickname),
     UNIQUE(email)

@@ -87,6 +87,10 @@
             $controller = new TagProfileController();
             $controller->setTid($tid);
             break;
+        case 'profilePictureController':
+            require_once("Controllers/ProfilePictureController.php");
+            $controller = new ProfilePictureController();
+            break;
         default: # 
             require_once('Controllers/LoginController.php');
             $controller = new LoginController();

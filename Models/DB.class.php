@@ -225,6 +225,17 @@ class Db
 
         $statement->execute();
     }
+    
+    public function setProfilePicture($uid, $picture_name){
+        $query = "UPDATE users
+                  SET picture_name = :picture_name
+                  WHERE uid = :uid ";
+                         
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":picture_name", $picture_name);
+        $stmt->bindParam(":uid", $uid);
+        $stmt->execute();
+    }
 
     /*
             EXISTS

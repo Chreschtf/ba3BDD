@@ -20,9 +20,6 @@
             }else{
                 echo "<h2>User Info</h2>";
                 
-                if ($this->_user==""){
-                    $this->_user = $_COOKIE["username"];
-                }
                 
                 if ($this->_uid != "NULL"){
                     $userdata = Db::getInstance()->getUserData($this->_uid);
@@ -33,16 +30,36 @@
                         echo "<b>Email</b> : ".$userdata['email']."<br>";
                     echo "<b>Member since :</b> ".$userdata['entry_date'];
                     
+                    
+                    if (isset($_GET['error']) && !empty($_GET['error']) ){
+                         echo "<h3 style='color:red;'>". $_GET['error'] ."</h3>";
+                    }
+                        
+                    if($userdata["picture_name"] != NULL){
+                        
+                        // show profile picture
+                        $file = $userdata["picture_name"];
+                        $name_pieces = explode('.', $file);
+                        echo "<p></p>";
+                        echo "<img src='UserImages/". $file. "' height='200' width='300' >";
+                    } else {
+                        
+                        // updload profil picture button
+                        echo "<body>";
+                        echo "    <form action='?action=profilePictureController' method='POST' enctype='multipart/form-data'>";
+                        echo "        <input type='file' name='image' required />";
+                        echo "        <input type='hidden' name='uid' value='". $this->_uid ."' />";
+                        echo "        <button type='submit' class='btn btn-success'>Upload profile picture</button>";
+                        echo "    </form>";
+                        echo "</body>";
+                    }
+                    
                     echo "<div class='row'>";
                     echo "    <div class='col-md-6'>";
-                    
                     $this->displayComments();
-                    
                     echo "    </div>";
                     echo "    <div class='col-md-6'>";
-                    
                     $this->displayTags();
-                    
                     echo "    </div>";
                     echo "</div>";
                 }
