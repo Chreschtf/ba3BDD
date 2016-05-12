@@ -35,13 +35,13 @@
                          echo "<h3 style='color:red;'>". $_GET['error'] ."</h3>";
                     }
                         
-                    if($userdata["picture_name"] != NULL && file_exists("UserImages/" . $userdata["picture_name"])){
+                    if($userdata["picture_name"] != NULL && file_exists("UserImages/" . $userdata["picture_name"]) ){
                         
                         // show profile picture
                         $file = $userdata["picture_name"];
                         echo "<p></p>";
                         echo "<img src='UserImages/". $file. "' height='200' width='300' >";
-                    } else {
+                    } elseif( $_COOKIE["username"] == $this->_user ) {
                         
                         // updload profil picture button
                         echo "<body>";
