@@ -109,6 +109,18 @@ Establishment(e_{2}) \wedge Establishment(e_{3}) \wedge \\
 \}
 \end{align*}
 \paragraph*{Algèbre relationnelle}
+\paragraph*{SQL}
+\begin{verbatim}
+SELECT u1.*
+FROM users u1, comments c1
+WHERE u1.nickname != 'Brenda' AND c1.uid = u1.uid AND c1.score >= 4 AND c1.eid IN (
+        SELECT DISTINCT c2.eid
+        FROM comments c2, users u2
+        WHERE c2.score >= 4 AND u2.nickname = 'Brenda' AND c2.uid = u2.uid
+        )
+GROUP BY u1.uid
+HAVING COUNT( DISTINCT c1.eid ) >= 3
+\end{verbatim}
 \subsection*{R2}
 \noindent Tous les établissements qu’apprécie au moins un utilisateur qui apprécie tous les établissements que "Brenda" apprécie.
 \paragraph*{Calcul relationnel tuple}
@@ -121,6 +133,21 @@ Establishment(e_{2}) \wedge Establishment(e_{3}) \wedge \\
 \}
 \end{align*}
 \paragraph*{Algèbre relationnelle}
+\paragraph*{SQL}
+\begin{verbatim}
+SELECT DISTINCT e1.*
+FROM users u1, establishments e1, comments c1
+WHERE u1.uid = c1.uid AND u1.nickname != 'Brenda' AND e1.eid = c1.eid AND c1.score >= 4 AND 
+      EXISTS (
+          SELECT DISTINCT c2.*
+          FROM comments c2 
+          WHERE u1.uid = c2.uid AND c2.score >= 4 AND c2.uid = u1.uid AND e1.eid = c2.eid AND c2.eid IN (
+              SELECT c2.eid
+              FROM comments c3, users u2
+              WHERE c3.score >= 4 AND u2.nickname = 'Brenda' AND c3.uid = u2.uid AND c3.eid = e1.eid
+          )
+      )
+\end{verbatim}
 \subsection*{R3}
 Tous les établissements pour lesquels il y a au plus un commentaire.
 \paragraph*{Calcul relationnel tuple}
@@ -129,6 +156,22 @@ Tous les établissements pour lesquels il y a au plus un commentaire.
 \}
 \end{align*}
 \paragraph*{Algèbre relationnelle}
+\paragraph*{SQL}
+\begin{verbatim}
+SELECT e1.*
+FROM establishments e1
+WHERE NOT EXISTS (
+    SELECT c1.*
+    FROM comments c1
+    WHERE e1.eid = c1.eid
+    ) OR e1.eid IN (
+        SELECT c2.eid
+        FROM comments c2
+        WHERE c2.eid = e1.eid
+        GROUP BY e1.eid
+        HAVING COUNT( c2.cid ) = 1
+    )
+\end{verbatim}
 \subsection*{R4}
 La liste des administrateurs n’ayant pas commenté tous les établissements qu’ils ont crées.
 \paragraph*{Calcul relationnel tuple}
@@ -137,7 +180,50 @@ La liste des administrateurs n’ayant pas commenté tous les établissements qu
 & c.eid = e.eid \wedge c.uid = u.uid )) \} 
 \end{align*}
 \paragraph*{Algèbre relationnelle}
+\paragraph*{SQL}
+\begin{verbatim}
+SELECT u1.*
+FROM users u1
+WHERE u1.admin = 1 AND EXISTS (
+    SELECT e1.*
+    FROM establishments e1
+    WHERE u1.uid = e1.uid AND NOT EXISTS (
+        SELECT c1.*
+        FROM comments c1
+        WHERE c1.eid = e1.eid AND c1.uid = u1.uid
+    )
+)
+\end{verbatim}
 
+\subsection*{R5}
+\paragraph*{SQL}
+\begin{verbatim}
+SELECT e1.*, AVG( c1.score ) AS _avg
+FROM establishments e1, comments c1
+WHERE e1.eid = c1.eid 
+GROUP BY e1.eid 
+HAVING COUNT( DISTINCT c1.cid ) >= 3
+ORDER BY AVG( c1.score ) DESC
+\end{verbatim}
+\subsection*{R6}
+\paragraph*{SQL}
+\begin{verbatim}
+SELECT t.*, AVG( estab_score._avg ) AS score_avg
+FROM tags t
+INNER JOIN (
+    SELECT et2.tid AS _tid, et2.eid AS _eid, AVG(c.score) AS _avg
+    FROM comments c, establishment_tags et2
+    WHERE c.eid = et2.eid AND et2.tid IN (
+        SELECT et3.tid AS _tid
+        FROM establishment_tags et3
+        GROUP BY et3.tid
+        HAVING COUNT( DISTINCT et3.eid ) >= 5
+    )
+    GROUP BY et2.eid
+) AS estab_score ON estab_score._tid = t.tid
+GROUP BY t.tid 
+ORDER BY AVG( estab_score._avg ) DESC
+\end{verbatim}
 
 \section*{Hypothèses}
 \noindent
@@ -145,6 +231,34 @@ La liste des administrateurs n’ayant pas commenté tous les établissements qu
 \begin{itemize}
 \item \underline{Deux \textit{User}s ne peuvent pas avoir le même \textit{Nickname}:} L'interface doit permettre de consulter la fiche de chaque \textit{User}. Un \textit{User} qui cherche le profil de quelqu'un ne peut pas distinguer deux \textit{User}s avec le même \textit{Nickname} puisque le celui-ci est la seule donnée visible (pas d'image de profil, etc ...).
 \item \underline{Un \textit{Admin} ne peut pas modifier des \textit{Comment}s ni des \textit{Tag}s:} On pourrait lui donner les droits de gestion pour vérifier qu'il n'y ait pas d'abus, mais pour le moment un \textit{Admin} ne peut que créer, modifier et enlever des \textit{Establishment}s.
-\item Pour les requêtes R1 et R2 on exclut l'utilisateur "Brenda" comme étant un résultat qu'on considère lors de la recherche des résultats.
+\item Pour les requêtes R1 et R2 on exclut l'utilisateur "Brenda" comme étant un résultat qu'on considère lors de la recherche des résultats parce que ça nous semble un peu redondant d'.
 \end{itemize}
+
+\section*{Scénario}
+Étapes :
+\begin{enumerate}
+\item Login avec le compte de "Brenda"
+\item Inspection de la page de son profile
+\item Recherche des établissements avec le mot 'Be'
+\item Inspection du profile du Restaurant 'Mirabelle'
+\item Redaction d'un commentaire pour le restaurant
+\item Ajout d'un label au restaurant qui n'existait pas encore
+\item Logout
+\item Login avec le compte de "Fred"
+\item Ajout d'une photo de profile pour Fred
+\item Création d'un Hotel
+\item Inspection du profile du nouveau Hotel
+\item Ajout d'un label au nouveau Hotel
+\item Recherche et inspection du café 'Tavernier' 
+\item Ouverture de son site web
+\item Supprimer le café Tavernier
+\item Recherche et inspection du restaurant 'Chez Théo'
+\item Changement de sa capacité de banquet et de ses heures d'ouvertures
+\item Logout
+\item Création d'un nouveau compte
+\item Login avec le nouveau compte
+\item Inspection compte de 'Fred' 
+\item Affichage des résultats des requêtes R1-R6
+\item Logout
+\end{enumerate}
 \end{document}
