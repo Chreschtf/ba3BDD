@@ -13,11 +13,13 @@
 		Projet : Annuaire d'établissements horeca}
 \begin{document}
 \maketitle
+
+
 \section*{Modèle entité-association}
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\textwidth]{modelEA.pdf}
+  \includegraphics[width=\textwidth]{modelEA.pdf}https://preview.overleaf.com/public/fmggjjhwnrrs/images/8586f5f52acf38bd1764f56ff49298182f11036b.jpeg
   \caption{Modèle entité-association}
 \end{figure}
 
@@ -29,13 +31,15 @@
 \item Un \textit{User} ne peut pas apposer le même \textit{Tag} plusieurs fois sur le même \textit{Establishment}.
 \item L'\textit{EntryDate} d'un \textit{Adminisitrator} doit être strictement supérieure à l'\textit{EntryDate} de l'\textit{Establishment} qu'il a créé.
 \item L'\textit{EntryDate} d'un \textit{Comment} doit être strictement supérieure à l'\textit{EntryDate} du User qui le fait ainsi que l'\textit{EntryDate} de l'\textit{Establishment} sur lequel il est fait. 
+\item Un \textit{User} ne peut pas donner deux likes/dislikes sur un \textit{Comment}.
 \end{itemize}
 \subsection*{Remarques}
 Si un \textit{Restaurant} ne veut pas organiser de banquet, il spécifie sa \textit{BanquetCapacity} comme étant 0.
 
+
 \section*{Modèle relationnel}
 \noindent
-\textbf{Establishment}(\underline{EID},EName,Street,Num,Zip,City,Longitude,Latitude,Tel,Site,UID,EntryDate)
+\textbf{Establishment}(\underline{EID},EName,Street,Num,Zip,City,Longitude,Latitude,Tel,Site,UID,EntryDate,HorecaType)
 \begin{itemize}
 \item UID référence User.UID (représente le createur de l'établissement)\\
 \end{itemize}
@@ -55,16 +59,22 @@ Si un \textit{Restaurant} ne veut pas organiser de banquet, il spécifie sa \tex
 \begin{itemize}
 \item EID référence Establishment.EID\\
 \end{itemize}
-\textbf{User}(\underline{UID}, Nickname, Email, Password, EntryDate, Admin)
+\textbf{User}(\underline{UID}, Nickname, Email, Password, EntryDate, Admin, PictureName)
 \begin{itemize}
 \item Nickname est unique et donc également une clé de cette relation
 \item Email est unique et donc également une clé de cette relation\\
 \end{itemize}
-\textbf{Comment}(\underline{CID}, UID, EID, EntryDate, Score,  Text)
+\textbf{Comment}(\underline{CID}, UID, EID, EntryDate, Score,  Text, Likes)
 \begin{itemize}
 \item UID référence User.UID
 \item EID référence Establishment.EID
 \item (UID,EID,EntryDate) est unique et donc également une clé de cette relation\\
+\end{itemize}
+\textbf{CommentLikes}(\underline{CID, UID}, Likes)
+\begin{itemize}
+\item CID référence Comment.CID
+\item UID référence User.UID
+\item (CID,UID) est unique et donc une clé de cette relation\\
 \end{itemize}
 \textbf{Tag}(\underline{TID}, TName)
 \begin{itemize}
@@ -75,7 +85,10 @@ Si un \textit{Restaurant} ne veut pas organiser de banquet, il spécifie sa \tex
 \item TID référence Tag.TID
 \item EID référence Establishment.EID
 \item UID référence User.UID
+\item (TID,EID,UID) est unique et donc également une clé de cette relation\\
 \end{itemize}
+
+
 \subsection*{Remarques}
 L'ajout d'une entrée dans \textit{Establishment} implique l'ajout d'une entrée dans soit \textit{Restaurant}, soit \textit{Bar} ou soit \textit{Hotel}. Les deux entrées ont le même \textit{EID}.
 \subsection*{Contraintes de domaine}
@@ -85,19 +98,27 @@ L'ajout d'une entrée dans \textit{Establishment} implique l'ajout d'une entrée
 \item $Comment.Score \in \{0,1,2,3,4,5\}$
 \item $Hotel.Stars \in \{0,1,2,3,4,5\}$
 \item $Hotel.Rooms \in \mathbb{N}_{0}$
-\item $Hotel.StandardPrice \in \mathbb{R}^{+}_{0}$
+\item $Hotel.StandardPrice \in \mathbb{N}_{0}$
 \item $Restaurant.BanquetCapacity \in \mathbb{N} $
-\item $Restaurant.PriceRange \in \mathbb{R}^{+}_{0} $
+\item $Restaurant.PriceRange \in \mathbb{N}_{0}$
 \item $Restaurant.Takeaway \in \{True,False\} $
 \item $Restaurant.Delivery \in \{True,False\} $
-\item $RestaurantClosingDays.Hour \in \{"AM","PM"\}$ (matin / après-midi)
-\item $RestaurantClosingDays.ClosingDay \in \{0,1,2,3,4,5,6\}$
+\item $RestaurantClosingDays.Hour \in \{"AM","PM","COMPLETE" \}$ (matin / après-midi / jour entier)
+\item $RestaurantClosingDays.ClosingDay \in \{"MON","TUE","WED","THU","FRI","SAT","SUN" \} $
 \item $Bar.Smoking \in \{True,False\} $
 \item $Bar.Snack \in \{True,False\} $
+\item $Comment.Likes \in \mathbb{Z} $
+\item $CommentLikes.Likes \in \{True,False\} $
+
 \end{itemize}
 
+
 \section*{Requêtes}
+
 \subsection*{R1}
+%----------------------------------------------------%
+%----------------------------------------------------%
+
 \noindent Tous les utilisateurs qui apprécient au moins 3 établissements que l'utilisateur "Brenda" apprécie.
 \paragraph*{Calcul relationnel tuple}
 \begin{align*}
@@ -109,6 +130,12 @@ Establishment(e_{2}) \wedge Establishment(e_{3}) \wedge \\
 \}
 \end{align*}
 \paragraph*{Algèbre relationnelle}
+\begin{align*}
+EstabsBrendaLikes \leftarrow \pi_{eid} ( ( \sigma_{score \ge 4} (Comment)) *_{uid=uid} (\sigma_{nickname = 'Brenda'} (User)) ) \\
+EstabsOthersLike \leftarrow \pi_{comment.eid, \; user.*} ( ( \sigma_{score \ge 4} (Comment)) *_{uid=uid} (\sigma_{nickname \neq 'Brenda'} (User)) ) \\
+Result \leftarrow \sigma_{nbrLikes \ge 3} (user.*, nbrLikes \quad \gamma \quad count(eid) \; as\;  nbrLikes \\ 
+((EstabsBrendaLikes)*_{eid=eid}(EstabsOthersLike)) )
+\end{align*}
 \paragraph*{SQL}
 \begin{verbatim}
 SELECT u1.*
@@ -122,6 +149,9 @@ GROUP BY u1.uid
 HAVING COUNT( DISTINCT c1.eid ) >= 3
 \end{verbatim}
 \subsection*{R2}
+%----------------------------------------------------%
+%----------------------------------------------------%
+
 \noindent Tous les établissements qu’apprécie au moins un utilisateur qui apprécie tous les établissements que "Brenda" apprécie.
 \paragraph*{Calcul relationnel tuple}
 \begin{align*}
@@ -133,6 +163,13 @@ HAVING COUNT( DISTINCT c1.eid ) >= 3
 \}
 \end{align*}
 \paragraph*{Algèbre relationnelle}
+\begin{align*}
+HighscoreComments \leftarrow \sigma_{score \ge 4} (Comment) \\
+EstabsBrendaLikes \leftarrow \pi_{eid} ( (\sigma_{nickname=Brenda} (User)) *_{uid=uid} (HighscoreComments) ) \\
+EstabsOthersLike \leftarrow \pi_{eid, uid} ( (\sigma_{nickname \neq Brenda} (User)) *_{uid=uid} (HighscoreComments) ) \\
+LikesSameAsBrenda \leftarrow \pi_{uid} (EstabsOthersLike / EstabsBrendaLikes) \\
+Result \leftarrow \pi_{estab.*} ((Establishment) *_{eid=eid} ((LikesSameAsBrenda) *_{uid=uid} (EstabsOthersLike)))
+\end{align*}
 \paragraph*{SQL}
 \begin{verbatim}
 SELECT DISTINCT e1.*
@@ -149,6 +186,10 @@ WHERE u1.uid = c1.uid AND u1.nickname != 'Brenda' AND e1.eid = c1.eid AND c1.sco
       )
 \end{verbatim}
 \subsection*{R3}
+%----------------------------------------------------%
+%----------------------------------------------------%
+
+
 Tous les établissements pour lesquels il y a au plus un commentaire.
 \paragraph*{Calcul relationnel tuple}
 \begin{align*}
@@ -156,6 +197,11 @@ Tous les établissements pour lesquels il y a au plus un commentaire.
 \}
 \end{align*}
 \paragraph*{Algèbre relationnelle}
+\begin{align*}
+0\_Comments \leftarrow (Establishment) - ((Establishment) *_{eid=eid} (\pi_{eid} (Comment))) \\
+1\_Comment \leftarrow ((Establishment) *_{eid=eid} \\ (\sigma_{nbrComment = 1} (eid, nbrComment \quad \gamma \quad count(cid) \; as\;  nbrComment ( \pi_{eid, cid}(Comment) )))) \\
+Result \leftarrow 0\_Comments \cup 1\_Comment
+\end{align*}
 \paragraph*{SQL}
 \begin{verbatim}
 SELECT e1.*
@@ -173,6 +219,10 @@ WHERE NOT EXISTS (
     )
 \end{verbatim}
 \subsection*{R4}
+%----------------------------------------------------%
+%----------------------------------------------------%
+
+
 La liste des administrateurs n’ayant pas commenté tous les établissements qu’ils ont crées.
 \paragraph*{Calcul relationnel tuple}
 \begin{align*}
@@ -180,6 +230,12 @@ La liste des administrateurs n’ayant pas commenté tous les établissements qu
 & c.eid = e.eid \wedge c.uid = u.uid )) \} 
 \end{align*}
 \paragraph*{Algèbre relationnelle}
+\begin{align*}
+Admins \leftarrow \sigma_{admin=1} (User) \\
+AdminComments \leftarrow \pi_{uid, eid} ( (Admins) *_{uid=uid} (Comment) ) \\
+AdminCreated \leftarrow \pi_{uid, eid} ( (Admins) *_{uid=uid} (Establishment) ) \\
+Result \leftarrow \pi_{user.*} ( (User) *_{uid=uid} (AdminCreated - AdminComments) )
+\end{align*}
 \paragraph*{SQL}
 \begin{verbatim}
 SELECT u1.*
@@ -196,6 +252,10 @@ WHERE u1.admin = 1 AND EXISTS (
 \end{verbatim}
 
 \subsection*{R5}
+%----------------------------------------------------%
+%----------------------------------------------------%
+
+
 \paragraph*{SQL}
 \begin{verbatim}
 SELECT e1.*, AVG( c1.score ) AS _avg
@@ -206,6 +266,10 @@ HAVING COUNT( DISTINCT c1.cid ) >= 3
 ORDER BY AVG( c1.score ) DESC
 \end{verbatim}
 \subsection*{R6}
+%----------------------------------------------------%
+%----------------------------------------------------%
+
+
 \paragraph*{SQL}
 \begin{verbatim}
 SELECT t.*, AVG( estab_score._avg ) AS score_avg
@@ -261,4 +325,15 @@ ORDER BY AVG( estab_score._avg ) DESC
 \item Affichage des résultats des requêtes R1-R6
 \item Logout
 \end{enumerate}
+
+\section*{Instructions d'installation de notre application}
+Version de PHP utilisé : PHP 5.6.16
+\begin{enumerate}
+\item placer le dossier "ba3BDD" dans le dossier cible de votre serveur. ('www' pour wamp) 
+\item ajouter la base de donnée en important le fichier 'Create\_Annuaire.sql' 
+\item Créez un compte d'utilisateur sur votre serveur avec le nom "projetChristianMarius" et le mot de passe "123soleil"
+\item Importer les données XML en visitant "localhost/ba3BDD/Models/XMLfile\_parser". Si rien ne s'affiche, tout c'est bien passé.
+\item visitez "localhost/ba3BDD" et vous pouvez utiliser le site.
+\end{enumerate} 
+Les utilisateurs du fichier XML ont comme mot de passe leur nom d'utilisateur.
 \end{document}
