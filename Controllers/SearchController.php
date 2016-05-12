@@ -167,7 +167,14 @@
             echo "<td> ".$info['city']."  </td>";
             echo "<td> ".$info['zip']."  </td>";
             echo "<td> ".$info['tel']."  </td>";
-            echo "<td> <a href='http://".trim($info['site'])."'>".$info['site']."</a> </td>";
+            if ($info['site']!= NULL){
+                if (0 === strpos(trim($info['site']), 'http'))
+                    echo "<td> <a href='".trim($info['site'])."'>".$info['site']."</a> </td>";
+                else 
+                    echo "<td> <a href='http://".trim($info['site'])."'>".$info['site']."</a> </td>";
+            }else
+                echo "<td> </td>";
+            
         }
     }
 ?>

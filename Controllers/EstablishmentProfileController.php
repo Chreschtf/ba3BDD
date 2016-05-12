@@ -34,7 +34,10 @@
             if ($data['site']!=NULL){
                 echo "<tr>";
                     echo "<td><b>Web site : </b></td>";
-                    echo "<td> <a href='".trim($data['site'])."'>".$data['site']."</a> </td>";
+                    if (0 === strpos(trim($data['site']), 'http'))
+                        echo "<td> <a href='".trim($data['site'])."'>".$data['site']."</a> </td>";
+                    else 
+                        echo "<td> <a href='http://".trim($data['site'])."'>".$data['site']."</a> </td>";
                 echo "</tr>";
             }
             echo "<tr>";
