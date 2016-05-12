@@ -37,19 +37,19 @@
             $barId = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
             require_once("Controllers/BarProfileController.php");
             $controller = new BarProfileController();
-            $controller->setId($barId);
+            $controller->setEID($barId);
             break;
         case 'hotelProfile':
             $hotelId = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
             require_once("Controllers/HotelProfileController.php");
             $controller = new HotelProfileController();
-            $controller->setId($hotelId);
+            $controller->setEID($hotelId);
             break;
         case 'restaurantProfile':
             $restaurantId = (isset($_GET['eid'])) ? htmlentities($_GET['eid']) : '';
             require_once("Controllers/RestaurantProfileController.php");
             $controller = new RestaurantProfileController();
-            $controller->setId($restaurantId);
+            $controller->setEID($restaurantId);
             break;
         case 'createComment':
             $uid = (isset($_POST['uid'])) ? htmlentities($_POST['uid']) : '';
@@ -74,6 +74,10 @@
         case 'modifyEstablishment':
             require_once('Controllers/ModifyEstabController.php');
             $controller = new ModifyEstabController();
+            break;
+        case 'likeComment':
+            require_once('Controllers/LikeCommentController.php');
+            $controller = new LikeCommentController();
             break;
         case 'createEstablishment':
             $horeca_type = (isset($_GET['horeca_type'])) ? htmlentities($_GET['horeca_type']) : '';

@@ -108,8 +108,12 @@ class QueryController
                 echo "        <td>" . $Estab['city'] . "</td>";
                 echo "        <td>" . $Estab['zip'] . "</td>";
                 echo "        <td>" . $Estab['tel'] . "</td>";
-                if( $Estab['site'] != NULL )
-                    echo "<td> <a href='".trim($Estab['site'])."'>".$Estab['site']."</a> </td>";
+                if( $Estab['site'] != NULL ){
+                    if (0 === strpos(trim($Estab['site']), 'http'))
+                        echo "<td> <a href='".trim($Estab['site'])."'>".$Estab['site']."</a> </td>";
+                    else 
+                        echo "<td> <a href='http://".trim($Estab['site'])."'>".$Estab['site']."</a> </td>";
+                }
                 else
                     echo "        <td> </td>";
                 echo "        <td>" . $Estab['longitude'] . "</td>";

@@ -6,7 +6,7 @@ class Db
 
     private function __construct(){
         
-        $username = "root";
+        $username = "projetChristianMarius";
         $password = "123soleil";
 
         try {
@@ -195,6 +195,20 @@ class Db
         $statement->bindParam(':eid',  $array[1]);
         $statement->bindParam(':score',  $array[2]);
         $statement->bindParam(':text',  $array[3]);
+        
+        $statement->execute();
+    }
+
+    public function insertCommentLike($uid, $cid, $likes){
+        $query="INSERT INTO comment_likes
+                (uid, cid, likes) 
+                VALUES 
+                (:uid, :cid, :likes)";
+        $statement= $this->_db->prepare($query);
+
+        $statement->bindParam(':uid',  $uid);
+        $statement->bindParam(':cid',  $cid);
+        $statement->bindParam(':likes',  $likes);
         
         $statement->execute();
     }
@@ -556,14 +570,15 @@ class Db
     }
     
     public function getCommentsOnEstablishment($eid){
-        $query = "SELECT c.*, u.nickname, subquery.average
+        $query = "SELECT c.*, u.nickname, subquery.average, e.horeca_type
                 FROM comments c, users u, (
                     SELECT AVG(c2.score) as average
                     FROM comments c2
                     WHERE c2.eid = :eid
-                ) AS subquery
-                WHERE c.eid = :eid and c.uid = u.uid
-                GROUP BY c.cid";
+                ) AS subquery, establishments e
+                WHERE c.eid = :eid and c.uid = u.uid AND e.eid = :eid
+                GROUP BY c.cid
+                ORDER BY c.likes DESC";
                 
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid",$eid);
@@ -601,10 +616,11 @@ class Db
     
     
     public function getCommentsOfUser($uid){
-        $query = "SELECT c.*, e.*
+        $query = "SELECT c.*, e.ename, e.horeca_type
                   FROM comments c, establishments e
                   WHERE c.uid = :uid AND e.eid = c.eid
-                  GROUP BY c.cid";
+                  GROUP BY c.cid
+                  ORDER BY c.likes DESC";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":uid",$uid);
@@ -624,11 +640,35 @@ class Db
         return $result;  
     }
     
+    public function hasLiked($uid, $cid) {
+        $query = "SELECT likes
+                  FROM comment_likes
+                  WHERE uid = :uid AND cid = :cid";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":uid",$uid);
+        $stmt->bindParam(":cid",$cid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;  
+    }
+    
     
     /*
             UPDATES / DELETES
             -----------------
     */
+    
+    public function deleteLike($uid, $cid){
+        $query = "DELETE 
+                  FROM comment_likes 
+                  WHERE uid = :uid AND cid = :cid";
+                 
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":uid", $uid);
+        $stmt->bindParam(":cid", $cid);
+        $stmt->execute();
+    }
     
     public function deleteEstablishmentWithEID($eid){
         $query = "DELETE 
@@ -719,6 +759,16 @@ class Db
         $stmt->bindParam(":smoking", $data[0]);
         $stmt->bindParam(":snack", $data[1]);
         $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
+    }
+    
+    public function updateLikes($cid, $i){
+        $query = "UPDATE comments
+                  SET likes = likes + ". $i ."
+                  WHERE cid = :cid ";
+                         
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":cid", $cid);
         $stmt->execute();
     }
     
@@ -845,7 +895,8 @@ class Db
         $query = "SELECT e.*, COUNT(et.uid) AS _nbrTagged
                   FROM establishment_tags et, establishments e
                   WHERE et.tid = :tid AND e.eid = et.eid
-                  GROUP BY et.eid";
+                  GROUP BY et.eid
+                  ORDER BY COUNT(et.uid) DESC";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":tid", $tid);

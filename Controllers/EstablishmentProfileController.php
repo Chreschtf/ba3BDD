@@ -34,7 +34,10 @@
             if ($data['site']!=NULL){
                 echo "<tr>";
                     echo "<td><b>Web site : </b></td>";
-                    echo "<td> <a href='".trim($data['site'])."'>".$data['site']."</a> </td>";
+                    if (0 === strpos(trim($data['site']), 'http'))
+                        echo "<td> <a href='".trim($data['site'])."'>".$data['site']."</a> </td>";
+                    else 
+                        echo "<td> <a href='http://".trim($data['site'])."'>".$data['site']."</a> </td>";
                 echo "</tr>";
             }
             echo "<tr>";
@@ -89,9 +92,9 @@
             echo "</div>";
         }
         
-        public static function displayComments($id){
+        public static function displayComments($eid, $uid){
 
-            $comments = Db::getInstance()->getCommentsOnEstablishment($id);
+            $comments = Db::getInstance()->getCommentsOnEstablishment($eid);
             echo "<h2>Comments</h2>";
             if (empty($comments)){
                 echo "No comments available";
@@ -102,8 +105,61 @@
                     //echo "<b>From :</b> ". Db::getInstance()->getUsersWithSimilarName($comments[$i]["nickname"]) ."<br>";
                     echo "<b>From :</b> <a href='?action=userProfile&user=" . $comments[$i]["nickname"] . "'>" . $comments[$i]["nickname"] . "</a> <br>";
                     echo "<b>Score : </b>".$comments[$i]['score'].'<br>';
-                    echo '"'.$comments[$i]['text'].'"<br><br>';
+                    echo '"'.$comments[$i]['text'].'"';
+                    
+                    $hasLiked = Db::getInstance()->hasLiked($uid, $comments[$i]['cid']);
+                    $downColor = "danger"; $upColor = "success"; $downDisabled = ""; $upDisabled = "";
+                    
+                    if($uid == $comments[$i]["uid"]){ // writer of the comment can't up/down vote it !!
+                        $downColor = $upColor = "default";
+                        $downDisabled = "disabled"; $upDisabled = "disabled";
+                        
+                    } elseif ( $hasLiked["likes"] != NULL ) {
+                        if ($hasLiked["likes"]){ // liked the comment
+                            $downDisabled = "disabled";
+                        } else {// disliked the comment
+                            $upDisabled = "disabled";
+                        }
+                    }
+                    
+                    echo "<div class = 'row'>";
+                    
+                    echo "<b>Likes : ". $comments[$i]["likes"] ."</b>";
+                    
+                    echo "      <div class='col-xs-8 col-sm-2'>";
+                    echo "<form action='?action=likeComment' method='post' >";
+                    echo "    <input type='hidden' name='cid' value='". $comments[$i]['cid'] ."'>";
+                    echo "    <input type='hidden' name='uid' value='". $uid ."'>";
+                    echo "    <input type='hidden' name='eid' value='". $eid ."'>";
+                    echo "    <input type='hidden' name='likes' value='up'>";
+                    echo "    <input type='hidden' name='page' value='". EstablishmentProfileController::getEstabType($comments[$i]['horeca_type']) ."'>";
+                    echo "      <button type='submit' class='btn btn-xs btn-". $upColor ."' ". $upDisabled .">Up</button>";
+                    echo "</form>\n";
+                    echo "      </div>";
+                                
+                    echo "      <div class='col-xs-8 col-sm-2'>";
+                    echo "<form action='?action=likeComment' method='post' >";
+                    echo "    <input type='hidden' name='cid' value='". $comments[$i]['cid'] ."'>";
+                    echo "    <input type='hidden' name='uid' value='". $uid ."'>";
+                    echo "    <input type='hidden' name='eid' value='". $eid ."'>";
+                    echo "    <input type='hidden' name='likes' value='down'>";
+                    echo "    <input type='hidden' name='page' value='". EstablishmentProfileController::getEstabType($comments[$i]['horeca_type']) ."'>";
+                    echo "      <button type='submit' class='btn btn-xs btn-". $downColor ."' ". $downDisabled .">Down</button>";
+                    echo "</form>\n";
+                    echo "      </div>";
+                    
+                    echo "</div> <br><br>";
                 }
+            }
+        }
+        
+        public static function getEstabType($horeca_type){
+            if ( $horeca_type == 'Bar' ) {
+                 return "barProfile";
+            } else if ( $horeca_type == 'Restaurant' ) {
+                 return "restaurantProfile";
+            } else { // Hotel
+                 return "hotelProfile";
             }
         }
         

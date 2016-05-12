@@ -1,12 +1,13 @@
 <?php
     class BarProfileController{
         
-        private $_id;
+        private $_eid;
+        private $_uid;
         
         public function __contruct(){}
         
-        public function setId($id){
-            $this->_id=$id;
+        public function setEID($eid){
+            $this->_eid=$eid;
         }
         
         public function run(){
@@ -20,13 +21,14 @@
             }else{
                 echo "<h1>Bar Profile</h1>";
                 require_once("EstablishmentProfileController.php");
-                $barData=Db::getInstance()->getBarData($this->_id);
+                $this->_uid = Db::getInstance()->getUIDof($_COOKIE["username"]);
+                $barData=Db::getInstance()->getBarData($this->_eid);
                 
                 EstablishmentProfileController::displayGenericInfo($barData, Db::getinstance()->getUIDof($_COOKIE['username']));
                 $this->displayBarSpecificInfo($barData);
                 
                 EstablishmentProfileController::displayTags($barData['eid']);
-                EstablishmentProfileController::displayComments($barData['eid']);
+                EstablishmentProfileController::displayComments($barData['eid'], $this->_uid);
             }
             
         }

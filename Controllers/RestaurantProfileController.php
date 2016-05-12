@@ -1,12 +1,13 @@
 <?php
     class RestaurantProfileController{
         
-        private $_id;
+        private $_eid;
+        private $_uid;
         
         public function __contruct(){}
         
-        public function setId($id){
-            $this->_id=$id;
+        public function setEID($eid){
+            $this->_eid=$eid;
         }
         
         public function run(){
@@ -20,14 +21,15 @@
             }else{
                 echo "<h1>Restaurant Profile </h1>";
                 require_once("EstablishmentProfileController.php");
-                $restaurantData=Db::getInstance()->getRestaurantData($this->_id);
+                $this->_uid = Db::getInstance()->getUIDof($_COOKIE["username"]);
+                $restaurantData=Db::getInstance()->getRestaurantData($this->_eid);
                 EstablishmentProfileController::displayGenericInfo($restaurantData, Db::getinstance()->getUIDof($_COOKIE['username']));
                 
                 $this->displayRestaurantSpecificInfo($restaurantData);
                 $this->displayClosingDays($restaurantData['eid']);
                 
                 EstablishmentProfileController::displayTags($restaurantData['eid']);
-                EstablishmentProfileController::displayComments($restaurantData['eid']);
+                EstablishmentProfileController::displayComments($restaurantData['eid'], $this->_uid);
             }
         }
         
