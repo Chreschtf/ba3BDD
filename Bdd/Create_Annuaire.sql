@@ -71,10 +71,19 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.comments (
     eid INT(6) NOT NULL,
     entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     score INT(1) NOT NULL,
+    likes INT(3) DEFAULT 0,
     text TEXT NOT NULL,
     PRIMARY KEY (cid),
     FOREIGN KEY (uid) REFERENCES users(uid),
     FOREIGN KEY (eid) REFERENCES establishments(eid)
+);
+
+CREATE TABLE IF NOT EXISTS annuaire_horeca.comment_likes (
+    cid INT(6) NOT NULL,
+    uid INT(6) NOT NULL,
+    likes BOOLEAN DEFAULT 0,
+    FOREIGN KEY (uid) REFERENCES users(uid),
+    FOREIGN KEY (cid) REFERENCES comments(cid)
 );
 
 CREATE TABLE IF NOT EXISTS annuaire_horeca.tags (

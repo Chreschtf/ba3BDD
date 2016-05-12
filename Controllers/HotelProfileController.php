@@ -1,12 +1,13 @@
 <?php
     class HotelProfileController{
         
-        private $_id;
+        private $_eid;
+        private $_uid;
         
         public function __contruct(){}
         
-        public function setId($id){
-            $this->_id=$id;
+        public function setEID($eid){
+            $this->_eid=$id;
         }
         
         public function run(){
@@ -20,13 +21,14 @@
             }else{
                 echo "<h1>Hotel Profile</h1>";
                 require_once("EstablishmentProfileController.php");
-                $hotelData = Db::getInstance()->getHotelData($this->_id);
+                $this->_uid = Db::getInstance()->getUIDof($_COOKIE["username"]);
+                $hotelData = Db::getInstance()->getHotelData($this->_eid);
                 
                 EstablishmentProfileController::displayGenericInfo($hotelData, Db::getinstance()->getUIDof($_COOKIE['username']));
                 $this->displayHotelSpecificInfo($hotelData);
                 
                 EstablishmentProfileController::displayTags($hotelData['eid']);
-                EstablishmentProfileController::displayComments($hotelData['eid']);
+                EstablishmentProfileController::displayComments($hotelData['eid'], $this->_uid);
             }
         }
         

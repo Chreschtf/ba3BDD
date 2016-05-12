@@ -32,9 +32,10 @@
                         $error = 'Image size must be less than 2 MB';
                     }
                     
+                    $file_name = $uid . "." . $file_extension;
                     if($error == ""){
                         
-                        $target_path = "UserImages/" . $_FILES['image']['name'];
+                        $target_path = "UserImages/" . $file_name;
                         $saved = move_uploaded_file($_FILES['image']['tmp_name'], $target_path);
                         if($saved)
                             Db::getInstance()->setProfilePicture($uid, $file_name);

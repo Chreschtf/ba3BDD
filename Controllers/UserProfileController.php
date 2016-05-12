@@ -66,8 +66,10 @@
         }
         
         public function displayComments(){
-
+            
             $comments = Db::getInstance()->getCommentsOfUser($this->_uid);
+            $uid = Db::getInstance()->getUIDof($_COOKIE["username"]);
+            
             echo "<h2>Comments</h2>";
             if (empty($comments)){
                 echo "No comments available";
@@ -82,7 +84,56 @@
                     }
                     echo "<b>Date : </b>".$comments[$i]['entry_date'].'<br>';
                     echo "<b>Score : </b>".$comments[$i]['score'].'<br>';
-                    echo '"'.$comments[$i]['text'].'"<br><br>';
+                    echo '"'.$comments[$i]['text'].'"<br>';
+                    
+                    $hasLiked = Db::getInstance()->hasLiked($uid, $comments[$i]['cid']);
+                    $downColor = "danger"; $upColor = "success"; 
+                    $downDisabled = ""; $upDisabled = "";
+                    
+                    if((int)$uid == (int)$comments[$i]["uid"]){ // writer of the comment can't up/down vote it !!
+                        $downColor = $upColor = "default";
+                        $downDisabled = "disabled"; $upDisabled = "disabled";
+                        
+                    } else{
+                        if ( $hasLiked["likes"] != NULL ) {
+                            if ($hasLiked["likes"]){ // liked the comment
+                                $downDisabled = "disabled";
+                            } else {// disliked the comment
+                                $upDisabled = "disabled";
+                            }
+                        }
+                    }
+                    
+                    echo "<div class = 'row'>";
+                    
+                    echo "<b>Likes : ". $comments[$i]["likes"] ."</b>";
+                    
+                    echo "      <div class='col-xs-8 col-sm-2'>";
+                    echo "<form action='?action=likeComment' method='post' >";
+                    echo "    <input type='hidden' name='cid' value='". $comments[$i]['cid'] ."'>";
+                    echo "    <input type='hidden' name='uid' value='". $uid ."'>";
+                    echo "    <input type='hidden' name='eid' value=''>";
+                    echo "    <input type='hidden' name='likes' value='up'>";
+                    echo "    <input type='hidden' name='page' value='userProfile'>";
+                    echo "    <input type='hidden' name='pageUser' value='". $this->_user ."'>";
+                    echo "      <button type='submit' class='btn btn-xs btn-". $upColor ."' ". $upDisabled .">Up</button>";
+                    echo "</form>\n";
+                    echo "      </div>";
+                                
+                    echo "      <div class='col-xs-8 col-sm-2'>";
+                    echo "<form action='?action=likeComment' method='post' >";
+                    echo "    <input type='hidden' name='cid' value='". $comments[$i]['cid'] ."'>";
+                    echo "    <input type='hidden' name='uid' value='". $uid ."'>";
+                    echo "    <input type='hidden' name='eid' value=''>";
+                    echo "    <input type='hidden' name='likes' value='down'>";
+                    echo "    <input type='hidden' name='page' value='userProfile'>";
+                    echo "    <input type='hidden' name='pageUser' value='". $this->_user ."'>";
+                    echo "      <button type='submit' class='btn btn-xs btn-". $downColor ."' ". $downDisabled .">Down</button>";
+                    echo "</form>\n";
+                    echo "      </div>";
+                    
+                    echo "</div> <br><br>";
+                    
                 }
             }
         }
