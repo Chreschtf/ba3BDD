@@ -194,14 +194,14 @@
             echo "<div class='control-group'>";
             echo "  <label class='control-label' for='banquet_capacity'>Banquet capacity  : </label>";
             echo "  <div class='controls'>";
-            echo "    <input type='number' id='banquet_capacity' name='banquet_capacity' min='0' max='400' value='0' required>";
+            echo "    <input type='number' id='banquet_capacity' name='banquet_capacity' min='0' max='10000' value='0' required>";
             echo "  </div>";
             echo "</div>";
             
             echo "<div class='control-group'>";
             echo "  <label class='control-label' for='price_range'>Price range  : </label>";
             echo "  <div class='controls'>";
-            echo "    <input type='number' id='price_range' name='price_range' min='0' max='200' value='30' required>";
+            echo "    <input type='number' id='price_range' name='price_range' min='1' max='10000' value='30' required>";
             echo "  </div>";
             echo "</div>";
         }
@@ -237,14 +237,14 @@
             echo "<div class='control-group'>";
             echo "  <label class='control-label' for='rooms'>Rooms  : </label>";
             echo "  <div class='controls'>";
-            echo "    <input type='number' id='rooms' name='rooms' min='1' max='100' value='1' required>";
+            echo "    <input type='number' id='rooms' name='rooms' min='1' max='10000' value='1' required>";
             echo "  </div>";
             echo "</div>";
                         
             echo "<div class='control-group'>";
             echo "  <label class='control-label' for='standard_price'>Standard price  : </label>";
             echo "  <div class='controls'>";
-            echo "    <input type='number' id='standard_price' name='standard_price' min='1' max='1000' value='100' required>";
+            echo "    <input type='number' id='standard_price' name='standard_price' min='1' max='10000' value='100' required>";
             echo "  </div>";
             echo "</div>";
         }
