@@ -7,6 +7,7 @@
 \usepackage{amssymb}
 \usepackage{makeidx}
 \usepackage{svg}
+\usepackage[left=2.5cm,top=2cm,right=2.5cm]{geometry}
 \author{Frantzen Christian Küpper Marius}
 \title{INFO-H-303 : Base de données\\
 		Projet : Annuaire d'établissements horeca}
@@ -95,11 +96,47 @@ L'ajout d'une entrée dans \textit{Establishment} implique l'ajout d'une entrée
 \item $Bar.Snack \in \{True,False\} $
 \end{itemize}
 
-
-
-
-
-
+\section*{Requêtes}
+\subsection*{R1}
+\noindent Tous les utilisateurs qui apprécient au moins 3 établissements que l'utilisateur "Brenda" apprécie.
+\paragraph*{Calcul relationnel tuple}
+\begin{align*}
+\{ u | & User(u) \wedge \exists e_{1} \exists e_{2} \exists e_{3} ( Establishment(e_{1}) \wedge
+Establishment(e_{2}) \wedge Establishment(e_{3}) \wedge \\ 
+& e_{1} \neq e_{2} \wedge e_{1} \neq e_{3} \wedge e_{2} \neq e_{3} \wedge \exists u_{2} \exists c_{1} \exists c_{2} ( User(u_{2}) \wedge Comment(c_{1}) \wedge Comment(c_{2}) \wedge \\
+& u_{2}.uid \neq u.uid \wedge u_{2}.nickname = "Brenda" \wedge \forall i \in \{1,2,3 \}(c_{1}.uid=e_{i} \wedge c_{2}.uid=e_{i} \wedge  \\
+& c_{1}.uid = u.uid \wedge c_{2}.uid = u_{2}.uid \wedge  c_{1}.score \geq 4 \wedge  c_{2}.score \geq 4  )))
+\}
+\end{align*}
+\paragraph*{Algèbre relationnelle}
+\subsection*{R2}
+\noindent Tous les établissements qu’apprécie au moins un utilisateur qui apprécie tous les établissements que "Brenda" apprécie.
+\paragraph*{Calcul relationnel tuple}
+\begin{align*}
+\{e|& Establishment(e) \wedge \exists u_{1} \exists c_{1} (User(u_{1}) \wedge Comment(c_{1}) \wedge c_{1}.eid = e.eid \wedge c_{1}.uid=u_{1}.uid \wedge \\
+& u_{1}.nickname \neq "Brenda" \wedge c_{1}.score \geq 4 \wedge  \exists u_{2} \exists c_{2} \exists c_{3} \exists e_{2} ( User(u_{2}) \wedge Comment(c_{2})\wedge \\
+& Comment(c_{3}) \wedge Establishment(e_{2}) \wedge u_{2}.nickname = "Brenda" \wedge c_{2}.eid = u_{2}.uid \wedge \\
+& c_{2}.eid = e_{2}.eid \wedge  c_{3}.eid = e_{2}.eid \wedge  c_{3}.uid = u_{1}.uid \wedge  c_{2}.uid = u_{2}.uid \wedge c_{2}.score \geq 4 \wedge c_{3}.score \geq 4
+))
+\}
+\end{align*}
+\paragraph*{Algèbre relationnelle}
+\subsection*{R3}
+Tous les établissements pour lesquels il y a au plus un commentaire.
+\paragraph*{Calcul relationnel tuple}
+\begin{align*}
+\{ e | & Establishment(e) \wedge \exists! c_{1} ( Comment(c_{1}) \wedge c_{1}.eid = e.eid ) \vee \nexists c_{2} ( Comment(c_{2}) \wedge c_{2}.eid = e.eid )
+\}
+\end{align*}
+\paragraph*{Algèbre relationnelle}
+\subsection*{R4}
+La liste des administrateurs n’ayant pas commenté tous les établissements qu’ils ont crées.
+\paragraph*{Calcul relationnel tuple}
+\begin{align*}
+\{ u|& User(u)  \wedge u.admin =true  \wedge \exists e (Establishment(e) \wedge e.uid = u.uid  \wedge \nexists c ( Comment(c) \wedge \\
+& c.eid = e.eid \wedge c.uid = u.uid )) \} 
+\end{align*}
+\paragraph*{Algèbre relationnelle}
 
 
 \section*{Hypothèses}
@@ -108,6 +145,6 @@ L'ajout d'une entrée dans \textit{Establishment} implique l'ajout d'une entrée
 \begin{itemize}
 \item \underline{Deux \textit{User}s ne peuvent pas avoir le même \textit{Nickname}:} L'interface doit permettre de consulter la fiche de chaque \textit{User}. Un \textit{User} qui cherche le profil de quelqu'un ne peut pas distinguer deux \textit{User}s avec le même \textit{Nickname} puisque le celui-ci est la seule donnée visible (pas d'image de profil, etc ...).
 \item \underline{Un \textit{Admin} ne peut pas modifier des \textit{Comment}s ni des \textit{Tag}s:} On pourrait lui donner les droits de gestion pour vérifier qu'il n'y ait pas d'abus, mais pour le moment un \textit{Admin} ne peut que créer, modifier et enlever des \textit{Establishment}s.
+\item Pour les requêtes R1 et R2 on exclut l'utilisateur "Brenda" comme étant un résultat qu'on considère lors de la recherche des résultats.
 \end{itemize}
-
 \end{document}
