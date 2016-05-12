@@ -9,8 +9,8 @@
                 setcookie('username');
             }
             
-            if (isset($_COOKIE['password'])) {
-                setcookie('password');
+            if (isset($_COOKIE['uid'])) {
+                setcookie('uid');
             }
             
             session_unset();
