@@ -6,7 +6,7 @@ class Db
 
     private function __construct(){
         
-        $username = "root";
+        $username = "projetChristianMarius";
         $password = "123soleil";
 
         try {
