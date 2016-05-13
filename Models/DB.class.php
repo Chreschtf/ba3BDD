@@ -414,11 +414,11 @@ class Db
     }
     
     public function getBars($searchQuery){
-        $query = $this->_db->prepare("SELECT e.*, b.* 
-                                    FROM establishments e, bars b 
+        $query = $this->_db->prepare("SELECT DISTINCT e.*, b.* 
+                                    FROM establishments e, bars b , establishment_tags et, tags t
                                     WHERE e.horeca_type = 'Bar' AND 
-                                    (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query) AND 
-                                    e.eid = b.eid"); 
+                                    (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query OR t.tname LIKE :query) AND 
+                                    e.eid = b.eid AND t.tid = et.tid AND et.eid=e.eid"); 
         $newQuery='%'.$searchQuery.'%';
         $query->bindParam(':query',$newQuery);
         $query->execute();
@@ -428,11 +428,11 @@ class Db
     }
     
     public function getRestaurants($searchQuery){
-        $query = "SELECT e.*, r.* 
-                FROM establishments e, restaurants r 
+        $query = "SELECT DISTINCT e.*, r.* 
+                FROM establishments e, restaurants r , establishment_tags et, tags t
                 WHERE e.horeca_type = 'Restaurant' AND 
-                (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query) 
-                AND e.eid = r.eid";
+                (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query OR t.tname LIKE :query) 
+                AND e.eid = r.eid AND t.tid = et.tid AND et.eid=e.eid";
         $newQuery='%'.$searchQuery.'%';
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(':query',$newQuery);
@@ -443,11 +443,11 @@ class Db
     }
     
     public function getHotels($searchQuery){
-        $query = "SELECT e.*, h.* 
-                FROM establishments e, hotels h 
+        $query = "SELECT DISTINCT e.*, h.* 
+                FROM establishments e, hotels h , establishment_tags et, tags t
                 WHERE e.horeca_type = 'Hotel' AND 
-                (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query) 
-                AND e.eid = h.eid";
+                (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query OR t.tname LIKE :query) 
+                AND e.eid = h.eid AND t.tid = et.tid AND et.eid=e.eid";
         $newQuery='%'.$searchQuery.'%';
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(':query',$newQuery);
