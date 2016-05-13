@@ -881,8 +881,7 @@ class Db
     public function getTagAndNbrTagged($tid){
         $query = "SELECT t.*, COUNT(et1.uid) AS _nbrTagged
                   FROM tags t, establishment_tags et1
-                  WHERE t.tid = t.tid AND et1.tid = :tid 
-                  GROUP BY t.tid";
+                  WHERE t.tid = et1.tid AND et1.tid = :tid";
                   
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":tid", $tid);

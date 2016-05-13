@@ -5,6 +5,8 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{placeins}
 \usepackage{makeidx}
 \usepackage{svg}
 \usepackage[left=2.5cm,top=2cm,right=2.5cm]{geometry}
@@ -19,7 +21,7 @@
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\textwidth]{modelEA.pdf}https://preview.overleaf.com/public/fmggjjhwnrrs/images/8586f5f52acf38bd1764f56ff49298182f11036b.jpeg
+  \includegraphics[width=\textwidth]{newModel.pdf}
   \caption{Modèle entité-association}
 \end{figure}
 
@@ -31,7 +33,7 @@
 \item Un \textit{User} ne peut pas apposer le même \textit{Tag} plusieurs fois sur le même \textit{Establishment}.
 \item L'\textit{EntryDate} d'un \textit{Adminisitrator} doit être strictement supérieure à l'\textit{EntryDate} de l'\textit{Establishment} qu'il a créé.
 \item L'\textit{EntryDate} d'un \textit{Comment} doit être strictement supérieure à l'\textit{EntryDate} du User qui le fait ainsi que l'\textit{EntryDate} de l'\textit{Establishment} sur lequel il est fait. 
-\item Un \textit{User} ne peut pas donner deux likes/dislikes sur un \textit{Comment}.
+\item Un \textit{User} ne peut pas donner deux likes/dislikes sur un \textit{Comment}. Le \textit{Type} d'un like indique si il s'agit d'un like ou d'un dislike.
 \end{itemize}
 \subsection*{Remarques}
 Si un \textit{Restaurant} ne veut pas organiser de banquet, il spécifie sa \textit{BanquetCapacity} comme étant 0.
@@ -108,10 +110,117 @@ L'ajout d'une entrée dans \textit{Establishment} implique l'ajout d'une entrée
 \item $Bar.Smoking \in \{True,False\} $
 \item $Bar.Snack \in \{True,False\} $
 \item $Comment.Likes \in \mathbb{Z} $
-\item $CommentLikes.Likes \in \{True,False\} $
+\item $CommentLikes.Likes \in \{True,False\} $ (like / dislike)
 
 \end{itemize}
 
+\section*{Script de création de la base de données}
+
+\begin{verbatim}
+CREATE DATABASE IF NOT EXISTS annuaire_horeca DEFAULT COLLATE = utf8_general_ci;
+
+CREATE TABLE IF NOT EXISTS annuaire_horeca.users (
+    uid INT(6) NOT NULL AUTO_INCREMENT,
+    nickname VARCHAR(40) UNIQUE NOT NULL,
+    email VARCHAR(40) DEFAULT NULL,
+    password VARCHAR(70) DEFAULT NULL,
+    entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    admin BOOLEAN DEFAULT 0,
+    picture_name VARCHAR(255) DEFAULT NULL,
+    PRIMARY KEY (uid),
+    UNIQUE(nickname),
+    UNIQUE(email)
+);
+
+CREATE TABLE IF NOT EXISTS annuaire_horeca.establishments (
+    eid INT(6) NOT NULL AUTO_INCREMENT ,
+    ename VARCHAR(40) NOT NULL,
+    street VARCHAR(40) NOT NULL,
+    house_num VARCHAR(7) NOT NULL,
+    zip INT(4) NOT NULL,
+    city VARCHAR(20) NOT NULL,
+    longitude DOUBLE(15, 7) NOT NULL,
+    latitude DOUBLE(15, 7) NOT NULL,
+    tel VARCHAR(20) NOT NULL,
+    site VARCHAR(60),
+    uid INT(6) NOT NULL,
+    entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    horeca_type ENUM('Restaurant', 'Bar', 'Hotel') NOT NULL,
+    PRIMARY KEY (eid),
+    FOREIGN KEY (uid) REFERENCES users(uid)
+);
+
+CREATE TABLE IF NOT EXISTS annuaire_horeca.restaurants (
+    eid INT(6) NOT NULL,
+    price_range INT(3) NOT NULL,
+    banquet_capacity INT(3) NOT NULL,
+    takeaway BOOLEAN DEFAULT 0,
+    delivery BOOLEAN DEFAULT 0,
+    PRIMARY KEY (eid),
+    FOREIGN KEY (eid) REFERENCES establishments(eid)
+);
+
+CREATE TABLE IF NOT EXISTS annuaire_horeca.restaurant_closing_days (
+    eid INT(6) NOT NULL,
+    closing_day ENUM('MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN') NOT NULL,
+    hour ENUM('AM', 'PM', 'COMPLETE') NOT NULL,
+    FOREIGN KEY (eid) REFERENCES establishments(eid)
+);
+
+CREATE TABLE IF NOT EXISTS annuaire_horeca.bars (
+    eid INT(6) NOT NULL,
+    smoking BOOLEAN DEFAULT 0,
+    snack BOOLEAN DEFAULT 0,
+    PRIMARY KEY (eid),
+    FOREIGN KEY (eid) REFERENCES establishments(eid)
+);
+
+CREATE TABLE IF NOT EXISTS annuaire_horeca.hotels (
+    eid INT(6) NOT NULL,
+    stars INT(1) NOT NULL,
+    rooms INT(3) NOT NULL,
+    standard_price INT(3) NOT NULL,
+    PRIMARY KEY (eid),
+    FOREIGN KEY (eid) REFERENCES establishments(eid)
+);
+
+CREATE TABLE IF NOT EXISTS annuaire_horeca.comments (
+    cid INT(6) NOT NULL AUTO_INCREMENT,
+    uid INT(6) NOT NULL,
+    eid INT(6) NOT NULL,
+    entry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    score INT(1) NOT NULL,
+    likes INT(3) DEFAULT 0,
+    text TEXT NOT NULL,
+    PRIMARY KEY (cid),
+    FOREIGN KEY (uid) REFERENCES users(uid),
+    FOREIGN KEY (eid) REFERENCES establishments(eid)
+);
+
+CREATE TABLE IF NOT EXISTS annuaire_horeca.comment_likes (
+    cid INT(6) NOT NULL,
+    uid INT(6) NOT NULL,
+    likes BOOLEAN DEFAULT 0,
+    FOREIGN KEY (uid) REFERENCES users(uid),
+    FOREIGN KEY (cid) REFERENCES comments(cid)
+);
+
+CREATE TABLE IF NOT EXISTS annuaire_horeca.tags (
+    tid INT(6) NOT NULL AUTO_INCREMENT,
+    tname VARCHAR(35) NOT NULL,
+    PRIMARY KEY (tid),
+    UNIQUE (tname)
+);
+
+CREATE TABLE IF NOT EXISTS annuaire_horeca.establishment_tags (
+    tid INT(6) NOT NULL,
+    eid INT(6) NOT NULL,
+    uid INT(6) NOT NULL,
+    FOREIGN KEY (tid) REFERENCES tags(tid),
+    FOREIGN KEY (uid) REFERENCES users(uid),
+    FOREIGN KEY (eid) REFERENCES establishments(eid)
+);
+\end{verbatim}
 
 \section*{Requêtes}
 
@@ -131,11 +240,21 @@ Establishment(e_{2}) \wedge Establishment(e_{3}) \wedge \\
 \end{align*}
 \paragraph*{Algèbre relationnelle}
 \begin{align*}
-EstabsBrendaLikes \leftarrow \pi_{eid} ( ( \sigma_{score \ge 4} (Comment)) *_{uid=uid} (\sigma_{nickname = 'Brenda'} (User)) ) \\
-EstabsOthersLike \leftarrow \pi_{comment.eid, \; user.*} ( ( \sigma_{score \ge 4} (Comment)) *_{uid=uid} (\sigma_{nickname \neq 'Brenda'} (User)) ) \\
-Result \leftarrow \sigma_{nbrLikes \ge 3} (user.*, nbrLikes \quad \gamma \quad count(eid) \; as\;  nbrLikes \\ 
-((EstabsBrendaLikes)*_{eid=eid}(EstabsOthersLike)) )
+& EstabsBrendaLikes \leftarrow \pi_{eid} ( ( \sigma_{score \ge 4} (Comment)) *_{uid=uid} (\sigma_{nickname = 'Brenda'} (User)) ) \\
+& EstabsOthersLike \leftarrow \pi_{comment.eid, \; user.*} ( ( \sigma_{score \ge 4} (Comment)) *_{uid=uid} (\sigma_{nickname \neq 'Brenda'} (User)) )\\ 
+& Result \leftarrow \sigma_{nbrLikes \ge 3} (user.*, nbrLikes \quad \gamma \quad count(eid) \; as\;  nbrLikes ( \\
+& (EstabsBrendaLikes)*_{eid=eid}(EstabsOthersLike)) )
 \end{align*}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+
+\begin{defn} L'operateur aggregate est défini comme suit: \\
+\begin{math}G_1, G_2, ..., G_n \quad \gamma \quad F_1(A_1), F_2(A_2), ..., F_m(A_m) \quad (E) \end{math} \\
+où \begin{math} E \end{math} est une expression d'algèbre lineaire,  \begin{math}G_1, G_2, ..., G_n \end{math} est une liste d'attributs sur lesquelles on regroupe, chaque \begin{math} F_i \end{math} est une fonction d'agrégation et chaque \begin{math} A_i \end{math} est un nom d'un attribut. \end{defn}
+
 \paragraph*{SQL}
 \begin{verbatim}
 SELECT u1.*
@@ -164,11 +283,11 @@ HAVING COUNT( DISTINCT c1.eid ) >= 3
 \end{align*}
 \paragraph*{Algèbre relationnelle}
 \begin{align*}
-HighscoreComments \leftarrow \sigma_{score \ge 4} (Comment) \\
-EstabsBrendaLikes \leftarrow \pi_{eid} ( (\sigma_{nickname=Brenda} (User)) *_{uid=uid} (HighscoreComments) ) \\
-EstabsOthersLike \leftarrow \pi_{eid, uid} ( (\sigma_{nickname \neq Brenda} (User)) *_{uid=uid} (HighscoreComments) ) \\
-LikesSameAsBrenda \leftarrow \pi_{uid} (EstabsOthersLike / EstabsBrendaLikes) \\
-Result \leftarrow \pi_{estab.*} ((Establishment) *_{eid=eid} ((LikesSameAsBrenda) *_{uid=uid} (EstabsOthersLike)))
+& HighscoreComments \leftarrow \sigma_{score \ge 4} (Comment) \\
+& EstabsBrendaLikes \leftarrow \pi_{eid} ( (\sigma_{nickname=Brenda} (User)) *_{uid=uid} (HighscoreComments) ) \\
+& EstabsOthersLike \leftarrow \pi_{eid, uid} ( (\sigma_{nickname \neq Brenda} (User)) *_{uid=uid} (HighscoreComments) ) \\
+& LikesSameAsBrenda \leftarrow \pi_{uid} (EstabsOthersLike / EstabsBrendaLikes) \\
+& Result \leftarrow \pi_{estab.*} ((Establishment) *_{eid=eid} ((LikesSameAsBrenda) *_{uid=uid} (EstabsOthersLike)))
 \end{align*}
 \paragraph*{SQL}
 \begin{verbatim}
@@ -198,9 +317,9 @@ Tous les établissements pour lesquels il y a au plus un commentaire.
 \end{align*}
 \paragraph*{Algèbre relationnelle}
 \begin{align*}
-0\_Comments \leftarrow (Establishment) - ((Establishment) *_{eid=eid} (\pi_{eid} (Comment))) \\
-1\_Comment \leftarrow ((Establishment) *_{eid=eid} \\ (\sigma_{nbrComment = 1} (eid, nbrComment \quad \gamma \quad count(cid) \; as\;  nbrComment ( \pi_{eid, cid}(Comment) )))) \\
-Result \leftarrow 0\_Comments \cup 1\_Comment
+& 0\_Comments \leftarrow (Establishment) - ((Establishment) *_{eid=eid} (\pi_{eid} (Comment))) \\
+& 1\_Comment \leftarrow ((Establishment) *_{eid=eid} \\ (\sigma_{nbrComment = 1} (eid, nbrComment \quad \gamma \quad count(cid) \; as\;  nbrComment ( \pi_{eid, cid}(Comment) )))) \\
+& Result \leftarrow 0\_Comments \cup 1\_Comment
 \end{align*}
 \paragraph*{SQL}
 \begin{verbatim}
@@ -231,10 +350,10 @@ La liste des administrateurs n’ayant pas commenté tous les établissements qu
 \end{align*}
 \paragraph*{Algèbre relationnelle}
 \begin{align*}
-Admins \leftarrow \sigma_{admin=1} (User) \\
-AdminComments \leftarrow \pi_{uid, eid} ( (Admins) *_{uid=uid} (Comment) ) \\
-AdminCreated \leftarrow \pi_{uid, eid} ( (Admins) *_{uid=uid} (Establishment) ) \\
-Result \leftarrow \pi_{user.*} ( (User) *_{uid=uid} (AdminCreated - AdminComments) )
+& Admins \leftarrow \sigma_{admin=1} (User) \\
+& AdminComments \leftarrow \pi_{uid, eid} ( (Admins) *_{uid=uid} (Comment) ) \\
+& AdminCreated \leftarrow \pi_{uid, eid} ( (Admins) *_{uid=uid} (Establishment) ) \\
+& Result \leftarrow \pi_{user.*} ( (User) *_{uid=uid} (AdminCreated - AdminComments) )
 \end{align*}
 \paragraph*{SQL}
 \begin{verbatim}
@@ -295,34 +414,40 @@ ORDER BY AVG( estab_score._avg ) DESC
 \begin{itemize}
 \item \underline{Deux \textit{User}s ne peuvent pas avoir le même \textit{Nickname}:} L'interface doit permettre de consulter la fiche de chaque \textit{User}. Un \textit{User} qui cherche le profil de quelqu'un ne peut pas distinguer deux \textit{User}s avec le même \textit{Nickname} puisque le celui-ci est la seule donnée visible (pas d'image de profil, etc ...).
 \item \underline{Un \textit{Admin} ne peut pas modifier des \textit{Comment}s ni des \textit{Tag}s:} On pourrait lui donner les droits de gestion pour vérifier qu'il n'y ait pas d'abus, mais pour le moment un \textit{Admin} ne peut que créer, modifier et enlever des \textit{Establishment}s.
+\item Un \textit{User} peut donner un like ou un dislike sur un \textit{Comment}. Il ne peut pas mettre deux likes/dislikes sur un même \textit{Comment}, mais il peut annuler son like/dislike.
 \item Pour les requêtes R1 et R2 on exclut l'utilisateur "Brenda" comme étant un résultat qu'on considère lors de la recherche des résultats parce que ça nous semble un peu redondant d'.
 \end{itemize}
 
 \section*{Scénario}
 Étapes :
 \begin{enumerate}
-\item Login avec le compte de "Brenda"
+\item Login avec le compte de "Brenda" (mdp: "Brenda")
 \item Inspection de la page de son profile
 \item Recherche des établissements avec le mot 'Be'
 \item Inspection du profile du Restaurant 'Mirabelle'
 \item Redaction d'un commentaire pour le restaurant
 \item Ajout d'un label au restaurant qui n'existait pas encore
+\item Mettre un like sur un commentaire du café 'Tavernier'.
 \item Logout
-\item Login avec le compte de "Fred"
-\item Ajout d'une photo de profile pour Fred
+\item Login avec le compte de "Fred" (mdp: "Fred")
+\item Ajout d'une photo de profile pour "Fred"
 \item Création d'un Hotel
 \item Inspection du profile du nouveau Hotel
 \item Ajout d'un label au nouveau Hotel
-\item Recherche et inspection du café 'Tavernier' 
-\item Ouverture de son site web
+\item Recherche et inspection du café 'Tavernier'
+\item Chercher le commentaire qui a 1 like et mettre un dislike sur ce commentaire
+\item Annuler le dislike en cliquant encore une fois sur le bouton 'Down'
+\item Ouverture du site web du café 'Tavernier'
 \item Supprimer le café Tavernier
 \item Recherche et inspection du restaurant 'Chez Théo'
 \item Changement de sa capacité de banquet et de ses heures d'ouvertures
+\item Inspection du profile du tag 'Service au bar'
 \item Logout
 \item Création d'un nouveau compte
 \item Login avec le nouveau compte
 \item Inspection compte de 'Fred' 
 \item Affichage des résultats des requêtes R1-R6
+\item Faire une recherche avec l'option 'tagged by' et 'Fumeur' dans la barre de recherche
 \item Logout
 \end{enumerate}
 
