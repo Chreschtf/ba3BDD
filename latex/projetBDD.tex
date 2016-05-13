@@ -98,6 +98,7 @@ L'ajout d'une entrée dans \textit{Establishment} implique l'ajout d'une entrée
 \item $User.Admin \in \{True,False\} $ (Seul les \textit{User} avec \textit{User.Admin} = True ont les droits de créer, supprimer ou modifier des \textit{Establishment}).
 \item Pour les entrées dans \textit{Comment}, \textit{Comment.EntryDate > Establishment.EntryDate} et \textit{Comment.EntryDate} > \textit{User.EntryDate}
 \item $Comment.Score \in \{0,1,2,3,4,5\}$
+\item $Establishment.HorecaType \in \{"Restaurant", "Bar", "Hotel" \} $
 \item $Hotel.Stars \in \{0,1,2,3,4,5\}$
 \item $Hotel.Rooms \in \mathbb{N}_{0}$
 \item $Hotel.StandardPrice \in \mathbb{N}_{0}$
@@ -106,7 +107,7 @@ L'ajout d'une entrée dans \textit{Establishment} implique l'ajout d'une entrée
 \item $Restaurant.Takeaway \in \{True,False\} $
 \item $Restaurant.Delivery \in \{True,False\} $
 \item $RestaurantClosingDays.Hour \in \{"AM","PM","COMPLETE" \}$ (matin / après-midi / jour entier)
-\item $RestaurantClosingDays.ClosingDay \in \{"MON","TUE","WED","THU","FRI","SAT","SUN" \} $
+\item $RestaurantClosingDays.ClosingDay \in \{"MON","TUE","WED","THU","FRI","SAT",\\"SUN" \} $
 \item $Bar.Smoking \in \{True,False\} $
 \item $Bar.Snack \in \{True,False\} $
 \item $Comment.Likes \in \mathbb{Z} $
@@ -223,7 +224,14 @@ CREATE TABLE IF NOT EXISTS annuaire_horeca.establishment_tags (
 \end{verbatim}
 
 \section*{Requêtes}
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
 
+\begin{defn} L'operateur aggregate est défini comme suit: \\
+\begin{math}G_1, G_2, ..., G_n \quad \gamma \quad F_1(A_1), F_2(A_2), ..., F_m(A_m) \quad (E) \end{math} \\
+où \begin{math} E \end{math} est une expression d'algèbre lineaire,  \begin{math}G_1, G_2, ..., G_n \end{math} est une liste d'attributs sur lesquelles on regroupe, chaque \begin{math} F_i \end{math} est une fonction d'agrégation et chaque \begin{math} A_i \end{math} est un nom d'un attribut. \end{defn}
 \subsection*{R1}
 %----------------------------------------------------%
 %----------------------------------------------------%
@@ -246,14 +254,6 @@ Establishment(e_{2}) \wedge Establishment(e_{3}) \wedge \\
 & (EstabsBrendaLikes)*_{eid=eid}(EstabsOthersLike)) )
 \end{align*}
 
-\theoremstyle{plain}
-\newtheorem{thm}{Theorem}
-\theoremstyle{definition}
-\newtheorem{defn}[thm]{Definition}
-
-\begin{defn} L'operateur aggregate est défini comme suit: \\
-\begin{math}G_1, G_2, ..., G_n \quad \gamma \quad F_1(A_1), F_2(A_2), ..., F_m(A_m) \quad (E) \end{math} \\
-où \begin{math} E \end{math} est une expression d'algèbre lineaire,  \begin{math}G_1, G_2, ..., G_n \end{math} est une liste d'attributs sur lesquelles on regroupe, chaque \begin{math} F_i \end{math} est une fonction d'agrégation et chaque \begin{math} A_i \end{math} est un nom d'un attribut. \end{defn}
 
 \paragraph*{SQL}
 \begin{verbatim}
@@ -318,7 +318,8 @@ Tous les établissements pour lesquels il y a au plus un commentaire.
 \paragraph*{Algèbre relationnelle}
 \begin{align*}
 & 0\_Comments \leftarrow (Establishment) - ((Establishment) *_{eid=eid} (\pi_{eid} (Comment))) \\
-& 1\_Comment \leftarrow ((Establishment) *_{eid=eid} \\ (\sigma_{nbrComment = 1} (eid, nbrComment \quad \gamma \quad count(cid) \; as\;  nbrComment ( \pi_{eid, cid}(Comment) )))) \\
+& 1\_Comment \leftarrow ((Establishment) *_{eid=eid} \\ 
+&(\sigma_{nbrComment = 1} (eid, nbrComment \quad \gamma \quad count(cid) \; as\;  nbrComment ( \pi_{eid, cid}(Comment) )))) \\
 & Result \leftarrow 0\_Comments \cup 1\_Comment
 \end{align*}
 \paragraph*{SQL}
@@ -415,7 +416,7 @@ ORDER BY AVG( estab_score._avg ) DESC
 \item \underline{Deux \textit{User}s ne peuvent pas avoir le même \textit{Nickname}:} L'interface doit permettre de consulter la fiche de chaque \textit{User}. Un \textit{User} qui cherche le profil de quelqu'un ne peut pas distinguer deux \textit{User}s avec le même \textit{Nickname} puisque le celui-ci est la seule donnée visible (pas d'image de profil, etc ...).
 \item \underline{Un \textit{Admin} ne peut pas modifier des \textit{Comment}s ni des \textit{Tag}s:} On pourrait lui donner les droits de gestion pour vérifier qu'il n'y ait pas d'abus, mais pour le moment un \textit{Admin} ne peut que créer, modifier et enlever des \textit{Establishment}s.
 \item Un \textit{User} peut donner un like ou un dislike sur un \textit{Comment}. Il ne peut pas mettre deux likes/dislikes sur un même \textit{Comment}, mais il peut annuler son like/dislike.
-\item Pour les requêtes R1 et R2 on exclut l'utilisateur "Brenda" comme étant un résultat qu'on considère lors de la recherche des résultats parce que ça nous semble un peu redondant d'.
+\item Pour les requêtes R1 et R2 on exclut l'utilisateur "Brenda" comme étant un résultat qu'on considère lors de la recherche des résultats parce que ça nous semble un peu redondant.
 \end{itemize}
 
 \section*{Scénario}
@@ -447,7 +448,7 @@ ORDER BY AVG( estab_score._avg ) DESC
 \item Login avec le nouveau compte
 \item Inspection compte de 'Fred' 
 \item Affichage des résultats des requêtes R1-R6
-\item Faire une recherche avec l'option 'tagged by' et 'Fumeur' dans la barre de recherche
+\item Faire une recherche avec le mot 'Fumoir'.
 \item Logout
 \end{enumerate}
 
