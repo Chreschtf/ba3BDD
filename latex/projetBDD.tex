@@ -246,7 +246,8 @@ Establishment(e_{2}) \wedge Establishment(e_{3}) \wedge \\
 & c_{1}.uid = u.uid \wedge c_{2}.uid = u_{2}.uid \wedge  c_{1}.score \geq 4 \wedge  c_{2}.score \geq 4  )))
 \}
 \end{align*}
-\paragraph*{Algèbre relationnelle}
+\paragraph*{Algèbre relationnelle} 
+(nbrLikes est le nombre d'établissements que un utilisateur like.)
 \begin{align*}
 & EstabsBrendaLikes \leftarrow \pi_{eid} ( ( \sigma_{score \ge 4} (Comment)) *_{uid=uid} (\sigma_{nickname = 'Brenda'} (User)) ) \\
 & EstabsOthersLike \leftarrow \pi_{comment.eid, \; user.*} ( ( \sigma_{score \ge 4} (Comment)) *_{uid=uid} (\sigma_{nickname \neq 'Brenda'} (User)) )\\ 
