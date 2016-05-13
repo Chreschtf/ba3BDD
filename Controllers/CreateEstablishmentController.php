@@ -31,6 +31,12 @@
             }else{
                 $notification = "";
                 
+                if (! Db::getInstance()->isAdminByNickname($_COOKIE["username"]) ){
+                    // the creation action is only for admins
+                    header('Location: ?action=userProfile&user='.$_COOKIE["username"]);
+                    die();
+                }
+                
                 if (isset($_POST['ename'])) {     // create request fullfilled
                 
                     $this->horeca_type = $_POST['horeca_type'];

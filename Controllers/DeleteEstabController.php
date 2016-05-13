@@ -11,6 +11,12 @@
                 die();
             }else{
                 
+                if (! Db::getInstance()->isAdminByNickname($_COOKIE["username"]) ){
+                    // the delete action is only for admins
+                    header('Location: ?action=userProfile&user='.$_COOKIE["username"]);
+                    die();
+                }
+                
                 $estabData = Db::getInstance()->getEstablishmentWihtEID((int)$_POST['eid']);
                 
                 if($estabData['horeca_type'] == 'Restaurant'){
