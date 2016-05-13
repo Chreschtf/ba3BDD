@@ -183,7 +183,7 @@ class QueryController
             echo "</div>";
             
             echo "<div>";
-            echo "<table class='table table-stripedd'>";
+            echo "<table class='table table-striped'>";
             echo "    <thead>";
             echo "    <tr>";
             echo "        <th>#</th>";

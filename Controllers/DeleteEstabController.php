@@ -11,7 +11,7 @@
                 die();
             }else{
                 
-                $estabData = Db::getInstance()->getEstablishment((int)$_POST['eid']);
+                $estabData = Db::getInstance()->getEstablishmentWihtEID((int)$_POST['eid']);
                 
                 if($estabData['horeca_type'] == 'Restaurant'){
                     Db::getInstance()->deleteRestaurantWithEID((int)$_POST['eid']);

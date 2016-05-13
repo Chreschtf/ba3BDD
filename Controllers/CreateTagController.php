@@ -37,26 +37,26 @@
                 
                 if ( ! empty ( $_POST )) {
                     if ( isset($_POST['createTag']) ) {                         // create new tag
-                        if( strlen($_POST['tag_name']) >= 3 && ! Db::getInstance()->checkIftagExists($_POST['tag_name']) ){
+                        if( strlen($_POST['tag_name']) >= 3 && ! Db::getInstance()->checkIftagExistsWithName($_POST['tag_name']) ){
                             $tid = Db::getInstance()->insertTag( array($_POST['tag_name']) );
                             Db::getInstance()->insertEstablishmentTag( array( $tid,  (int)$_POST['eid'], (int)$_POST['uid'] ) );
                             
-                            $type =  $this->getEstabType( Db::getInstance()->getEstablishment($this->_eid) );
+                            $type =  $this->getEstabType( Db::getInstance()->getEstablishmentWihtEID($this->_eid) );
                         
                             header('Location: ?action=' . $type . '&eid=' . $this->_eid);
                             die();
                         } else {
-                            if (Db::getInstance()->checkIftagExists($_POST['tag_name']))
+                            if (Db::getInstance()->checkIftagExistsWithName($_POST['tag_name']))
                                 $notification = "This tagname exists already";
                             else
                                 $notification = "The tagname was not long enough";
                         }
                         
                     } elseif (  isset($_POST['useTag']) ) {                     // use existing tag
-                        if( Db::getInstance()->checkIftagExistsTID( (int)$_POST['tag'] ) ){
+                        if( Db::getInstance()->checkIftagExistsWithTID( (int)$_POST['tag'] ) ){
                             Db::getInstance()->insertEstablishmentTag( array( (int)$_POST['tag'], (int)$_POST['eid'], (int)$_POST['uid'] ) );
 
-                            $type =  $this->getEstabType( Db::getInstance()->getEstablishment($this->_eid) );
+                            $type =  $this->getEstabType( Db::getInstance()->getEstablishmentWihtEID($this->_eid) );
                         
                             header('Location: ?action=' . $type . '&eid=' . $this->_eid);
                             die();
@@ -75,7 +75,7 @@
                 // show tag creation page :
                 
                 echo "<div class='wrapper'>";
-                echo "    <h2>Tag " . Db::getInstance()->getEstablishmentWihtEID($this->_eid) . "</h2>";
+                echo "    <h2>Tag " . Db::getInstance()->getEstablishmentWihtEID($this->_eid)["ename"] . "</h2>";
 
                 if(isset($notification) && $notification != ""){
                     echo "      <div class='alert alert-danger' role='alert'>";

@@ -140,7 +140,7 @@
                     echo "<tr>";
                     echo "<td> <a href='?action=hotelProfile&eid=".$hotels[$i]["eid"]."'>".$hotels[$i]['ename']."</a>  </td>";
                     $this->standardEstablishmentInfo($hotels[$i]);
-                    echo "<td>".$hotels[$i]['stars']." € </td>";
+                    echo "<td>".$hotels[$i]['stars']." </td>";
                     echo "<td>".$hotels[$i]['rooms']." </td>"; 
                     echo "<td>".$hotels[$i]['standard_price']." € </td>"; 
                     echo "</tr>";

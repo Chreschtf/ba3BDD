@@ -28,7 +28,7 @@
             }else{
                 $this->_eid = (int)$_POST['eid'];
                 $this->_uid = (int)$_POST['uid'];
-                $data = Db::getInstance()->getEstablishment($this->_eid);
+                $data = Db::getInstance()->getEstablishmentWihtEID($this->_eid);
                 $this->horeca_type = $data['horeca_type'];
                 
                 if(isset($_POST['ename'])){ // modify request fullfilled

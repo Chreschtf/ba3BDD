@@ -17,7 +17,7 @@
             echo "</tr>";
             echo "<tr>";
                 echo "<td><b>Adress : </b></td>";
-                echo "<td>".$data['house_num'].", ".$data['street']."</td>";
+                echo "<td>".$data['street'].", ".$data['house_num']."</td>";
             echo "</tr>";
             echo "<tr>";
                 echo "<td><b>City : </b></td>";
@@ -71,7 +71,7 @@
             echo "</form>\n";
             echo "      </div>";
             
-            if(Db::getInstance()->isAdmin($uid)){ // show admin buttons : Delete and Modify :
+            if(Db::getInstance()->isAdminByUID($uid)){ // show admin buttons : Delete and Modify :
                 echo "      <div class='col-xs-8 col-sm-4'>";
                 echo "<form action='?action=modifyEstablishment' method='post' >\n";
                 echo "    <input type='hidden' name='eid' value='".$data['eid']."'>\n";

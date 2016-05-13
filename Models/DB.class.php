@@ -239,20 +239,9 @@ class Db
 
         $statement->execute();
     }
-    
-    public function setProfilePicture($uid, $picture_name){
-        $query = "UPDATE users
-                  SET picture_name = :picture_name
-                  WHERE uid = :uid ";
-                         
-        $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(":picture_name", $picture_name);
-        $stmt->bindParam(":uid", $uid);
-        $stmt->execute();
-    }
 
     /*
-            EXISTS
+            BOOLEAN
             ------
     */    
 
@@ -314,21 +303,8 @@ class Db
         $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
         return count($result) >= 1;
     }
-    
-    public function checkIfHotelExists($eid){
-        $query = "SELECT eid
-                  FROM hotels
-                  WHERE hotel.eid = '$eid'";
-                  
-        $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(':eid', $eid);
-        $stmt->execute();
-        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
-        return count($result) >= 1;
-    }
-    
-    
-    public function checkIftagExists($name){
+        
+    public function checkIftagExistsWithName($name){
         $query = "SELECT *
                   FROM tags
                   WHERE tags.tname = :name";
@@ -340,7 +316,7 @@ class Db
         return count($result) >= 1;
     }
     
-    public function checkIftagExistsTID($tid){
+    public function checkIftagExistsWithTID($tid){
         $query = "SELECT *
                   FROM tags
                   WHERE tags.tid = :tid";
@@ -351,21 +327,7 @@ class Db
         $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
         return count($result) >= 1;
     }
-    
-    
-    public function getTagWithName($tname){
-        $query = "SELECT tags.tid
-                  FROM tags
-                  WHERE tags.tname = :tname";
-                          
-        $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(':tname', $tname);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result['tid'];
-    }         
-    
-        
+            
     public function checkIfEstabTagExists($tid, $eid, $uid){
         $query = "SELECT *
                   FROM establishment_tags
@@ -382,27 +344,69 @@ class Db
         return count($result) >= 1;
     }
     
+    public function hasLiked($uid, $cid) {
+        $query = "SELECT likes
+                  FROM comment_likes
+                  WHERE uid = :uid AND cid = :cid";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":uid",$uid);
+        $stmt->bindParam(":cid",$cid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;  
+    }
+    
+    public function isAdminByUID($uid){
+        $query = "SELECT *
+                  FROM users
+                  WHERE uid = :uid";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":uid", $uid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return ($result['admin'] == 1);
+    }
+    
+    public function isAdminByNickname($nickname){
+        $query = "SELECT *
+                  FROM users
+                  WHERE nickname = :nickname";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":nickname", $nickname);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return ($result['admin'] == 1);
+    }
+
+    public function validLogin($nickname, $password){
+        $query = "SELECT password 
+                  FROM users 
+                  WHERE nickname = :nickname";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':nickname', $nickname);
+        $stmt->execute();
+        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (count($result)!=1){
+            return false;
+        }
+        if (password_verify($password, $result[0]['password'])){
+            return true;
+        }      
+        return false;
+    }
+    
     
     /*
             SELECTS
             -------
     */
     
-    /*public function getEstablishmentsWithSimilarName($name,$type){
-        $query = "SELECT * 
-                  FROM establishments 
-                  WHERE ename LIKE :name";
-                          
-        $stmt = $this->_db->prepare($query);
-        $newName= '%'.$name.'%';
-        $stmt->bindParam(":name",$newName);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $result;
-    }*/
-    
     public function getEstablishmentWihtEID($eid){
-        $query = "SELECT ename 
+        $query = "SELECT * 
                   FROM establishments 
                   WHERE eid = :eid";
                           
@@ -410,50 +414,51 @@ class Db
         $stmt->bindParam(":eid", $eid);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result['ename'];
+        return $result;
     }
     
     public function getBars($searchQuery){
-        $query = $this->_db->prepare("SELECT e.*, b.* 
-                                    FROM establishments e, bars b 
-                                    WHERE e.horeca_type = 'Bar' AND 
-                                    (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query) AND 
-                                    e.eid = b.eid"); 
+        $query = "SELECT e.*, b.* 
+                  FROM establishments e, bars b 
+                  WHERE e.horeca_type = 'Bar' AND 
+                        (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query) AND 
+                        e.eid = b.eid";
+
         $newQuery='%'.$searchQuery.'%';
-        $query->bindParam(':query',$newQuery);
-        $query->execute();
-        $result = $query->fetchAll(PDO::FETCH_ASSOC);
-        
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(':query',$newQuery);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
     
     public function getRestaurants($searchQuery){
         $query = "SELECT e.*, r.* 
-                FROM establishments e, restaurants r 
-                WHERE e.horeca_type = 'Restaurant' AND 
-                (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query) 
-                AND e.eid = r.eid";
+                  FROM establishments e, restaurants r 
+                  WHERE e.horeca_type = 'Restaurant' AND 
+                        (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query) AND
+                        e.eid = r.eid";
+
         $newQuery='%'.$searchQuery.'%';
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(':query',$newQuery);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
         return $result;
     }
     
     public function getHotels($searchQuery){
         $query = "SELECT e.*, h.* 
-                FROM establishments e, hotels h 
-                WHERE e.horeca_type = 'Hotel' AND 
-                (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query) 
-                AND e.eid = h.eid";
+                  FROM establishments e, hotels h 
+                  WHERE e.horeca_type = 'Hotel' AND 
+                        (e.ename LIKE :query OR e.street LIKE :query OR e.city LIKE :query) AND
+                        e.eid = h.eid";
+
         $newQuery='%'.$searchQuery.'%';
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(':query',$newQuery);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
         return $result;
     }
     
@@ -479,9 +484,6 @@ class Db
         $stmt->bindParam(":nickname",$nickname);
         $stmt->execute();
         $stmt = $stmt->fetch(PDO::FETCH_ASSOC);
-        #if (count($result)!=1){
-        #    return "NULL";
-        #}
         return $stmt['uid'];
         
     }
@@ -589,10 +591,10 @@ class Db
     
     public function getTagsOnEstablishment($eid){
         $query = "SELECT t.*, COUNT(et.uid) AS _nbrTagged
-                FROM tags t, establishment_tags et 
-                WHERE et.eid = :eid and et.tid =t.tid
-                GROUP BY t.tid
-                ORDER BY COUNT(et.uid) DESC";
+                  FROM tags t, establishment_tags et 
+                  WHERE et.eid = :eid and et.tid =t.tid
+                  GROUP BY t.tid
+                  ORDER BY COUNT(et.uid) DESC";
                 
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid",$eid);
@@ -603,9 +605,9 @@ class Db
     
     public function getTagsUsedByUser($uid){
         $query = "SELECT t.*, e.*
-                FROM tags t, establishment_tags et, establishments e
-                WHERE et.uid = :uid AND et.tid = t.tid AND e.eid = et.eid
-                GROUP BY et.eid";
+                  FROM tags t, establishment_tags et, establishments e
+                  WHERE et.uid = :uid AND et.tid = t.tid AND e.eid = et.eid
+                  GROUP BY et.eid";
                 
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":uid", $uid);
@@ -633,6 +635,7 @@ class Db
         $query = "SELECT * 
                   FROM restaurant_closing_days
                   WHERE eid = :eid";
+
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid",$eid);
         $stmt->execute();
@@ -640,16 +643,29 @@ class Db
         return $result;  
     }
     
-    public function hasLiked($uid, $cid) {
-        $query = "SELECT likes
-                  FROM comment_likes
-                  WHERE uid = :uid AND cid = :cid";
+    public function getTagAndNbrTagged($tid){
+        $query = "SELECT t.*, COUNT(et1.uid) AS _nbrTagged
+                  FROM tags t, establishment_tags et1
+                  WHERE t.tid = et1.tid AND et1.tid = :tid";
                   
         $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(":uid",$uid);
-        $stmt->bindParam(":cid",$cid);
+        $stmt->bindParam(":tid", $tid);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;  
+    }
+    
+    public function getTagOnEstabs($tid){
+        $query = "SELECT e.*, COUNT(et.uid) AS _nbrTagged
+                  FROM establishment_tags et, establishments e
+                  WHERE et.tid = :tid AND e.eid = et.eid
+                  GROUP BY et.eid
+                  ORDER BY COUNT(et.uid) DESC";
+                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":tid", $tid);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;  
     }
     
@@ -658,7 +674,8 @@ class Db
             UPDATES / DELETES
             -----------------
     */
-    
+
+
     public function deleteLike($uid, $cid){
         $query = "DELETE 
                   FROM comment_likes 
@@ -685,6 +702,36 @@ class Db
                   FROM restaurants 
                   WHERE eid= :eid";
                  
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
+    }
+    
+    public function deleteBarWithEID($eid){
+        $query = "DELETE 
+                  FROM bars 
+                  WHERE eid= :eid";
+                 
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
+    }
+    
+    public function deleteHotelWithEID($eid){
+        $query = "DELETE 
+                  FROM hotels 
+                  WHERE eid = :eid";
+                 
+        $stmt = $this->_db->prepare($query);
+        $stmt->bindParam(":eid", $eid);
+        $stmt->execute();
+    }
+    
+    public function deleteRestaurantClosingDays($eid){
+        $query = "DELETE 
+                  FROM restaurant_closing_days
+                  WHERE eid = :eid ";
+        
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":eid", $eid);
         $stmt->execute();
@@ -772,70 +819,6 @@ class Db
         $stmt->execute();
     }
     
-    public function deleteBarWithEID($eid){
-        $query = "DELETE 
-                  FROM bars 
-                  WHERE eid= :eid";
-                 
-        $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(":eid", $eid);
-        $stmt->execute();
-    }
-    
-    public function deleteHotelWithEID($eid){
-        $query = "DELETE 
-                  FROM hotels 
-                  WHERE eid = :eid";
-                 
-        $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(":eid", $eid);
-        $stmt->execute();
-    }
-    
-    public function deleteRestaurantClosingDays($eid){
-        $query = "DELETE 
-                  FROM restaurant_closing_days
-                  WHERE eid = :eid ";
-        
-        $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(":eid", $eid);
-        $stmt->execute();
-    }
-    
-    public function modifyEstablishmentAttributes($changeAttributNames, $changeAttributValues, $searchAttributNames, $searchAttributValues){
-        $query = 'UPDATE establishments 
-                  SET '.
-                 'WHERE ';
-                         
-        $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(":eid", $eid);
-        $stmt->execute();
-    }
-    
-    public function isAdmin($uid){
-        $query = "SELECT *
-                  FROM users
-                  WHERE uid = :uid";
-                  
-        $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(":uid", $uid);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return ($result['admin'] == 1);
-    }
-    
-    public function isAdminByNickname($nickname){
-        $query = "SELECT *
-                  FROM users
-                  WHERE nickname = :nickname";
-                  
-        $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(":nickname", $nickname);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return ($result['admin'] == 1);
-    }
-    
     public function setAdmin($uid, $admin){
         $query = "UPDATE users
                   SET admin = :admin
@@ -845,63 +828,17 @@ class Db
         $stmt->bindParam(":admin", $admin);
         $stmt->bindParam(":uid", $uid);
         $stmt->execute();
-    }
+    }  
     
-    
-    
-    public function validLogin($nickname, $password){
-        $query = "SELECT password 
-                  FROM users 
-                  WHERE nickname = :nickname";
-                  
+    public function setProfilePicture($uid, $picture_name){
+        $query = "UPDATE users
+                  SET picture_name = :picture_name
+                  WHERE uid = :uid ";
+                         
         $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(':nickname', $nickname);
+        $stmt->bindParam(":picture_name", $picture_name);
+        $stmt->bindParam(":uid", $uid);
         $stmt->execute();
-        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
-        if (count($result)!=1){
-            return false;
-        }
-        if (password_verify($password, $result[0]['password'])){
-            return true;
-        }      
-        return false;
-    }
-    
-    public function getEstablishment($eid){
-        $query = "SELECT *
-                FROM establishments 
-                WHERE eid = :eid ";
-        $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(":eid",$eid);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result;  
-    }
-    
-    public function getTagAndNbrTagged($tid){
-        $query = "SELECT t.*, COUNT(et1.uid) AS _nbrTagged
-                  FROM tags t, establishment_tags et1
-                  WHERE t.tid = et1.tid AND et1.tid = :tid";
-                  
-        $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(":tid", $tid);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result;  
-    }
-    
-    public function getTagOnEstabs($tid){
-        $query = "SELECT e.*, COUNT(et.uid) AS _nbrTagged
-                  FROM establishment_tags et, establishments e
-                  WHERE et.tid = :tid AND e.eid = et.eid
-                  GROUP BY et.eid
-                  ORDER BY COUNT(et.uid) DESC";
-                  
-        $stmt = $this->_db->prepare($query);
-        $stmt->bindParam(":tid", $tid);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $result;  
     }
     
     
@@ -1030,5 +967,4 @@ class Db
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);  
     }   
-
 }

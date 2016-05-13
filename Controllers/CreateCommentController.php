@@ -36,7 +36,7 @@
                     if ( strlen($_POST['comment_text']) > 5 ){
                         Db::getInstance()->insertCommentNow( array( (int)$_POST['uid'], (int)$_POST['eid'], (int)$_POST['score'], $_POST['comment_text'] ) );
                         
-                        $type =  $this->getEstabType( Db::getInstance()->getEstablishment($this->_eid) );
+                        $type =  $this->getEstabType( Db::getInstance()->getEstablishmentWihtEID($this->_eid) );
                         
                         header('Location: ?action=' . $type . '&eid=' . $this->_eid);
                         die();

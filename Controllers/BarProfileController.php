@@ -7,7 +7,7 @@
         public function __contruct(){}
         
         public function setEID($eid){
-            $this->_eid=$eid;
+            $this->_eid = $eid;
         }
         
         public function run(){
