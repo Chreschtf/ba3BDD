@@ -297,10 +297,12 @@ WHERE u1.uid = c1.uid AND u1.nickname != 'Brenda' AND e1.eid = c1.eid AND c1.sco
       EXISTS (
           SELECT DISTINCT c2.*
           FROM comments c2 
-          WHERE u1.uid = c2.uid AND c2.score >= 4 AND c2.uid = u1.uid AND e1.eid = c2.eid AND c2.eid IN (
-              SELECT c2.eid
-              FROM comments c3, users u2
-              WHERE c3.score >= 4 AND u2.nickname = 'Brenda' AND c3.uid = u2.uid AND c3.eid = e1.eid
+          WHERE u1.uid = c2.uid AND c2.score >= 4 AND c2.uid = u1.uid 
+          		AND e1.eid = c2.eid AND c2.eid IN (
+              		SELECT c2.eid
+              		FROM comments c3, users u2
+              		WHERE c3.score >= 4 AND u2.nickname = 'Brenda' AND c3.uid = u2.uid 
+                    	  AND c3.eid = e1.eid
           )
       )
 \end{verbatim}
@@ -448,7 +450,7 @@ ORDER BY AVG( estab_score._avg ) DESC
 \item Login avec le nouveau compte
 \item Inspection compte de 'Fred' 
 \item Affichage des résultats des requêtes R1-R6
-\item Faire une recherche avec le mot 'Fumoir'.
+\item Faire une recherche avec le mot 'Fumoir' (label).
 \item Logout
 \end{enumerate}
 
