@@ -26,6 +26,13 @@
                 header("Location:?action=login");
                 die();
             }else{
+                
+                if (! Db::getInstance()->isAdminByNickname($_COOKIE["username"]) ){
+                    // the modify action is only for admins
+                    header('Location: ?action=userProfile&user='.$_COOKIE["username"]);
+                    die();
+                }
+                
                 $this->_eid = (int)$_POST['eid'];
                 $this->_uid = (int)$_POST['uid'];
                 $data = Db::getInstance()->getEstablishmentWihtEID($this->_eid);

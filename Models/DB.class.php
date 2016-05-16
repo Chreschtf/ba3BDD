@@ -606,8 +606,7 @@ class Db
     public function getTagsUsedByUser($uid){
         $query = "SELECT t.*, e.*
                   FROM tags t, establishment_tags et, establishments e
-                  WHERE et.uid = :uid AND et.tid = t.tid AND e.eid = et.eid
-                  GROUP BY et.eid";
+                  WHERE et.uid = :uid AND et.tid = t.tid AND e.eid = et.eid";
                 
         $stmt = $this->_db->prepare($query);
         $stmt->bindParam(":uid", $uid);
