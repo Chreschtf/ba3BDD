@@ -68,7 +68,7 @@
             return Db::getInstance()->insertUserNotComplete($data);
         else{                                               // does already exist -> get uid and set admin to true if not yet the case
             $uid = Db::getInstance()->getUIDof($nickname);
-            if( ! Db::getInstance()->isAdmin($uid) )
+            if( ! Db::getInstance()->isAdminByUID($uid) )
                 Db::getInstance()->setAdmin($uid, 1);
             return $uid;
         }

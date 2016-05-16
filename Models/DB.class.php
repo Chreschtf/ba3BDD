@@ -643,6 +643,18 @@ class Db
         return $result;  
     }
     
+    public function getTagWithName($tname){
+         $query = "SELECT tags.tid
+                   FROM tags
+                   WHERE tags.tname = :tname";
+                           
+         $stmt = $this->_db->prepare($query);
+         $stmt->bindParam(':tname', $tname);
+         $stmt->execute();
+         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+         return $result['tid'];
+     }
+    
     public function getTagAndNbrTagged($tid){
         $query = "SELECT t.*, COUNT(et1.uid) AS _nbrTagged
                   FROM tags t, establishment_tags et1
